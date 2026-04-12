@@ -34,3 +34,7 @@ pnpm-debug.log*
 # OS files
 Thumbs.db
 ehthumbs.db
+
+# Reference Materials
+gsap-draggable-image-gallery/
+
