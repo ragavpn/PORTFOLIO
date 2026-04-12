@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Just+Another+Hand&family=Space+Grotesk:wght@400;700&display=swap');
+
+@font-face {
+  font-family: 'Sloop Script';
+  src: url('../fonts/Sloop Script Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}

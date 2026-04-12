@@ -1,0 +1,281 @@
+.archives-split-screen-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  z-index: 80;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.archives-split-screen-container.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.archives-split-left {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.archives-split-right {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.archives-zoom-target {
+  width: 70%;
+  height: 70%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.archives-split-screen-container.active .archives-zoom-target::before {
+  display: none;
+}
+
+.archives-zoom-target::before {
+  content: "IMAGE TARGET";
+  color: rgba(255, 255, 255, 0.5);
+  font-family: inherit;
+  font-size: 0.75em;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.archives-image-title-overlay {
+  position: absolute;
+  /* <-- CHANGE THE BOTTOM MARGIN HERE (Currently 40px) --> */
+  bottom: 40px; 
+  left: 80px;
+  transform: none;
+  color: white;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  padding: 20px;
+  background: none; /* Removed stiff background rectangle */
+}
+
+/* Pseudo element that physically blurs the color gradient so it diffuses perfectly without sharp edges */
+.archives-image-title-overlay::before {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: -40px;
+  right: -40px;
+  bottom: -40px;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.40) 0%, rgba(0, 0, 0, 0.8) 100%);
+  filter: blur(40px);
+  pointer-events: none;
+  border-radius: 100px; /* Helps round the diffused glow */
+}
+
+.archives-image-title-overlay.active {
+  opacity: 0;
+}
+
+.archives-image-slide-number {
+  position: relative;
+  width: 600px;
+  height: 20px;
+  margin-bottom: 0.5em;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  overflow: hidden;
+}
+
+.archives-image-slide-number span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: white;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.5;
+  transform: translateY(0px);
+  will-change: transform;
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.archives-image-slide-title {
+  position: relative;
+  width: 600px;
+  height: 40px;
+  margin-bottom: 0.5em;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  overflow: hidden;
+}
+
+.archives-image-slide-title h1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  transform: translateY(0px);
+  will-change: transform;
+  margin: 0;
+  padding: 0;
+}
+
+.archives-image-slide-description {
+  position: relative;
+  width: 600px;
+  height: 60px;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  overflow: hidden;
+}
+
+.archives-description-line {
+  position: relative;
+  display: block;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.4;
+  transform: translateY(0px);
+  will-change: transform;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.archives-controls-container {
+  display: flex;
+  transition: transform 1.2s cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+.archives-controls-container.split-mode {
+  transform: translateX(25vw) !important;
+}
+
+.archives-switch-button {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 0.75em;
+  font-weight: 400;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+  white-space: nowrap;
+}
+
+.archives-switch-button-current {
+  color: #f0f0f0;
+}
+
+.archives-indicator-dot {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  top: 50%;
+  transform: translateY(-50%);
+  left: -8px;
+}
+
+.archives-switch-button:hover .archives-indicator-dot {
+  opacity: 1;
+}
+
+.archives-close-button {
+  position: absolute;
+  top: 50%;
+  right: 40px;
+  width: 64px;
+  height: 64px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.archives-close-button.active {
+  pointer-events: all;
+}
+
+.archives-close-button:hover {
+  opacity: 0.7;
+}
+
+.archives-close-button svg {
+  width: 64px;
+  height: 64px;
+  transform: rotate(180deg);
+}
+
+.archives-scaling-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  pointer-events: none;
+  will-change: transform;
+  opacity: 1 !important;
+}
+
+.archives-scaling-image-overlay img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important;
+  display: block;
+}
+
+.archives-out-of-view {
+  opacity: 0.1 !important;
+}
+
+.archives-grid-item {
+  will-change: transform, opacity;
+  transition: opacity 0.6s ease;
+}
+
+.archives-sound-wave-canvas {
+  width: 2em;
+  height: 1em;
+  border: none !important;
+  outline: none !important;
+  background: none !important;
+  transition: opacity 0.3s ease;
+}
