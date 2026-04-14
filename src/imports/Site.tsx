@@ -1,65 +1,65 @@
 import svgPaths from "./svg-hsdg76jmon";
-import imgGeminiGeneratedImageBnf70Cbnf70Cbnf71 from "figma:asset/a6fe2b506a0a432a9e17a0ef38b5ca4b3fa14f15.png";
-import imgVector1 from "figma:asset/98d776675e5ec9807b99b75a2497dbf84c1c9258.png";
-import imgLandingPage1 from "figma:asset/74c121b20734821be93a416723264253d9506c0d.png";
-import imgRectangle1 from "figma:asset/44d8ca679124c7e912ca3d6f45c90cd43b0fbe05.png";
-import imgRectangle2 from "figma:asset/b7c375cdb058365a733d1bf277a83c66452cd437.png";
-import imgRectangle3 from "figma:asset/e1338a03f5d96833a05e7c1a7caf242550330845.png";
-import imgRectangle4 from "figma:asset/880928608ce0fe62ff23115aeca7b455578597fa.png";
-import imgRectangle5 from "figma:asset/3e41dcb8e2113164fe350de95c8514ad377090bf.png";
-import imgRectangle6 from "figma:asset/fbeb2628438b8a6fa5618f1e34c9d764a6c1d8f2.png";
-import imgRectangle7 from "figma:asset/e7e0b6df495ea9563c6f8ef1747d3b8ab8ec5643.png";
-import imgRectangle8 from "figma:asset/d9d08092a2326bca3f8309077cde111cec49e0f3.png";
-import imgRectangle9 from "figma:asset/0281b12097e54c5f98160e098107fec25401ba2c.png";
-import imgRectangle10 from "figma:asset/93c3b30ae3778e3964adbc42eb6cff76d762bcc8.png";
-import imgRectangle11 from "figma:asset/ac7386bc0bc7911ef14d47b22636e3eddf145adf.png";
-import imgRectangle12 from "figma:asset/a7487275baa3922f0b2b6f878e26388996c7aa4a.png";
-import imgRectangle13 from "figma:asset/34dee3eff5718f45b805e03308b38d03debc45a4.png";
-import imgRectangle14 from "figma:asset/b30f711faff64e93b4c72f5a63464662260a0d4f.png";
-import imgRectangle15 from "figma:asset/af39a30d534fbcdcfae509804fcc4b14e6c0d54f.png";
-import imgRectangle16 from "figma:asset/1d4a35ba5970173795f9c8bfc96babf2de7288af.png";
-import imgRectangle17 from "figma:asset/178cfdcd987502d35117063c858adea1978cb454.png";
-import imgRectangle18 from "figma:asset/1bdf9ad8c70743b5dae196343330f0dd67e1cd48.png";
-import imgRectangle19 from "figma:asset/112750b5be8d6516e88fa1679e1112325a4be40e.png";
-import imgRectangle20 from "figma:asset/b83a2db72e8c0cce534efba8b86984dbc6b3867c.png";
-import imgRectangle21 from "figma:asset/4f5f3f75f20641cc0a38abc12718ac7a0725417f.png";
-import imgRectangle22 from "figma:asset/4682866e2a0f119b232455c05baf0b7d4e504510.png";
-import imgRectangle23 from "figma:asset/5e1e9316bc74274dee84013d6ad1e266f2a74969.png";
-import imgRectangle24 from "figma:asset/798f5cc7bdcb604a2abefcb3ee78ea36d2ea3bb3.png";
-import imgImage40 from "figma:asset/a24cb39d900485d56afd7b02d380c9d99b9b4d16.png";
-import imgImage41 from "figma:asset/66afc10e3f90b9840edfe543845dae245979e005.png";
-import imgImage42 from "figma:asset/e581c7139cdf4ade8070e5a6b734b5dadd90a55c.png";
-import imgAlbumCover from "figma:asset/62a77fde6c6d2aa05b8e9c0444482f0662e933ae.png";
-import imgAlbumCover1 from "figma:asset/ef0a6ae20c2d4a3c3290ea3463a103f482af15e3.png";
-import imgAlbumCover2 from "figma:asset/edf7bf626721767d09aac32a43280bb75774dd36.png";
-import imgAlbumCover3 from "figma:asset/ca316ceedc3a56e0a96f872ab72e119ec4043b6e.png";
-import imgAlbumCover4 from "figma:asset/49ac33d35def1789ef1ba9197bb4fcff07fa477a.png";
-import imgBackground from "figma:asset/3d47aee2a77f678c34dac332d486e89319cfdd31.png";
-import imgMyImage1 from "figma:asset/83f6809a292b37204322f2d527a21a4eda6f7b45.png";
-import imgMyImage21 from "figma:asset/a798663657b620cb89488dbe0c6a6ed5fff498ac.png";
-import imgMyImage2 from "figma:asset/cd19b637e2457d96678da23b69dd3a2ba98788f8.png";
-import imgMyImage41 from "figma:asset/52bf55597d910e31bf1d86c2030f873e11203c05.png";
-import imgMyImage3 from "figma:asset/0bd26a6762c0818dfeff1cc5842bcf6754aba61c.png";
-import imgMyImage31 from "figma:asset/6f03edebe3d8bb5e974fdda5698618bb61f88208.png";
-import imgMyImage61 from "figma:asset/23677bfa826aeb01b6f8486f0b915464950a0044.png";
-import imgMyImage4 from "figma:asset/62ad6ebf6072505c575cadec06b740d779e1412b.png";
-import imgMyImage5 from "figma:asset/82fb6e0707143eb2bf6be49e5015edc1cb9499f2.png";
-import imgMyImage51 from "figma:asset/80bdf2e958f9907d4b3f34fe023689cfedd08895.png";
-import imgNewDoc201901021011171 from "figma:asset/b87076761d8889ce01c9a0ea71011cd5b5c6b8be.png";
-import imgNewDoc201901021011179 from "figma:asset/81520e38cfd49d4cc1137fc094600e9bbbfebc8a.png";
-import imgDraw5 from "figma:asset/5ab4df45d8976869203c4483166073abe1c4a099.png";
-import imgNewDoc2019010210111715 from "figma:asset/c6a73d138d917d8a7b1f6c7b2c18cefaaafb308e.png";
-import imgDsc03422 from "figma:asset/b39efb8c1152087c9c9e64ff5d213c950bd00ce4.png";
-import imgDraw1 from "figma:asset/1a60bb9b1dce99cf899835729934083e62b8c7f1.png";
-import imgNewDoc201901021011173 from "figma:asset/28ebf16742ca6d95e8b29241235f3b0518a85284.png";
-import imgImage16 from "figma:asset/7e3b5a5b6928c3730d83caafff8dcf8ed9047c5d.png";
-import imgProfile1 from "figma:asset/a4d251f356b1dd5d1d1203a7d94d91c18c2d7429.png";
+import imgGeminiGeneratedImageBnf70Cbnf70Cbnf71 from "../assets/a6fe2b506a0a432a9e17a0ef38b5ca4b3fa14f15.png";
+import imgVector1 from "../assets/98d776675e5ec9807b99b75a2497dbf84c1c9258.png";
+import imgLandingPage1 from "../assets/74c121b20734821be93a416723264253d9506c0d.png";
+import imgRectangle1 from "../assets/44d8ca679124c7e912ca3d6f45c90cd43b0fbe05.png";
+import imgRectangle2 from "../assets/b7c375cdb058365a733d1bf277a83c66452cd437.png";
+import imgRectangle3 from "../assets/e1338a03f5d96833a05e7c1a7caf242550330845.png";
+import imgRectangle4 from "../assets/880928608ce0fe62ff23115aeca7b455578597fa.png";
+import imgRectangle5 from "../assets/3e41dcb8e2113164fe350de95c8514ad377090bf.png";
+import imgRectangle6 from "../assets/fbeb2628438b8a6fa5618f1e34c9d764a6c1d8f2.png";
+import imgRectangle7 from "../assets/e7e0b6df495ea9563c6f8ef1747d3b8ab8ec5643.png";
+import imgRectangle8 from "../assets/d9d08092a2326bca3f8309077cde111cec49e0f3.png";
+import imgRectangle9 from "../assets/0281b12097e54c5f98160e098107fec25401ba2c.png";
+import imgRectangle10 from "../assets/93c3b30ae3778e3964adbc42eb6cff76d762bcc8.png";
+import imgRectangle11 from "../assets/ac7386bc0bc7911ef14d47b22636e3eddf145adf.png";
+import imgRectangle12 from "../assets/a7487275baa3922f0b2b6f878e26388996c7aa4a.png";
+import imgRectangle13 from "../assets/34dee3eff5718f45b805e03308b38d03debc45a4.png";
+import imgRectangle14 from "../assets/b30f711faff64e93b4c72f5a63464662260a0d4f.png";
+import imgRectangle15 from "../assets/af39a30d534fbcdcfae509804fcc4b14e6c0d54f.png";
+import imgRectangle16 from "../assets/1d4a35ba5970173795f9c8bfc96babf2de7288af.png";
+import imgRectangle17 from "../assets/178cfdcd987502d35117063c858adea1978cb454.png";
+import imgRectangle18 from "../assets/1bdf9ad8c70743b5dae196343330f0dd67e1cd48.png";
+import imgRectangle19 from "../assets/112750b5be8d6516e88fa1679e1112325a4be40e.png";
+import imgRectangle20 from "../assets/b83a2db72e8c0cce534efba8b86984dbc6b3867c.png";
+import imgRectangle21 from "../assets/4f5f3f75f20641cc0a38abc12718ac7a0725417f.png";
+import imgRectangle22 from "../assets/4682866e2a0f119b232455c05baf0b7d4e504510.png";
+import imgRectangle23 from "../assets/5e1e9316bc74274dee84013d6ad1e266f2a74969.png";
+import imgRectangle24 from "../assets/798f5cc7bdcb604a2abefcb3ee78ea36d2ea3bb3.png";
+import imgImage40 from "../assets/a24cb39d900485d56afd7b02d380c9d99b9b4d16.png";
+import imgImage41 from "../assets/66afc10e3f90b9840edfe543845dae245979e005.png";
+import imgImage42 from "../assets/e581c7139cdf4ade8070e5a6b734b5dadd90a55c.png";
+import imgAlbumCover from "../assets/62a77fde6c6d2aa05b8e9c0444482f0662e933ae.png";
+import imgAlbumCover1 from "../assets/ef0a6ae20c2d4a3c3290ea3463a103f482af15e3.png";
+import imgAlbumCover2 from "../assets/edf7bf626721767d09aac32a43280bb75774dd36.png";
+import imgAlbumCover3 from "../assets/ca316ceedc3a56e0a96f872ab72e119ec4043b6e.png";
+import imgAlbumCover4 from "../assets/49ac33d35def1789ef1ba9197bb4fcff07fa477a.png";
+import imgBackground from "../assets/3d47aee2a77f678c34dac332d486e89319cfdd31.png";
+import imgMyImage1 from "../assets/83f6809a292b37204322f2d527a21a4eda6f7b45.png";
+import imgMyImage21 from "../assets/a798663657b620cb89488dbe0c6a6ed5fff498ac.png";
+import imgMyImage2 from "../assets/cd19b637e2457d96678da23b69dd3a2ba98788f8.png";
+import imgMyImage41 from "../assets/52bf55597d910e31bf1d86c2030f873e11203c05.png";
+import imgMyImage3 from "../assets/0bd26a6762c0818dfeff1cc5842bcf6754aba61c.png";
+import imgMyImage31 from "../assets/6f03edebe3d8bb5e974fdda5698618bb61f88208.png";
+import imgMyImage61 from "../assets/23677bfa826aeb01b6f8486f0b915464950a0044.png";
+import imgMyImage4 from "../assets/62ad6ebf6072505c575cadec06b740d779e1412b.png";
+import imgMyImage5 from "../assets/82fb6e0707143eb2bf6be49e5015edc1cb9499f2.png";
+import imgMyImage51 from "../assets/80bdf2e958f9907d4b3f34fe023689cfedd08895.png";
+import imgNewDoc201901021011171 from "../assets/b87076761d8889ce01c9a0ea71011cd5b5c6b8be.png";
+import imgNewDoc201901021011179 from "../assets/81520e38cfd49d4cc1137fc094600e9bbbfebc8a.png";
+import imgDraw5 from "../assets/5ab4df45d8976869203c4483166073abe1c4a099.png";
+import imgNewDoc2019010210111715 from "../assets/c6a73d138d917d8a7b1f6c7b2c18cefaaafb308e.png";
+import imgDsc03422 from "../assets/b39efb8c1152087c9c9e64ff5d213c950bd00ce4.png";
+import imgDraw1 from "../assets/1a60bb9b1dce99cf899835729934083e62b8c7f1.png";
+import imgNewDoc201901021011173 from "../assets/28ebf16742ca6d95e8b29241235f3b0518a85284.png";
+import imgImage16 from "../assets/7e3b5a5b6928c3730d83caafff8dcf8ed9047c5d.png";
+import imgProfile1 from "../assets/a4d251f356b1dd5d1d1203a7d94d91c18c2d7429.png";
 import { imgVector } from "./svg-pa1my";
 
 function Frame27() {
   return (
     <div className="content-stretch flex flex-col font-['Inter_Display:Light',sans-serif] items-center justify-center leading-[normal] not-italic pb-[5px] relative shrink-0 text-[#090909] text-[47px] text-center tracking-[-1.41px] uppercase whitespace-nowrap">
-      <p className="relative shrink-0">I’m a Software Engineer currently working</p>
+      <p className="relative shrink-0">Iâ€™m a Software Engineer currently working</p>
       <p className="relative shrink-0">@ CAPITAL ONE IN BLR</p>
     </div>
   );
@@ -68,9 +68,9 @@ function Frame27() {
 function Frame140() {
   return (
     <div className="absolute content-stretch flex flex-col gap-[7px] items-center left-[357.88px] top-[254.11px] w-[1189.465px]">
-      <div className="h-[310.012px] relative shrink-0 w-[1189.465px]" data-name="Hi, I’m Ragav">
+      <div className="h-[310.012px] relative shrink-0 w-[1189.465px]" data-name="Hi, Iâ€™m Ragav">
         <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 1189.46 310.012">
-          <g id="Hi, Iâm Ragav">
+          <g id="Hi, IÃ¢Â€Â™m Ragav">
             <path d={svgPaths.p197bf980} fill="var(--fill-0, #090909)" />
             <path d={svgPaths.p39f16080} fill="var(--fill-0, #090909)" />
             <path d={svgPaths.p1c08f280} fill="var(--fill-0, #090909)" />
@@ -846,7 +846,7 @@ function Content() {
   return (
     <div className="content-stretch flex font-['Just_Another_Hand:Regular',sans-serif] items-center justify-between leading-[85.62999725341797%] relative shrink-0 text-[77px] w-full" data-name="Content">
       <p className="h-[139px] opacity-50 relative shrink-0 w-[402px]">Growing up in the UAE to doing my bachelors in South India..</p>
-      <p className="h-[139px] opacity-50 relative shrink-0 text-right w-[402px]">...travelling has felt more like home than any house i’ve lived in.</p>
+      <p className="h-[139px] opacity-50 relative shrink-0 text-right w-[402px]">...travelling has felt more like home than any house iâ€™ve lived in.</p>
     </div>
   );
 }
@@ -1246,7 +1246,7 @@ function Tag() {
         </div>
       </div>
       <div className="-translate-x-full absolute font-['Inter_Display:Regular',sans-serif] h-[156px] leading-[0] left-[176px] not-italic text-[19px] text-right text-white top-[154px] tracking-[-1.14px] w-[81px] whitespace-pre-wrap">
-        <p className="leading-[1.04] mb-0">A Music Lover’s Worst Nightmare</p>
+        <p className="leading-[1.04] mb-0">A Music Loverâ€™s Worst Nightmare</p>
         <p className="leading-[1.04] mb-0">&nbsp;</p>
         <p className="leading-[1.04]">{` - Picking their Top Songs`}</p>
       </div>
@@ -1477,7 +1477,7 @@ function Frame107() {
   return (
     <div className="content-stretch flex flex-col font-['Inter_Display:Medium',sans-serif] items-start leading-[0.96] not-italic relative shrink-0 text-[19px] w-[223px]">
       <p className="relative shrink-0 text-black w-full">NOT OK</p>
-      <p className="relative shrink-0 text-[rgba(0,0,0,0.5)] w-full">EVERYONE’S A STAR</p>
+      <p className="relative shrink-0 text-[rgba(0,0,0,0.5)] w-full">EVERYONEâ€™S A STAR</p>
     </div>
   );
 }
@@ -1665,7 +1665,7 @@ function Frame127() {
   return (
     <div className="content-stretch flex flex-col font-['Inter_Display:Medium',sans-serif] items-start leading-[0.96] not-italic relative shrink-0 text-[19px] w-[223px]">
       <p className="relative shrink-0 text-black w-full">NOT OK</p>
-      <p className="relative shrink-0 text-[rgba(0,0,0,0.5)] w-full">EVERYONE’S A STAR</p>
+      <p className="relative shrink-0 text-[rgba(0,0,0,0.5)] w-full">EVERYONEâ€™S A STAR</p>
     </div>
   );
 }
@@ -5085,7 +5085,7 @@ function Frame1() {
     <div className="h-[265px] mb-[-64px] relative shrink-0 w-[1202px]">
       <p className="absolute font-['Instrument_Serif:Regular',sans-serif] left-0 opacity-50 text-[186px] top-0 tracking-[-5.58px]">The</p>
       <p className="absolute font-['Sloop_Script:Regular',sans-serif] left-[250px] text-[197px] top-[17px]">Creativity</p>
-      <p className="absolute font-['Instrument_Serif:Regular',sans-serif] left-[826px] opacity-50 text-[186px] top-0 tracking-[-5.58px]">doesn’t</p>
+      <p className="absolute font-['Instrument_Serif:Regular',sans-serif] left-[826px] opacity-50 text-[186px] top-0 tracking-[-5.58px]">doesnâ€™t</p>
     </div>
   );
 }
@@ -5380,7 +5380,7 @@ function Frame149() {
 function Frame150() {
   return (
     <div className="content-stretch flex gap-[28px] items-center relative shrink-0">
-      <p className="font-['Inter_Display:Regular',sans-serif] leading-[1.02] not-italic relative shrink-0 text-[#fffcf3] text-[122.528px] tracking-[-2.4506px] whitespace-nowrap">{`LET’S `}</p>
+      <p className="font-['Inter_Display:Regular',sans-serif] leading-[1.02] not-italic relative shrink-0 text-[#fffcf3] text-[122.528px] tracking-[-2.4506px] whitespace-nowrap">{`LETâ€™S `}</p>
       <Frame151 />
       <Frame149 />
     </div>

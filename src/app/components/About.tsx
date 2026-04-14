@@ -232,26 +232,88 @@ export function About() {
     };
   }, []);
 
+  // ── Per-character sweep opacity driven by scroll ──────────────────────────
+  const textRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    const el = textRef.current;
+    if (!el) return;
+
+    let rafId: number;
+
+    const update = () => {
+      const spans = el.querySelectorAll<HTMLSpanElement>("span[data-char]");
+      if (!spans.length) { rafId = requestAnimationFrame(update); return; }
+
+      const rect = el.getBoundingClientRect();
+      const vpH = window.innerHeight;
+
+      // Start: paragraph top is 10% into the viewport (rect.top = vpH * 0.9)
+      // End:   paragraph midpoint is at viewport midpoint (rect.top = vpH/2 - rect.height/2)
+      const startY = vpH * 0.9;
+      const endY   = vpH / 2 - rect.height / 2;
+      const progress = Math.min(1, Math.max(0, (startY - rect.top) / (startY - endY)));
+
+      const total = spans.length;
+      const frontier = progress * (total + 12);
+      const fadeZone = 14;
+
+      spans.forEach((span, i) => {
+        const t = Math.min(1, Math.max(0, (frontier - i) / fadeZone));
+        span.style.opacity = String(0.08 + 0.92 * t);
+      });
+
+      rafId = requestAnimationFrame(update);
+    };
+
+    update();
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
+  // Render text: spaces are plain text nodes (preserve line-wrapping),
+  // non-space characters are wrapped in a data-char span.
+  const animText = (text: string, cls?: string) => {
+    const words = text.split(" ");
+    return words.map((word, wi) => (
+      <span key={wi} style={{ display: "inline" }}>
+        {wi > 0 && " "}
+        {word.split("").map((ch, ci) => (
+          <span
+            key={ci}
+            data-char="1"
+            className={cls}
+            style={{ opacity: 0.08 }}
+          >
+            {ch}
+          </span>
+        ))}
+      </span>
+    ));
+  };
+
   return (
-    <section 
+    <section
       id="about-section"
       ref={containerRef}
       className="min-h-screen relative w-full flex flex-col items-center justify-center py-25"
     >
       <div className="flex flex-col items-center z-10 w-full text-center relative pointer-events-none -translate-y-[50px]">
         <div className="w-full px-6 sm:px-12 md:px-24">
-          <p className="font-medium text-[#090909] text-[clamp(20px,3.5vw,52px)] leading-[0.9] tracking-[-1.22px] w-full mx-auto">
-            <span>A full-time </span>
-            <span className="font-['Just_Another_Hand'] text-[clamp(32px,5vw,70px)]">Software Engineer </span>
-            <span>and part-time </span>
-            <span className="font-['Just_Another_Hand'] text-[clamp(32px,5vw,70px)]">Machine Learning Enthusiast</span>
-            <span> and </span>
-            <span className="font-['Just_Another_Hand'] text-[clamp(32px,5vw,70px)]">UI UX Designer</span>
-            <span>, alongside being a passionate </span>
-            <span className="font-['Just_Another_Hand'] text-[clamp(32px,5vw,70px)]">Artist</span>
-            <span> and a </span>
-            <span className="font-['Just_Another_Hand'] text-[clamp(32px,5vw,70px)]">Music Lover</span>
-            <span>, with a myriad of interests that just might be perfect conversation starters.</span>
+          <p
+            ref={textRef}
+            className="font-medium text-[#090909] text-[clamp(20px,3.5vw,52px)] leading-[0.9] tracking-[-1.22px] w-full mx-auto"
+          >
+            {animText("A full-time ")}
+            {animText("Software Engineer ", "font-['Just_Another_Hand'] text-[clamp(32px,5vw,70px)]")}
+            {animText("and part-time ")}
+            {animText("Machine Learning Enthusiast", "font-['Just_Another_Hand'] text-[clamp(32px,5vw,70px)]")}
+            {animText(" and ")}
+            {animText("UI UX Designer", "font-['Just_Another_Hand'] text-[clamp(32px,5vw,70px)]")}
+            {animText(", alongside being a passionate ")}
+            {animText("Artist", "font-['Just_Another_Hand'] text-[clamp(32px,5vw,70px)]")}
+            {animText(" and a ")}
+            {animText("Music Lover", "font-['Just_Another_Hand'] text-[clamp(32px,5vw,70px)]")}
+            {animText(", with a myriad of interests that just might be perfect conversation starters.")}
           </p>
         </div>
       </div>

@@ -10,6 +10,7 @@ import { Art } from "./components/Art";
 import { Footer } from "./components/Footer";
 import { Navbar } from "./components/Navbar";
 import { CustomCursor } from "./components/CustomCursor";
+import { LoadingScreen } from "./components/LoadingScreen";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Outlet } from "react-router";
@@ -28,13 +29,24 @@ export default function Root() {
       smoothTouch: false,
       touchMultiplier: 2,
     });
-    // Expose lenis globally for use in other components like Navbar
+
+    // Force top scroll universally before lock
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+    window.scrollTo(0, 0);
+    lenis.scrollTo(0, { immediate: true });
+    
+    // Stop immediately — LoadingScreen will start it when done
+    lenis.stop();
+
+    // Expose lenis globally for Navbar + LoadingScreen
     (window as any).lenis = lenis;
 
-    lenis.on('scroll', ScrollTrigger.update);
+    lenis.on("scroll", ScrollTrigger.update);
 
-    gsap.ticker.add((time)=>{
-      lenis.raf(time * 1000)
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
     });
 
     gsap.ticker.lagSmoothing(0);
@@ -48,6 +60,8 @@ export default function Root() {
 
   return (
     <div className="w-full overflow-x-hidden bg-[#fffcf3] text-black font-sans">
+      {/* Loading screen mounts above everything — unmounts itself when done */}
+      <LoadingScreen />
       <CustomCursor />
       <Navbar />
       <Hero />
@@ -62,3 +76,4 @@ export default function Root() {
     </div>
   );
 }
+

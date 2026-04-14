@@ -9,13 +9,28 @@ export function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
   const [isCursorHidden, setIsCursorHidden] = useState(false);
   const [cursorMode, setCursorMode] = useState("SCROLL");
+  // While the loading screen is active, suppress the SCROLL text ring
+  const [isLoading, setIsLoading] = useState(true);
+
+  // ── Listen for loading complete ──────────────────────────────────────────
+  useEffect(() => {
+    const onReady = () => setIsLoading(false);
+    window.addEventListener("portfolioReady", onReady);
+    // If loading screen already finished (e.g. HMR), check flag
+    if (!(window as any).__portfolioLoading && !sessionStorage.getItem("portfolio_visited") === false) {
+      // On very first load this won't trigger early — that's fine
+    }
+    return () => window.removeEventListener("portfolioReady", onReady);
+  }, []);
 
   useEffect(() => {
     // Hide default cursor globally
-    document.body.style.cursor = 'none';
-    const interactables = document.querySelectorAll('a, button, input, select, textarea');
+    document.body.style.cursor = "none";
+    const interactables = document.querySelectorAll(
+      "a, button, input, select, textarea"
+    );
     interactables.forEach((el) => {
-      (el as HTMLElement).style.cursor = 'none';
+      (el as HTMLElement).style.cursor = "none";
     });
 
     const onMouseMove = (e: MouseEvent) => {
@@ -23,15 +38,19 @@ export function CustomCursor() {
       mouse.current.y = e.clientY;
       if (!isVisible) setIsVisible(true);
 
-      // Check if cursor is inside the Art image trail zone (top ~24.3% of the art section)
-      const artZone = document.getElementById('art-trail-zone');
+      // Check if cursor is inside the Art image trail zone
+      const artZone = document.getElementById("art-trail-zone");
       if (artZone) {
         const rect = artZone.getBoundingClientRect();
         const relY = e.clientY - rect.top;
-        // Trail spawns within first 900px of the 3700px unscaled container, scaled
         const scale = rect.height / 3700;
         const trailHeight = 900 * scale;
-        if (relY >= 0 && relY <= trailHeight && e.clientX >= rect.left && e.clientX <= rect.right) {
+        if (
+          relY >= 0 &&
+          relY <= trailHeight &&
+          e.clientX >= rect.left &&
+          e.clientX <= rect.right
+        ) {
           setIsCursorHidden(true);
           setCursorMode("HIDDEN");
           return;
@@ -39,18 +58,19 @@ export function CustomCursor() {
       }
 
       const target = e.target as HTMLElement;
-      
-      const cursorTarget = target.closest('[data-cursor], a, button, [role="button"]');
-      
+      const cursorTarget = target.closest(
+        "[data-cursor], a, button, [role='button']"
+      );
+
       if (!cursorTarget) {
         setIsCursorHidden(false);
         setCursorMode("SCROLL");
         return;
       }
 
-      const attr = cursorTarget.getAttribute('data-cursor');
+      const attr = cursorTarget.getAttribute("data-cursor");
 
-      if (attr === 'hidden') {
+      if (attr === "hidden") {
         setIsCursorHidden(true);
         setCursorMode("HIDDEN");
         return;
@@ -58,15 +78,21 @@ export function CustomCursor() {
 
       setIsCursorHidden(false);
 
-      if (attr === 'dot-only') {
+      if (attr === "hero-title") {
+        setCursorMode("HERO_TITLE");
+      } else if (attr === "dot-only") {
         setCursorMode("DOT_ONLY");
-      } else if (attr === 'drag') {
+      } else if (attr === "drag") {
         setCursorMode("DRAG");
-      } else if (attr === 'play') {
+      } else if (attr === "play") {
         setCursorMode("PLAY");
-      } else if (attr === 'pause') {
+      } else if (attr === "pause") {
         setCursorMode("PAUSE");
-      } else if (cursorTarget.tagName.toLowerCase() === 'a' || cursorTarget.tagName.toLowerCase() === 'button' || attr === 'click') {
+      } else if (
+        cursorTarget.tagName.toLowerCase() === "a" ||
+        cursorTarget.tagName.toLowerCase() === "button" ||
+        attr === "click"
+      ) {
         setCursorMode("CLICK");
       } else {
         setCursorMode("SCROLL");
@@ -77,13 +103,15 @@ export function CustomCursor() {
 
     let rafId: number;
     const update = () => {
-      // The tiny central dot stays snappy to the mouse (slight organic lerp to anti-alias)
       dotCursor.current.x += (mouse.current.x - dotCursor.current.x) * 0.8;
       dotCursor.current.y += (mouse.current.y - dotCursor.current.y) * 0.8;
 
-      // The large text circle massively lags smoothly behind (halved for MORE inertia)
-      circleCursor.current.x += (mouse.current.x - circleCursor.current.x) * 0.055;
-      circleCursor.current.y += (mouse.current.y - circleCursor.current.y) * 0.055;
+      // For hero-title mode, slow the ring lerp way down so the big circle trails dreamily
+      const ringLerp = cursorMode === "HERO_TITLE" ? 0.04 : 0.055;
+      circleCursor.current.x +=
+        (mouse.current.x - circleCursor.current.x) * ringLerp;
+      circleCursor.current.y +=
+        (mouse.current.y - circleCursor.current.y) * ringLerp;
 
       if (dotRef.current) {
         dotRef.current.style.transform = `translate3d(${dotCursor.current.x}px, ${dotCursor.current.y}px, 0)`;
@@ -100,36 +128,63 @@ export function CustomCursor() {
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
       cancelAnimationFrame(rafId);
-      document.body.style.cursor = 'auto';
+      document.body.style.cursor = "auto";
     };
-  }, [isVisible]);
+  }, [isVisible, cursorMode]);
 
   const renderTextPaths = () => {
     switch (cursorMode) {
       case "PLAY":
         return (
           <>
-            <textPath href="#circleTextPath" startOffset="0%">PLAY</textPath>
-            <textPath href="#circleTextPath" startOffset="33.3%">PLAY</textPath>
-            <textPath href="#circleTextPath" startOffset="66.6%">PLAY</textPath>
+            <textPath href="#circleTextPath" startOffset="0%">
+              PLAY
+            </textPath>
+            <textPath href="#circleTextPath" startOffset="33.3%">
+              PLAY
+            </textPath>
+            <textPath href="#circleTextPath" startOffset="66.6%">
+              PLAY
+            </textPath>
           </>
         );
       case "PAUSE":
         return (
           <>
-            <textPath href="#circleTextPath" startOffset="0%">PAUSE</textPath>
-            <textPath href="#circleTextPath" startOffset="50%">PAUSE</textPath>
+            <textPath href="#circleTextPath" startOffset="0%">
+              PAUSE
+            </textPath>
+            <textPath href="#circleTextPath" startOffset="50%">
+              PAUSE
+            </textPath>
           </>
         );
       default:
         return (
           <>
-            <textPath href="#circleTextPath" startOffset="0%">{cursorMode}</textPath>
-            <textPath href="#circleTextPath" startOffset="50%">{cursorMode}</textPath>
+            <textPath href="#circleTextPath" startOffset="0%">
+              {cursorMode}
+            </textPath>
+            <textPath href="#circleTextPath" startOffset="50%">
+              {cursorMode}
+            </textPath>
           </>
         );
     }
   };
+
+  // ── Derived sizing for hero-title mode ─────────────────────────────────
+  const isHeroTitle = cursorMode === "HERO_TITLE";
+  const dotSize = isHeroTitle ? 200 : 5;
+  const dotOffset = dotSize / 2;
+
+  // Ring: hidden during loading, hidden in hero-title mode, shown otherwise
+  const ringVisible =
+    !isLoading &&
+    isVisible &&
+    !isCursorHidden &&
+    cursorMode !== "DOT_ONLY" &&
+    !isHeroTitle;
 
   return (
     <>
@@ -138,39 +193,52 @@ export function CustomCursor() {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
-        /* Ensure standard cursors are hidden when hovering over things */
         * { cursor: none !important; }
       `}</style>
-      
-      {/* THE SNAPPY ANCHOR DOT */}
+
+      {/* ── THE SNAPPY ANCHOR DOT — grows to 200px in hero-title mode ── */}
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 pointer-events-none z-[99999] mix-blend-difference"
+        className={`fixed top-0 left-0 pointer-events-none z-[99999] mix-blend-difference`}
         style={{
-          width: '5px',
-          height: '5px',
-          marginTop: '-2.5px',
-          marginLeft: '-2.5px',
+          width: `${dotSize}px`,
+          height: `${dotSize}px`,
+          marginTop: `-${dotOffset}px`,
+          marginLeft: `-${dotOffset}px`,
+          transition:
+            "width 0.45s cubic-bezier(0.34,1.56,0.64,1), height 0.45s cubic-bezier(0.34,1.56,0.64,1), margin 0.45s cubic-bezier(0.34,1.56,0.64,1)",
         }}
       >
-        <div 
-          className={`w-full h-full bg-white rounded-full transition-all duration-300 ${isVisible && !isCursorHidden ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
+        <div
+          className={`w-full h-full bg-white rounded-full transition-opacity duration-300 ${
+            isVisible && !isCursorHidden ? "opacity-100" : "opacity-0"
+          }`}
         />
       </div>
 
-      {/* THE LAGGING SPINNING RING */}
+      {/* ── THE LAGGING SPINNING RING — fades in after loading, off in hero-title ── */}
       <div
         ref={circleRef}
         className="fixed top-0 left-0 pointer-events-none z-[99998] mix-blend-difference"
         style={{
-          width: '100px',
-          height: '100px',
-          marginTop: '-50px',
-          marginLeft: '-50px',
+          width: "100px",
+          height: "100px",
+          marginTop: "-50px",
+          marginLeft: "-50px",
         }}
       >
-        <div className={`w-full h-full transition-all duration-300 ${isVisible && !isCursorHidden && cursorMode !== "DOT_ONLY" ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-          <div style={{ width: '100%', height: '100%', animation: 'spinCursor 9s linear infinite' }}>
+        <div
+          className={`w-full h-full transition-all duration-500 ${
+            ringVisible ? "opacity-100 scale-100" : "opacity-0 scale-50"
+          }`}
+        >
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              animation: "spinCursor 9s linear infinite",
+            }}
+          >
             <svg viewBox="0 0 100 100" className="w-full h-full text-white">
               <defs>
                 <path
@@ -178,12 +246,12 @@ export function CustomCursor() {
                   d="M 50, 50 m -24, 0 a 24,24 0 1,1 48,0 a 24,24 0 1,1 -48,0"
                 />
               </defs>
-              <text 
-                fontSize="13.5" 
-                fontWeight="800" 
-                letterSpacing="3" 
-                fill="currentColor" 
-                className="font-['Space_Grotesk',sans-serif] uppercase transition-all duration-300"
+              <text
+                fontSize="13.5"
+                fontWeight="800"
+                letterSpacing="3"
+                fill="currentColor"
+                className="font-['Space_Grotesk',sans-serif] uppercase"
               >
                 {renderTextPaths()}
               </text>

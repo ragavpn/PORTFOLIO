@@ -1,12 +1,12 @@
 import svgPaths from "./svg-j0jytd5tl1";
-import imgImage40 from "figma:asset/a24cb39d900485d56afd7b02d380c9d99b9b4d16.png";
-import imgImage41 from "figma:asset/66afc10e3f90b9840edfe543845dae245979e005.png";
-import imgImage42 from "figma:asset/e581c7139cdf4ade8070e5a6b734b5dadd90a55c.png";
-import imgAlbumCover from "figma:asset/62a77fde6c6d2aa05b8e9c0444482f0662e933ae.png";
-import imgAlbumCover1 from "figma:asset/ef0a6ae20c2d4a3c3290ea3463a103f482af15e3.png";
-import imgAlbumCover2 from "figma:asset/edf7bf626721767d09aac32a43280bb75774dd36.png";
-import imgAlbumCover3 from "figma:asset/ca316ceedc3a56e0a96f872ab72e119ec4043b6e.png";
-import imgAlbumCover4 from "figma:asset/49ac33d35def1789ef1ba9197bb4fcff07fa477a.png";
+import imgImage40 from "../assets/a24cb39d900485d56afd7b02d380c9d99b9b4d16.png";
+import imgImage41 from "../assets/66afc10e3f90b9840edfe543845dae245979e005.png";
+import imgImage42 from "../assets/e581c7139cdf4ade8070e5a6b734b5dadd90a55c.png";
+import imgAlbumCover from "../assets/62a77fde6c6d2aa05b8e9c0444482f0662e933ae.png";
+import imgAlbumCover1 from "../assets/ef0a6ae20c2d4a3c3290ea3463a103f482af15e3.png";
+import imgAlbumCover2 from "../assets/edf7bf626721767d09aac32a43280bb75774dd36.png";
+import imgAlbumCover3 from "../assets/ca316ceedc3a56e0a96f872ab72e119ec4043b6e.png";
+import imgAlbumCover4 from "../assets/49ac33d35def1789ef1ba9197bb4fcff07fa477a.png";
 
 function Frame() {
   return (
@@ -162,7 +162,7 @@ function Tag() {
         </div>
       </div>
       <div className="-translate-x-full absolute font-['Inter_Display:Regular',sans-serif] h-[156px] leading-[0] left-[176px] not-italic text-[19px] text-right text-white top-[154px] tracking-[-1.14px] w-[81px] whitespace-pre-wrap">
-        <p className="leading-[1.04] mb-0">A Music Lover’s Worst Nightmare</p>
+        <p className="leading-[1.04] mb-0">A Music Loverâ€™s Worst Nightmare</p>
         <p className="leading-[1.04] mb-0">&nbsp;</p>
         <p className="leading-[1.04]">{` - Picking their Top Songs`}</p>
       </div>
@@ -393,7 +393,7 @@ function Frame22() {
   return (
     <div className="content-stretch flex flex-col font-['Inter_Display:Medium',sans-serif] items-start leading-[0.96] not-italic relative shrink-0 text-[19px] w-[223px]">
       <p className="relative shrink-0 text-black w-full">NOT OK</p>
-      <p className="relative shrink-0 text-[rgba(0,0,0,0.5)] w-full">EVERYONE’S A STAR</p>
+      <p className="relative shrink-0 text-[rgba(0,0,0,0.5)] w-full">EVERYONEâ€™S A STAR</p>
     </div>
   );
 }
@@ -581,7 +581,7 @@ function Frame42() {
   return (
     <div className="content-stretch flex flex-col font-['Inter_Display:Medium',sans-serif] items-start leading-[0.96] not-italic relative shrink-0 text-[19px] w-[223px]">
       <p className="relative shrink-0 text-black w-full">NOT OK</p>
-      <p className="relative shrink-0 text-[rgba(0,0,0,0.5)] w-full">EVERYONE’S A STAR</p>
+      <p className="relative shrink-0 text-[rgba(0,0,0,0.5)] w-full">EVERYONEâ€™S A STAR</p>
     </div>
   );
 }

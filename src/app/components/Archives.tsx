@@ -1,32 +1,32 @@
 import React, { useRef, useState, useEffect, useLayoutEffect, useCallback } from "react";
 import gsap from "gsap";
-import { Draggable } from "gsap/Draggable";
+import { Draggable } from "gsap/all";
 import "../../styles/archives.css";
 
-import imgRectangle1 from "figma:asset/44d8ca679124c7e912ca3d6f45c90cd43b0fbe05.png";
-import imgRectangle2 from "figma:asset/b7c375cdb058365a733d1bf277a83c66452cd437.png";
-import imgRectangle3 from "figma:asset/e1338a03f5d96833a05e7c1a7caf242550330845.png";
-import imgRectangle4 from "figma:asset/880928608ce0fe62ff23115aeca7b455578597fa.png";
-import imgRectangle5 from "figma:asset/3e41dcb8e2113164fe350de95c8514ad377090bf.png";
-import imgRectangle6 from "figma:asset/fbeb2628438b8a6fa5618f1e34c9d764a6c1d8f2.png";
-import imgRectangle7 from "figma:asset/e7e0b6df495ea9563c6f8ef1747d3b8ab8ec5643.png";
-import imgRectangle8 from "figma:asset/d9d08092a2326bca3f8309077cde111cec49e0f3.png";
-import imgRectangle9 from "figma:asset/0281b12097e54c5f98160e098107fec25401ba2c.png";
-import imgRectangle10 from "figma:asset/93c3b30ae3778e3964adbc42eb6cff76d762bcc8.png";
-import imgRectangle11 from "figma:asset/ac7386bc0bc7911ef14d47b22636e3eddf145adf.png";
-import imgRectangle12 from "figma:asset/a7487275baa3922f0b2b6f878e26388996c7aa4a.png";
-import imgRectangle13 from "figma:asset/34dee3eff5718f45b805e03308b38d03debc45a4.png";
-import imgRectangle14 from "figma:asset/b30f711faff64e93b4c72f5a63464662260a0d4f.png";
-import imgRectangle15 from "figma:asset/af39a30d534fbcdcfae509804fcc4b14e6c0d54f.png";
-import imgRectangle16 from "figma:asset/1d4a35ba5970173795f9c8bfc96babf2de7288af.png";
-import imgRectangle17 from "figma:asset/178cfdcd987502d35117063c858adea1978cb454.png";
-import imgRectangle18 from "figma:asset/1bdf9ad8c70743b5dae196343330f0dd67e1cd48.png";
-import imgRectangle19 from "figma:asset/112750b5be8d6516e88fa1679e1112325a4be40e.png";
-import imgRectangle20 from "figma:asset/b83a2db72e8c0cce534efba8b86984dbc6b3867c.png";
-import imgRectangle21 from "figma:asset/4f5f3f75f20641cc0a38abc12718ac7a0725417f.png";
-import imgRectangle22 from "figma:asset/4682866e2a0f119b232455c05baf0b7d4e504510.png";
-import imgRectangle23 from "figma:asset/5e1e9316bc74274dee84013d6ad1e266f2a74969.png";
-import imgRectangle24 from "figma:asset/798f5cc7bdcb604a2abefcb3ee78ea36d2ea3bb3.png";
+import imgRectangle1 from "../../assets/44d8ca679124c7e912ca3d6f45c90cd43b0fbe05.png";
+import imgRectangle2 from "../../assets/b7c375cdb058365a733d1bf277a83c66452cd437.png";
+import imgRectangle3 from "../../assets/e1338a03f5d96833a05e7c1a7caf242550330845.png";
+import imgRectangle4 from "../../assets/880928608ce0fe62ff23115aeca7b455578597fa.png";
+import imgRectangle5 from "../../assets/3e41dcb8e2113164fe350de95c8514ad377090bf.png";
+import imgRectangle6 from "../../assets/fbeb2628438b8a6fa5618f1e34c9d764a6c1d8f2.png";
+import imgRectangle7 from "../../assets/e7e0b6df495ea9563c6f8ef1747d3b8ab8ec5643.png";
+import imgRectangle8 from "../../assets/d9d08092a2326bca3f8309077cde111cec49e0f3.png";
+import imgRectangle9 from "../../assets/0281b12097e54c5f98160e098107fec25401ba2c.png";
+import imgRectangle10 from "../../assets/93c3b30ae3778e3964adbc42eb6cff76d762bcc8.png";
+import imgRectangle11 from "../../assets/ac7386bc0bc7911ef14d47b22636e3eddf145adf.png";
+import imgRectangle12 from "../../assets/a7487275baa3922f0b2b6f878e26388996c7aa4a.png";
+import imgRectangle13 from "../../assets/34dee3eff5718f45b805e03308b38d03debc45a4.png";
+import imgRectangle14 from "../../assets/b30f711faff64e93b4c72f5a63464662260a0d4f.png";
+import imgRectangle15 from "../../assets/af39a30d534fbcdcfae509804fcc4b14e6c0d54f.png";
+import imgRectangle16 from "../../assets/1d4a35ba5970173795f9c8bfc96babf2de7288af.png";
+import imgRectangle17 from "../../assets/178cfdcd987502d35117063c858adea1978cb454.png";
+import imgRectangle18 from "../../assets/1bdf9ad8c70743b5dae196343330f0dd67e1cd48.png";
+import imgRectangle19 from "../../assets/112750b5be8d6516e88fa1679e1112325a4be40e.png";
+import imgRectangle20 from "../../assets/b83a2db72e8c0cce534efba8b86984dbc6b3867c.png";
+import imgRectangle21 from "../../assets/4f5f3f75f20641cc0a38abc12718ac7a0725417f.png";
+import imgRectangle22 from "../../assets/4682866e2a0f119b232455c05baf0b7d4e504510.png";
+import imgRectangle23 from "../../assets/5e1e9316bc74274dee84013d6ad1e266f2a74969.png";
+import imgRectangle24 from "../../assets/798f5cc7bdcb604a2abefcb3ee78ea36d2ea3bb3.png";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(Draggable);
@@ -42,7 +42,7 @@ const IMAGES = [
 const METADATA = [
   { title: "Begin Before You're Ready", desc: "The work starts when you notice the quiet pull. Breathe once, clear the room inside you, and move one pixel forward." },
   { title: "Negative Space, Positive Signal", desc: "Leave room around the idea. In the silence, the design answers back and shows you what to remove." },
-  { title: "Friction Is a Teacher", desc: "When the line resists, listen. Constraints are coordinates—plot them, then chart a cleaner route." },
+  { title: "Friction Is a Teacher", desc: "When the line resists, listen. Constraints are coordinatesÃ¢â‚¬â€plot them, then chart a cleaner route." },
   { title: "Golden Minute", desc: "Catch the light while it's honest. One honest frame beats a hundred almosts." },
   { title: "Shadow Carries Form", desc: "The dark reveals the edge. Let contrast articulate what you mean but can't yet say." },
   { title: "City Breath", desc: "Steel, glass, heartbeat. Edit until the street's rhythm fits inside a single grid." },
@@ -58,7 +58,7 @@ const METADATA = [
   { title: "Geometry of Poise", desc: "Angles carry attitude. Align posture, light, and line until the frame breathes." },
   { title: "Natural Light, Natural Truth", desc: "Open the window and remove the mask. Authenticity needs less wattage, more honesty." },
   { title: "Studio: The Controlled Wild", desc: "Dial every knob, then listen for the unscripted moment. Keep the lens ready." },
-  { title: "Invent the Angle", desc: "Rotate the problem ninety degrees. Fresh perspective isn't luck—it's a habit." },
+  { title: "Invent the Angle", desc: "Rotate the problem ninety degrees. Fresh perspective isn't luckÃ¢â‚¬â€it's a habit." },
   { title: "Editorial Nerve", desc: "Carry yourself like you belong, then earn it with craft. The camera can tell." },
   { title: "Profession Is Practice", desc: "Repeat the fundamentals until they disappear. Mastery is subtle on purpose." },
   { title: "Final Frame, Open Door", desc: "Endings are launchpads. Archive the take, thank the light, and start again at one." },
@@ -95,11 +95,11 @@ export function Archives() {
   const audioSystem = useRef({
     enabled: false,
     sounds: {
-      click: typeof Audio !== "undefined" ? new Audio("https://assets.codepen.io/7558/glitch-fx-001.mp3") : null,
-      open: typeof Audio !== "undefined" ? new Audio("https://assets.codepen.io/7558/click-glitch-001.mp3") : null,
-      close: typeof Audio !== "undefined" ? new Audio("https://assets.codepen.io/7558/click-glitch-001.mp3") : null,
-      zoom: typeof Audio !== "undefined" ? new Audio("https://assets.codepen.io/7558/whoosh-fx-001.mp3") : null,
-      drag: typeof Audio !== "undefined" ? new Audio("https://assets.codepen.io/7558/preloader-2s-001.mp3") : null,
+      click: typeof Audio !== "undefined" ? new Audio("/glitch-fx-001.mp3") : null,
+      open: typeof Audio !== "undefined" ? new Audio("/click-glitch-001.mp3") : null,
+      close: typeof Audio !== "undefined" ? new Audio("/click-glitch-001.mp3") : null,
+      zoom: typeof Audio !== "undefined" ? new Audio("/whoosh-fx-001.mp3") : null,
+      drag: typeof Audio !== "undefined" ? new Audio("/preloader-2s-001.mp3") : null,
     },
     play: (soundName: "click" | "open" | "close" | "zoom" | "drag") => {
       if (!audioSystem.current.enabled || !audioSystem.current.sounds[soundName]) return;

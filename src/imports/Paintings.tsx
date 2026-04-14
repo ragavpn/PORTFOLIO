@@ -1,10 +1,10 @@
-import imgNewDoc201901021011171 from "figma:asset/b87076761d8889ce01c9a0ea71011cd5b5c6b8be.png";
-import imgNewDoc201901021011179 from "figma:asset/81520e38cfd49d4cc1137fc094600e9bbbfebc8a.png";
-import imgDraw5 from "figma:asset/5ab4df45d8976869203c4483166073abe1c4a099.png";
-import imgNewDoc2019010210111715 from "figma:asset/c6a73d138d917d8a7b1f6c7b2c18cefaaafb308e.png";
-import imgDsc03422 from "figma:asset/b39efb8c1152087c9c9e64ff5d213c950bd00ce4.png";
-import imgDraw1 from "figma:asset/1a60bb9b1dce99cf899835729934083e62b8c7f1.png";
-import imgNewDoc201901021011173 from "figma:asset/28ebf16742ca6d95e8b29241235f3b0518a85284.png";
+import imgNewDoc201901021011171 from "../assets/b87076761d8889ce01c9a0ea71011cd5b5c6b8be.png";
+import imgNewDoc201901021011179 from "../assets/81520e38cfd49d4cc1137fc094600e9bbbfebc8a.png";
+import imgDraw5 from "../assets/5ab4df45d8976869203c4483166073abe1c4a099.png";
+import imgNewDoc2019010210111715 from "../assets/c6a73d138d917d8a7b1f6c7b2c18cefaaafb308e.png";
+import imgDsc03422 from "../assets/b39efb8c1152087c9c9e64ff5d213c950bd00ce4.png";
+import imgDraw1 from "../assets/1a60bb9b1dce99cf899835729934083e62b8c7f1.png";
+import imgNewDoc201901021011173 from "../assets/28ebf16742ca6d95e8b29241235f3b0518a85284.png";
 
 function Frame1() {
   return (

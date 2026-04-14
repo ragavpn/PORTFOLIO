@@ -1,6 +1,6 @@
 import svgPaths from "./svg-4yq3a6lww4";
-import imgVector1 from "figma:asset/98d776675e5ec9807b99b75a2497dbf84c1c9258.png";
-import imgLandingPage1 from "figma:asset/74c121b20734821be93a416723264253d9506c0d.png";
+import imgVector1 from "../assets/98d776675e5ec9807b99b75a2497dbf84c1c9258.png";
+import imgLandingPage1 from "../assets/74c121b20734821be93a416723264253d9506c0d.png";
 import { imgVector } from "./svg-frdnf";
 
 function Frame() {

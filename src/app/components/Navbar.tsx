@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import svgPaths8tskrlw096 from "../../imports/svg-8tskrlw096";
 import svgPathsuxavwq7xjp from "../../imports/svg-uxavwq7xjp";
@@ -9,6 +9,20 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isTeleporting, setIsTeleporting] = useState(false);
+  const [navRevealed, setNavRevealed] = useState(false);
+
+  useEffect(() => {
+    const onReveal = () => setNavRevealed(true);
+    window.addEventListener("heroReveal", onReveal);
+    const onReady = () => setNavRevealed(true);
+    window.addEventListener("portfolioReady", onReady);
+    const fallback = setTimeout(() => setNavRevealed(true), 6000);
+    return () => {
+      window.removeEventListener("heroReveal", onReveal);
+      window.removeEventListener("portfolioReady", onReady);
+      clearTimeout(fallback);
+    };
+  }, []);
 
   const menuLinks = [
     { num: "(01)", label: "Home", target: "hero-section" },
@@ -35,7 +49,11 @@ export function Navbar() {
 
   const handleLinkClick = (e: React.MouseEvent, target: string) => {
     e.preventDefault();
-    closeMenu();
+    const needsWait = isOpen;
+    if (isOpen) {
+      closeMenu();
+    }
+    
     setTimeout(() => {
       // Disable pointer events temporarily to avoid hover triggers
       document.body.style.pointerEvents = "none";
@@ -89,7 +107,7 @@ export function Navbar() {
         const el = document.getElementById(target);
         if (el) el.scrollIntoView({ behavior: "smooth" });
       }
-    }, 1750);
+    }, needsWait ? 1750 : 0);
   };
 
   React.useEffect(() => {
@@ -121,8 +139,9 @@ export function Navbar() {
         <div 
           className="cursor-pointer pointer-events-auto"
           style={{ 
-            opacity: isOpen ? 0 : 1, 
-            transition: "opacity 0.3s",
+            opacity: isOpen ? 0 : (navRevealed ? 1 : 0), 
+            transform: navRevealed ? "translateY(0px)" : "translateY(-20px)",
+            transition: "opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s, transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s",
             fontFamily: `"SG Grotesk DEMO", sans-serif`,
             fontSize: "25px",
             fontStyle: "normal",
@@ -136,17 +155,30 @@ export function Navbar() {
         </div>
         <button
           onClick={isOpen ? closeMenu : openMenu}
-          className="cursor-pointer h-[15px] w-[39px] relative pointer-events-auto"
+          className="cursor-pointer h-[16px] w-[55px] relative pointer-events-auto flex flex-col justify-between"
           aria-label="Toggle menu"
+          style={{
+            opacity: navRevealed ? 1 : 0,
+            transform: navRevealed ? "translateY(0px)" : "translateY(-20px)",
+            transition: "opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s, transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s",
+          }}
         >
-          {!isOpen && (
-            <div className="absolute inset-[-13.33%_0_0_0]">
-              <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 39 17">
-                <line stroke="currentColor" strokeWidth="2" x2="39" y1="1" y2="1" />
-                <line stroke="currentColor" strokeWidth="2" x2="39" y1="16" y2="16" />
-              </svg>
-            </div>
-          )}
+          {/* Top Line */}
+          <span 
+            className="w-full h-[2px] bg-current origin-center" 
+            style={{ 
+              transform: isOpen ? "translateY(7px)" : "translateY(0px)",
+              transition: "transform 0.4s cubic-bezier(0.68, -0.55, 0.26, 1.55)" 
+            }} 
+          />
+          {/* Bottom Line */}
+          <span 
+            className="w-full h-[2px] bg-current origin-center" 
+            style={{ 
+               transform: isOpen ? "translateY(-7px)" : "translateY(0px)",
+               transition: "transform 0.4s cubic-bezier(0.68, -0.55, 0.26, 1.55)" 
+            }} 
+          />
         </button>
       </div>
 
@@ -220,23 +252,11 @@ export function Navbar() {
               animate={{ y: isClosing ? "-100%" : "0%" }}
               transition={{ delay: isClosing ? 0.5 : 0, duration: 1.2, ease: MENU_EASE }}
             >
-              {/* Top: "Menu" title left, close hamburger right */}
+              {/* Top: "Menu" title left */}
               <div className="flex items-start justify-between px-[44px] pt-[33px]">
                 <p className="font-['Inter_Display',sans-serif] font-normal leading-[0.87] text-[50px] text-black tracking-[-3px]">
                   Menu
                 </p>
-                <button
-                  onClick={closeMenu}
-                  className="cursor-pointer h-[15px] w-[39px] relative mt-3"
-                  aria-label="Close menu"
-                >
-                  <div className="absolute inset-[-13.33%_0_0_0]">
-                    <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 39 17">
-                      <line stroke="black" strokeWidth="2" x2="39" y1="1" y2="1" />
-                      <line stroke="black" strokeWidth="2" x2="39" y1="16" y2="16" />
-                    </svg>
-                  </div>
-                </button>
               </div>
 
               {/* Body: two-column layout matching Figma */}
@@ -308,8 +328,8 @@ export function Navbar() {
                   className="absolute flex flex-col gap-[5px] font-['Inter_Display',sans-serif] text-[16px] text-black tracking-[-0.96px] leading-[0.87]"
                   style={{ left: "41%" }}
                 >
-                  <a href="https://www.instagram.com/ragavwithouttheh" target="_blank" rel="noopener noreferrer" className="cursor-pointer hover:opacity-60 transition-opacity">Instagram — ragavwithouttheh</a>
-                  <a href="https://www.instagram.com/rgxv.ui" target="_blank" rel="noopener noreferrer" className="cursor-pointer hover:opacity-60 transition-opacity">Instagram — rgxv.ui</a>
+                  <a href="https://www.instagram.com/ragavwithouttheh" target="_blank" rel="noopener noreferrer" className="cursor-pointer hover:opacity-60 transition-opacity">Instagram — Personal</a>
+                  <a href="https://www.instagram.com/rgxv.ui" target="_blank" rel="noopener noreferrer" className="cursor-pointer hover:opacity-60 transition-opacity">Instagram — Art</a>
                   <a href="https://open.spotify.com/user/61ea69ooda9ch57149ylpfeh9?si=6f37d19b5ef7493b" target="_blank" rel="noopener noreferrer" className="cursor-pointer hover:opacity-60 transition-opacity">Spotify</a>
                 </div>
 

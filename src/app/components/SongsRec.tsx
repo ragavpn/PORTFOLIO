@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
-import imgImage40 from "figma:asset/a24cb39d900485d56afd7b02d380c9d99b9b4d16.png";
-import imgImage41 from "figma:asset/66afc10e3f90b9840edfe543845dae245979e005.png";
-import imgImage42 from "figma:asset/e581c7139cdf4ade8070e5a6b734b5dadd90a55c.png";
+import imgImage40 from "../../assets/a24cb39d900485d56afd7b02d380c9d99b9b4d16.png";
+import imgImage41 from "../../assets/66afc10e3f90b9840edfe543845dae245979e005.png";
+import imgImage42 from "../../assets/e581c7139cdf4ade8070e5a6b734b5dadd90a55c.png";
 
 const songs = [
   { id: "01", title: "ABOUT YOU", album: "BEING FUNNY IN A FOREIGN LANGUAGE", time: "2:43" },
@@ -179,7 +179,7 @@ export function SongsRec() {
           
           {/* Text inside Tag */}
           <div className="absolute left-[176px] top-[154px] w-[81px] text-right text-white font-['Inter'] text-[19px] tracking-[-1.14px] leading-[1.04] -translate-x-full z-10 pointer-events-none">
-            <p className="mb-0">A Music Lover’s Worst Nightmare</p>
+            <p className="mb-0">A Music Loverâ€™s Worst Nightmare</p>
             <p className="mb-0">&nbsp;</p>
             <p>{` - Picking their Top Songs`}</p>
           </div>

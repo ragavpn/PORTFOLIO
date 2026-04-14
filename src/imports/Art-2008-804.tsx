@@ -1,31 +1,31 @@
 import svgPaths from "./svg-fctlv6cp1g";
-import imgBackground from "figma:asset/3d47aee2a77f678c34dac332d486e89319cfdd31.png";
-import imgNewDoc201901021011171 from "figma:asset/b87076761d8889ce01c9a0ea71011cd5b5c6b8be.png";
-import imgNewDoc201901021011179 from "figma:asset/81520e38cfd49d4cc1137fc094600e9bbbfebc8a.png";
-import imgDraw5 from "figma:asset/5ab4df45d8976869203c4483166073abe1c4a099.png";
-import imgNewDoc2019010210111715 from "figma:asset/c6a73d138d917d8a7b1f6c7b2c18cefaaafb308e.png";
-import imgDsc03422 from "figma:asset/b39efb8c1152087c9c9e64ff5d213c950bd00ce4.png";
-import imgDraw1 from "figma:asset/1a60bb9b1dce99cf899835729934083e62b8c7f1.png";
-import imgNewDoc201901021011173 from "figma:asset/28ebf16742ca6d95e8b29241235f3b0518a85284.png";
-import imgImage16 from "figma:asset/7e3b5a5b6928c3730d83caafff8dcf8ed9047c5d.png";
-import imgProfile1 from "figma:asset/a4d251f356b1dd5d1d1203a7d94d91c18c2d7429.png";
-import imgMyImage1 from "figma:asset/83f6809a292b37204322f2d527a21a4eda6f7b45.png";
-import imgMyImage21 from "figma:asset/a798663657b620cb89488dbe0c6a6ed5fff498ac.png";
-import imgMyImage2 from "figma:asset/cd19b637e2457d96678da23b69dd3a2ba98788f8.png";
-import imgMyImage41 from "figma:asset/52bf55597d910e31bf1d86c2030f873e11203c05.png";
-import imgMyImage3 from "figma:asset/0bd26a6762c0818dfeff1cc5842bcf6754aba61c.png";
-import imgMyImage31 from "figma:asset/6f03edebe3d8bb5e974fdda5698618bb61f88208.png";
-import imgMyImage61 from "figma:asset/23677bfa826aeb01b6f8486f0b915464950a0044.png";
-import imgMyImage4 from "figma:asset/62ad6ebf6072505c575cadec06b740d779e1412b.png";
-import imgMyImage5 from "figma:asset/82fb6e0707143eb2bf6be49e5015edc1cb9499f2.png";
-import imgMyImage51 from "figma:asset/80bdf2e958f9907d4b3f34fe023689cfedd08895.png";
+import imgBackground from "../assets/3d47aee2a77f678c34dac332d486e89319cfdd31.png";
+import imgNewDoc201901021011171 from "../assets/b87076761d8889ce01c9a0ea71011cd5b5c6b8be.png";
+import imgNewDoc201901021011179 from "../assets/81520e38cfd49d4cc1137fc094600e9bbbfebc8a.png";
+import imgDraw5 from "../assets/5ab4df45d8976869203c4483166073abe1c4a099.png";
+import imgNewDoc2019010210111715 from "../assets/c6a73d138d917d8a7b1f6c7b2c18cefaaafb308e.png";
+import imgDsc03422 from "../assets/b39efb8c1152087c9c9e64ff5d213c950bd00ce4.png";
+import imgDraw1 from "../assets/1a60bb9b1dce99cf899835729934083e62b8c7f1.png";
+import imgNewDoc201901021011173 from "../assets/28ebf16742ca6d95e8b29241235f3b0518a85284.png";
+import imgImage16 from "../assets/7e3b5a5b6928c3730d83caafff8dcf8ed9047c5d.png";
+import imgProfile1 from "../assets/a4d251f356b1dd5d1d1203a7d94d91c18c2d7429.png";
+import imgMyImage1 from "../assets/83f6809a292b37204322f2d527a21a4eda6f7b45.png";
+import imgMyImage21 from "../assets/a798663657b620cb89488dbe0c6a6ed5fff498ac.png";
+import imgMyImage2 from "../assets/cd19b637e2457d96678da23b69dd3a2ba98788f8.png";
+import imgMyImage41 from "../assets/52bf55597d910e31bf1d86c2030f873e11203c05.png";
+import imgMyImage3 from "../assets/0bd26a6762c0818dfeff1cc5842bcf6754aba61c.png";
+import imgMyImage31 from "../assets/6f03edebe3d8bb5e974fdda5698618bb61f88208.png";
+import imgMyImage61 from "../assets/23677bfa826aeb01b6f8486f0b915464950a0044.png";
+import imgMyImage4 from "../assets/62ad6ebf6072505c575cadec06b740d779e1412b.png";
+import imgMyImage5 from "../assets/82fb6e0707143eb2bf6be49e5015edc1cb9499f2.png";
+import imgMyImage51 from "../assets/80bdf2e958f9907d4b3f34fe023689cfedd08895.png";
 
 function Frame1() {
   return (
     <div className="h-[265px] mb-[-64px] relative shrink-0 w-[1202px]">
       <p className="absolute font-['Instrument_Serif:Regular',sans-serif] left-0 opacity-50 text-[186px] top-0 tracking-[-5.58px]">The</p>
       <p className="absolute font-['Sloop_Script:Regular',sans-serif] left-[250px] text-[197px] top-[17px]">Creativity</p>
-      <p className="absolute font-['Instrument_Serif:Regular',sans-serif] left-[826px] opacity-50 text-[186px] top-0 tracking-[-5.58px]">doesn’t</p>
+      <p className="absolute font-['Instrument_Serif:Regular',sans-serif] left-[826px] opacity-50 text-[186px] top-0 tracking-[-5.58px]">doesnâ€™t</p>
     </div>
   );
 }
@@ -320,7 +320,7 @@ function Frame30() {
 function Frame31() {
   return (
     <div className="content-stretch flex gap-[28px] items-center relative shrink-0">
-      <p className="font-['Inter_Display:Regular',sans-serif] leading-[1.02] not-italic relative shrink-0 text-[#fffcf3] text-[122.528px] tracking-[-2.4506px] whitespace-nowrap">{`LET’S `}</p>
+      <p className="font-['Inter_Display:Regular',sans-serif] leading-[1.02] not-italic relative shrink-0 text-[#fffcf3] text-[122.528px] tracking-[-2.4506px] whitespace-nowrap">{`LETâ€™S `}</p>
       <Frame32 />
       <Frame30 />
     </div>

@@ -1,10 +1,92 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import imgImage40 from "figma:asset/a24cb39d900485d56afd7b02d380c9d99b9b4d16.png";
+import imgImage40 from "../../assets/a24cb39d900485d56afd7b02d380c9d99b9b4d16.png";
 import songsData from "../data/songs.json";
 
 // Glob import all mp3s
 const mp3Modules = import.meta.glob('../../songs/*.mp3', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+
+// â”€â”€ Per-letter slide-on-hover component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function ShiftLetter({ ch, className }: { ch: string; className?: string }) {
+  const [phase, setPhase] = React.useState<"ready" | "playing">("ready");
+  const phaseRef      = React.useRef<"ready" | "playing">("ready");
+  const pendingReset  = React.useRef(false);
+  const cloneRef      = React.useRef<HTMLSpanElement>(null);
+
+  const updatePhase = (p: "ready" | "playing") => {
+    phaseRef.current = p;
+    setPhase(p);
+  };
+
+  // Listen for the clone's transitionend â€” it finishes last (80ms delay + 550ms duration)
+  React.useEffect(() => {
+    const el = cloneRef.current;
+    if (!el) return;
+    const onEnd = () => {
+      if (pendingReset.current) {
+        pendingReset.current = false;
+        updatePhase("ready"); // instant snap back (transition: none when "ready")
+      }
+    };
+    el.addEventListener("transitionend", onEnd);
+    return () => el.removeEventListener("transitionend", onEnd);
+  }, []);
+
+  const handleEnter = () => {
+    pendingReset.current = false;
+    if (phaseRef.current === "ready") updatePhase("playing");
+  };
+
+  const handleLeave = () => {
+    // Don't reset immediately â€” mark it and let transitionend handle the cleanup
+    pendingReset.current = true;
+  };
+
+  if (ch === " ") {
+    return <span className={className} style={{ display: "inline-block", width: "0.3em" }}>&nbsp;</span>;
+  }
+
+  const isPlaying  = phase === "playing";
+  const transition = isPlaying ? "transform 0.55s cubic-bezier(0.25, 1, 0.5, 1)" : "none";
+
+  return (
+    <span
+      style={{ display: "inline-block", overflow: "hidden", position: "relative", lineHeight: "inherit" }}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+    >
+      {/* Real letter â€” slides out left */}
+      <span
+        className={className}
+        style={{
+          display: "inline-block",
+          transform: isPlaying ? "translateX(-110%)" : "translateX(0%)",
+          transition,
+          whiteSpace: "nowrap",
+        }}
+      >
+        {ch}
+      </span>
+      {/* Clone â€” enters from right (finishes last due to 80ms delay) */}
+      <span
+        ref={cloneRef}
+        className={className}
+        style={{
+          display: "inline-block",
+          position: "absolute",
+          left: 0,
+          top: 0,
+          transform: isPlaying ? "translateX(0%)" : "translateX(110%)",
+          transition,
+          transitionDelay: isPlaying ? "80ms" : "0ms",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {ch}
+      </span>
+    </span>
+  );
+}
 
 export function Songs() {
   const [scale, setScale] = useState(1);
@@ -256,27 +338,29 @@ export function Songs() {
 
   const artistLines = getArtistLines();
 
-  // Artist text renderer — UPPERCASE
+  // Artist text renderer â€” UPPERCASE with per-letter hover animation
+  const LETTER_CLS = "font-['Space_Grotesk'] text-[160px] font-normal leading-[0.853] tracking-[-8px] text-black";
+
+  const renderLine = (text: string) => (
+    <div className="whitespace-nowrap" style={{ lineHeight: "0.853", display: "flex", alignItems: "baseline" }}>
+      {text.split("").map((ch, i) => (
+        <ShiftLetter key={i} ch={ch} className={LETTER_CLS} />
+      ))}
+    </div>
+  );
+
   const renderArtistText = () => {
     if (artistLines.length === 1) {
       return (
         <div className="w-full flex justify-start">
-          <p className="font-['Space_Grotesk'] text-[160px] font-normal leading-[0.853] tracking-[-8px] text-black whitespace-nowrap">
-            {artistLines[0]}
-          </p>
+          {renderLine(artistLines[0])}
         </div>
       );
     } else {
       return (
         <>
-          <p className="font-['Space_Grotesk'] text-[160px] font-normal leading-[0.853] tracking-[-8px] text-black self-start whitespace-nowrap">
-            {artistLines[0]}
-          </p>
-          <div className="w-full flex justify-start">
-            <p className="font-['Space_Grotesk'] text-[160px] font-normal leading-[0.853] tracking-[-8px] text-black text-left w-full whitespace-nowrap">
-              {artistLines[1]}
-            </p>
-          </div>
+          <div className="self-start">{renderLine(artistLines[0])}</div>
+          <div className="w-full flex justify-start">{renderLine(artistLines[1])}</div>
         </>
       );
     }
@@ -301,7 +385,7 @@ export function Songs() {
         onEnded={handleAudioEnded}
       />
 
-      {/* Main 1920×1080 canvas */}
+      {/* Main 1920Ã—1080 canvas */}
       <div
         className="absolute left-1/2 top-[0px] w-[1920px] h-[1080px] origin-top"
         style={{ transform: `translate(-50%, 0) scale(${scale})` }}
@@ -389,7 +473,7 @@ export function Songs() {
             </svg>
           </div>
 
-          {/* Runtime display — bottom of vinyl arc */}
+          {/* Runtime display â€” bottom of vinyl arc */}
           <div className="absolute left-[818px] top-[923px] flex font-['JetBrains_Mono'] font-medium text-[19px] gap-[5px] z-20 tabular-nums">
             <span className="text-black">{elapsedFormatted}</span>
             <span className="text-black">/</span>
@@ -413,7 +497,7 @@ export function Songs() {
           </AnimatePresence>
         </div>
 
-        {/* GENRES — animated on song change */}
+        {/* GENRES â€” animated on song change */}
         <div
           className="absolute left-[740px] z-10 transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]"
           style={{ top: artistLines.length === 1 ? "296px" : "408px" }}
