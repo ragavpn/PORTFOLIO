@@ -54,7 +54,7 @@ export function Projects() {
   };
 
   return (
-    <section 
+    <section id="projects-section"
       ref={containerRef}
       className="relative w-full bg-[#090909] py-32 px-6 sm:px-12 md:px-24 flex justify-center overflow-hidden"
       onMouseMove={handleMouseMove}
@@ -128,6 +128,7 @@ export function Projects() {
               key={i}
               className="flex flex-col w-full relative group cursor-pointer"
               onMouseEnter={() => setHoveredIndex(i)}
+              data-cursor="hidden"
             >
               {/* Top border line */}
               <div className="w-full h-px bg-white/20" />

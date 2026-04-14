@@ -1,37 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import imgImage40 from "figma:asset/a24cb39d900485d56afd7b02d380c9d99b9b4d16.png";
-import imgImage41 from "figma:asset/66afc10e3f90b9840edfe543845dae245979e005.png";
-import imgImage42 from "figma:asset/e581c7139cdf4ade8070e5a6b734b5dadd90a55c.png";
-import imgAlbumCover from "figma:asset/62a77fde6c6d2aa05b8e9c0444482f0662e933ae.png";
-import imgAlbumCover1 from "figma:asset/ef0a6ae20c2d4a3c3290ea3463a103f482af15e3.png";
-import imgAlbumCover2 from "figma:asset/edf7bf626721767d09aac32a43280bb75774dd36.png";
-import imgAlbumCover3 from "figma:asset/ca316ceedc3a56e0a96f872ab72e119ec4043b6e.png";
-import imgAlbumCover4 from "figma:asset/49ac33d35def1789ef1ba9197bb4fcff07fa477a.png";
+import songsData from "../data/songs.json";
 
-const songs = [
-  { id: "01", title: "ABOUT YOU", album: "BEING FUNNY IN A FOREIGN LANGUAGE", time: "2:43", artist1: "THE", artist2: "1975", cover: imgAlbumCover },
-  { id: "02", title: "CHAMPAGNE PROBLEMS", album: "EVERMORE", time: "2:43", artist1: "TAYLOR", artist2: "SWIFT", cover: imgAlbumCover1 },
-  { id: "03", title: "REFLECTIONS", album: "HARD TO IMAGINE THE NEIGHBOURHOOD EVER ..", time: "3:30", artist1: "THE", artist2: "NEIGHBOURHOOD", cover: imgAlbumCover2 },
-  { id: "04", title: "DRACULA", album: "DEADBEAT", time: "2:58", artist1: "BEA", artist2: "MILLER", cover: imgAlbumCover3 },
-  { id: "05", title: "NOT OK", album: "EVERYONE'S A STAR", time: "2:58", artist1: "CHLOE", artist2: "MORIONDO", cover: imgAlbumCover4 },
-  { id: "06", title: "THE ARCHER", album: "EVERMORE", time: "3:16", artist1: "TAYLOR", artist2: "SWIFT", cover: imgAlbumCover1 },
-  { id: "07", title: "AUGUST", album: "LOVER", time: "4:21", artist1: "TAYLOR", artist2: "SWIFT", cover: imgAlbumCover1 }
-];
+// Glob import all mp3s
+const mp3Modules = import.meta.glob('../../songs/*.mp3', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
 export function Songs() {
   const [scale, setScale] = useState(1);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [activeSongId, setActiveSongId] = useState("02");
-  const [progress, setProgress] = useState(0); // Starts at 0:00
+  const [activeSongId, setActiveSongId] = useState("1");
+  const [progress, setProgress] = useState(0);
+  const [currentDuration, setCurrentDuration] = useState(0);
+  const [currentArtistIndex, setCurrentArtistIndex] = useState(0);
 
-  const activeSong = songs.find(s => s.id === activeSongId) || songs[1];
-  const TOTAL_SECONDS = React.useMemo(() => {
-    const [mins, secs] = activeSong.time.split(':').map(Number);
-    return mins * 60 + secs;
-  }, [activeSong.time]);
-
+  const activeSong = songsData.find((s) => s.id === activeSongId) || songsData[0];
   const audioRef = useRef<HTMLAudioElement>(null);
+  const fadeTarget = useRef<number | null>(null);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -41,22 +26,36 @@ export function Songs() {
   const [isDragging, setIsDragging] = useState(false);
   const vinylRef = useRef<HTMLDivElement>(null);
 
+  // Parse original duration from json just in case M:SS format
+  useEffect(() => {
+    if (activeSong.duration) {
+      const [m, s] = activeSong.duration.split(':').map(Number);
+      setCurrentDuration((m * 60) + s);
+    }
+  }, [activeSongId, activeSong.duration]);
+
+  // Reset artist index when song changes
+  useEffect(() => {
+    setCurrentArtistIndex(0);
+  }, [activeSongId]);
+
+  // Cycle through artists for multi-artist songs
+  useEffect(() => {
+    const artists = activeSong.artist.split(",").map((a) => a.trim());
+    if (artists.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentArtistIndex((prev) => (prev + 1) % artists.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [activeSong, activeSongId]);
+
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
     const maxScroll = target.scrollHeight - target.clientHeight;
     setScrollProgress(maxScroll > 0 ? target.scrollTop / maxScroll : 0);
   };
 
-  const togglePlay = () => {
-    setIsPlaying(!isPlaying);
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play().catch(e => console.error("Audio play failed:", e));
-      }
-    }
-  };
+  const togglePlay = () => setIsPlaying((p) => !p);
 
   const handleSongClick = (songId: string) => {
     if (songId === activeSongId) {
@@ -66,16 +65,55 @@ export function Songs() {
     setActiveSongId(songId);
     setProgress(0);
     setIsPlaying(true);
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0;
-      // Small timeout to allow state to settle
-      setTimeout(() => {
-        audioRef.current?.play().catch(e => console.error("Audio play failed:", e));
-      }, 50);
+  };
+
+  // Playback Control & Fade In
+  useEffect(() => {
+    if (!audioRef.current) return;
+    const audio = audioRef.current;
+
+    if (fadeTarget.current) {
+        clearInterval(fadeTarget.current);
+        fadeTarget.current = null;
+    }
+
+    if (isPlaying) {
+      // Start with volume 0 and fade in
+      if (audio.paused) {
+          audio.volume = 0;
+          audio.play().catch(e => console.error("Audio playback error:", e));
+          
+          fadeTarget.current = window.setInterval(() => {
+              if (audio.volume < 0.95) {
+                  audio.volume += 0.05;
+              } else {
+                  audio.volume = 1;
+                  if (fadeTarget.current) clearInterval(fadeTarget.current);
+              }
+          }, 30);
+      }
+    } else {
+      audio.pause();
+    }
+
+    return () => {
+        if (fadeTarget.current) clearInterval(fadeTarget.current);
+    };
+  }, [isPlaying, activeSongId]);
+
+  // Sync Audio Duration when metadata loads
+  const handleLoadedMetadata = () => {
+    if (audioRef.current && audioRef.current.duration) {
+      setCurrentDuration(audioRef.current.duration);
     }
   };
 
-  // Scalable 1920x1080 Canvas Setup for Perfect Reference Matching
+  const handleAudioEnded = () => {
+    setIsPlaying(false);
+    setProgress(0);
+  };
+
+  // Scale canvas
   useEffect(() => {
     const updateScale = () => {
       const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
@@ -86,104 +124,84 @@ export function Songs() {
     return () => window.removeEventListener("resize", updateScale);
   }, []);
 
-  // Song Progress & Vinyl Rotation Animation
+  // Vinyl rotation & Progress bar rAF loop
   useEffect(() => {
     let animationFrame: number;
     let lastTime = Date.now();
-    
+
     const updateLoop = () => {
       const now = Date.now();
       const delta = (now - lastTime) / 1000;
       lastTime = now;
-      
-      // Target speed: 360 degrees / 15s = 24 deg/s
+
+      // Spin vinyl
       const TARGET_SPEED = isPlaying ? 24 : 0;
-      
-      // Lerp the speed for smooth start/stop
-      currentSpeed.current += (TARGET_SPEED - currentSpeed.current) * (delta * 3); // easing factor 3
-      
-      // Update rotation
+      currentSpeed.current += (TARGET_SPEED - currentSpeed.current) * (delta * 3);
       if (Math.abs(currentSpeed.current) > 0.05) {
-        setRotation(r => (r + currentSpeed.current * delta) % 360);
+        setRotation((r) => (r + currentSpeed.current * delta) % 360);
       }
-      
-      // Update progress only if not dragging
-      if (isPlaying && !isDraggingRef.current) {
-        setProgress(p => {
-          const newProgress = p + delta / TOTAL_SECONDS;
-          return newProgress > 1 ? 0 : newProgress;
-        });
+
+      // Update progress extremely smoothly from audio
+      if (audioRef.current && currentDuration > 0 && !isDraggingRef.current) {
+         setProgress(audioRef.current.currentTime / currentDuration);
       }
-      
+
       animationFrame = requestAnimationFrame(updateLoop);
     };
-    
+
     animationFrame = requestAnimationFrame(updateLoop);
-    
-    return () => {
-      if (animationFrame) cancelAnimationFrame(animationFrame);
-    };
-  }, [isPlaying, TOTAL_SECONDS]);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [isPlaying, currentDuration]);
 
-  // Calculate Time Details
-  const currentTime = Math.min(TOTAL_SECONDS, Math.max(0, Math.floor(progress * TOTAL_SECONDS)));
-  const currentMinutes = Math.floor(currentTime / 60);
-  const currentSeconds = (currentTime % 60).toString().padStart(2, '0');
+  // Time from progress * duration
+  const elapsedSeconds = Math.floor(progress * currentDuration);
+  const elapsedMin = Math.floor(elapsedSeconds / 60);
+  const elapsedSec = (elapsedSeconds % 60).toString().padStart(2, "0");
 
-  // Math for SVG Arc & Dot Position (9 o'clock to 6 o'clock)
-  const fullArcLength = 1.5 * Math.PI * 493; // 270 degrees (9 to 6)
-  const staticArcLength = 0.5 * Math.PI * 493; // 90 degrees (9 to 12)
+  const totalMin = Math.floor(currentDuration / 60);
+  const totalSec = Math.floor(currentDuration % 60).toString().padStart(2, "0");
+  const totalFormatted = currentDuration > 0 ? `${totalMin}:${totalSec}` : activeSong.duration;
+  const elapsedFormatted = currentDuration > 0 ? `${elapsedMin}:${elapsedSec}` : "0:00";
+
+  // SVG arc math
+  const fullArcLength = 1.5 * Math.PI * 493;
+  const staticArcLength = 0.5 * Math.PI * 493;
   const visibleLength = staticArcLength + progress * (Math.PI * 493);
-  
-  const angle = progress * Math.PI - Math.PI / 2; // -90 deg to +90 deg (12 to 6)
+
+  const angle = progress * Math.PI - Math.PI / 2;
   const dotX = 494.5 + 493 * Math.cos(angle);
   const dotY = 494.5 + 493 * Math.sin(angle);
 
   const updateProgressFromPointer = (clientX: number, clientY: number) => {
-    if (!vinylRef.current) return;
+    if (!vinylRef.current || !audioRef.current || currentDuration === 0) return;
     const rect = vinylRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    
-    const dx = clientX - centerX;
-    const dy = clientY - centerY;
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = clientX - cx;
+    const dy = clientY - cy;
     let dragAngle = Math.atan2(dy, dx);
-    
-    // Normalize logic for 12 o'clock (-pi/2) to 6 o'clock (+pi/2)
-    if (dx < 0) {
-      if (dy < 0) dragAngle = -Math.PI / 2;
-      else dragAngle = Math.PI / 2;
-    }
-    
+    if (dx < 0) dragAngle = dy < 0 ? -Math.PI / 2 : Math.PI / 2;
     let newProgress = (dragAngle + Math.PI / 2) / Math.PI;
     newProgress = Math.max(0, Math.min(1, newProgress));
-    
     setProgress(newProgress);
-    if (audioRef.current) {
-      audioRef.current.currentTime = newProgress * TOTAL_SECONDS;
-    }
+    audioRef.current.currentTime = newProgress * currentDuration;
   };
 
   useEffect(() => {
-    const handlePointerMove = (e: PointerEvent) => {
-      if (isDraggingRef.current) {
-        updateProgressFromPointer(e.clientX, e.clientY);
-      }
+    const onMove = (e: PointerEvent) => {
+      if (isDraggingRef.current) updateProgressFromPointer(e.clientX, e.clientY);
     };
-    const handlePointerUp = () => {
-      if (isDraggingRef.current) {
-        isDraggingRef.current = false;
-        setIsDragging(false);
-      }
+    const onUp = () => {
+      isDraggingRef.current = false;
+      setIsDragging(false);
     };
-    
-    window.addEventListener('pointermove', handlePointerMove);
-    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
     return () => {
-      window.removeEventListener('pointermove', handlePointerMove);
-      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
     };
-  }, [TOTAL_SECONDS]);
+  }, [currentDuration]);
 
   const handlePointerDown = (e: React.PointerEvent) => {
     isDraggingRef.current = true;
@@ -191,66 +209,143 @@ export function Songs() {
     updateProgressFromPointer(e.clientX, e.clientY);
   };
 
+  // Artist text line-break heuristic logic
+  const getArtistLines = () => {
+    const artists = activeSong.artist.split(",").map((a) => a.trim().toUpperCase());
+    const currentArtist = artists[currentArtistIndex] || artists[0];
+    const words = currentArtist.split(" ");
+    
+    // Using 13 character soft-cap to prevent standard strings from bleeding past 1920px container bounds
+    const MAX_CHARS = 13;
+
+    if (words.length <= 1) {
+      return [words.join(" ")];
+    }
+
+    if (words.length === 2) {
+      // Default for exactly 2-word artists: 1st word on 1st line, 2nd word on 2nd line
+      return [words[0], words[1]];
+    }
+
+    // For 3 or more words
+    let line1 = words[0];
+    let remainingWords = words.slice(1);
+
+    while (remainingWords.length > 0) {
+      const line2Str = remainingWords.join(" ");
+      // If line 2 is expanding out of viewport bounds
+      if (line2Str.length > MAX_CHARS) {
+        const nextWord = remainingWords[0];
+        // Ensure that moving the word doesn't push line 1 out of viewport bounds
+        if ((line1 + " " + nextWord).length <= MAX_CHARS) {
+          line1 += " " + nextWord;
+          remainingWords.shift();
+        } else {
+          // Both lines are tight; stop moving
+          break;
+        }
+      } else {
+        // Line 2 is completely inside viewport; stop moving
+        break;
+      }
+    }
+    
+    if (remainingWords.length === 0) return [line1];
+    return [line1, remainingWords.join(" ")];
+  };
+
+  const artistLines = getArtistLines();
+
+  // Artist text renderer — UPPERCASE
+  const renderArtistText = () => {
+    if (artistLines.length === 1) {
+      return (
+        <div className="w-full flex justify-start">
+          <p className="font-['Space_Grotesk'] text-[160px] font-normal leading-[0.853] tracking-[-8px] text-black whitespace-nowrap">
+            {artistLines[0]}
+          </p>
+        </div>
+      );
+    } else {
+      return (
+        <>
+          <p className="font-['Space_Grotesk'] text-[160px] font-normal leading-[0.853] tracking-[-8px] text-black self-start whitespace-nowrap">
+            {artistLines[0]}
+          </p>
+          <div className="w-full flex justify-start">
+            <p className="font-['Space_Grotesk'] text-[160px] font-normal leading-[0.853] tracking-[-8px] text-black text-left w-full whitespace-nowrap">
+              {artistLines[1]}
+            </p>
+          </div>
+        </>
+      );
+    }
+  };
+
+  // Find the required mp3 file path
+  // The object keys are like '../../songs/Filename.mp3'
+  const matchingGlobKey = Object.keys(mp3Modules).find(k => k.includes(activeSong.fileName));
+  const activeAudioSrc = matchingGlobKey ? mp3Modules[matchingGlobKey] : "";
+
   return (
-    <section 
-      className="bg-[#fffcf3] relative w-full overflow-hidden" 
+    <section
+      className="bg-[#fffcf3] relative w-full overflow-hidden"
       style={{ height: `${1080 * scale + 100}px` }}
       data-name="SongsRec"
     >
-      <audio 
-        ref={audioRef} 
-        src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" 
-        loop
+      {/* Native HTML5 Audio */}
+      <audio
+        ref={audioRef}
+        src={activeAudioSrc}
+        onLoadedMetadata={handleLoadedMetadata}
+        onEnded={handleAudioEnded}
       />
-      {/* Exact 1920x1080 Canvas Scaled to Window */}
+
+      {/* Main 1920×1080 canvas */}
       <div
-        className="absolute left-1/2 top-[0px] w-[1920px] h-[1080px] origin-top m-[0px]"
+        className="absolute left-1/2 top-[0px] w-[1920px] h-[1080px] origin-top"
         style={{ transform: `translate(-50%, 0) scale(${scale})` }}
       >
-        
-        {/* TOP NAVBAR / MARQUEE */}
-        
-
-        {/* VINYL DISPLAY (Left Side) */}
-        {/* The center of the vinyl track is placed at Left: 60px, Top: 602px (pushed right) */}
-        <div ref={vinylRef} className="absolute left-[60px] top-[602px] w-[989px] h-[989px] -translate-x-1/2 -translate-y-1/2 z-10 scale-110" data-name="Vinyl display">
-          
-          {/* Base Gray Circular Track */}
+        {/* VINYL DISPLAY */}
+        <div
+          ref={vinylRef}
+          className="absolute left-[60px] top-[602px] w-[989px] h-[989px] -translate-x-1/2 -translate-y-1/2 z-10 scale-110 select-none"
+          data-name="Vinyl display"
+        >
+          {/* Base circular track */}
           <svg className="absolute inset-0 w-[989px] h-[989px] pointer-events-none" viewBox="0 0 989 989" fill="none">
-            <circle cx="494.5" cy="494.5" r="493" stroke="url(#trackGradient)" strokeOpacity="0.28" strokeWidth="2" />
+            <circle cx="494.5" cy="494.5" r="493" stroke="url(#trackGrad)" strokeOpacity="0.28" strokeWidth="2" />
             <defs>
-              <linearGradient id="trackGradient" x1="494.5" x2="502.7" y1="0" y2="989" gradientUnits="userSpaceOnUse">
+              <linearGradient id="trackGrad" x1="494.5" x2="502.7" y1="0" y2="989" gradientUnits="userSpaceOnUse">
                 <stop stopColor="#666666" stopOpacity="0" />
                 <stop offset="1" stopColor="#666666" stopOpacity="0.78" />
               </linearGradient>
             </defs>
           </svg>
 
-          {/* Red Progress Arc (From 9 o'clock to 6 o'clock) */}
-          <svg className="absolute inset-0 w-[989px] h-[989px] pointer-events-none m-[0px]" viewBox="0 0 989 989" fill="none">
-            <path 
-              d="M 1.5 494.5 A 493 493 0 1 1 494.5 987.5" 
-              stroke="#720808" 
-              strokeWidth="3" 
+          {/* Progress arc */}
+          <svg className="absolute inset-0 w-[989px] h-[989px] pointer-events-none" viewBox="0 0 989 989" fill="none">
+            <path
+              d="M 1.5 494.5 A 493 493 0 1 1 494.5 987.5"
+              stroke="#720808"
+              strokeWidth="3"
               strokeDasharray={fullArcLength}
               strokeDashoffset={fullArcLength - visibleLength}
-              className="transition-[stroke-dashoffset] duration-100 ease-linear"
             />
           </svg>
 
-          {/* Spinning Vinyl Image */}
-          {/* Spinning logic updated to slowly start and stop rotating using JS interpolation */}
-          <div 
-            className="absolute left-1/2 top-1/2 w-[935.5px] h-[941.6px] mix-blend-multiply overflow-hidden rounded-full origin-center"
+          {/* Spinning vinyl */}
+          <div
+            className="absolute left-1/2 top-1/2 w-[935.5px] h-[941.6px] mix-blend-multiply overflow-hidden rounded-full origin-center pointer-events-none"
             style={{ transform: `translate(-50%, -50%) rotate(${rotation}deg)` }}
           >
-             <img src={imgImage40} alt="Vinyl Record" className="absolute w-[100.66%] h-[139.99%] left-[-0.44%] top-[-19.79%] max-w-none object-cover pointer-events-none" />
+            <img draggable="false" src={imgImage40} alt="Vinyl" className="absolute w-[100.66%] h-[139.99%] left-[-0.44%] top-[-19.79%] max-w-none object-cover pointer-events-none" />
           </div>
 
-          {/* Center Hole Background (Beige) */}
+          {/* Center hole */}
           <div className="absolute w-[363px] h-[363px] bg-[#FFFCF3] rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
 
-          {/* Center Waveform Graphic */}
+          {/* Waveform */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-end gap-[5px] h-[48px]">
             <style>{`
               @keyframes waveform {
@@ -258,25 +353,34 @@ export function Songs() {
                 50% { transform: scaleY(1); }
               }
             `}</style>
-            <div className="w-[7px] h-[38px] bg-[#c80f0f] origin-bottom" style={{ animation: isPlaying ? 'waveform 0.9s ease-in-out infinite' : 'none' }} />
-            <div className="w-[7px] h-[48px] bg-[#c80f0f] origin-bottom" style={{ animation: isPlaying ? 'waveform 1.1s ease-in-out infinite 0.2s' : 'none' }} />
-            <div className="w-[7px] h-[34px] bg-[#c80f0f] origin-bottom" style={{ animation: isPlaying ? 'waveform 0.8s ease-in-out infinite 0.4s' : 'none' }} />
-            <div className="w-[7px] h-[39px] bg-[#c80f0f] origin-bottom" style={{ animation: isPlaying ? 'waveform 1.2s ease-in-out infinite 0.1s' : 'none' }} />
+            {[{ h: "38px", d: "0.9s", delay: "0s" }, { h: "48px", d: "1.1s", delay: "0.2s" }, { h: "34px", d: "0.8s", delay: "0.4s" }, { h: "39px", d: "1.2s", delay: "0.1s" }].map((b, i) => (
+              <div
+                key={i}
+                className="w-[7px] bg-[#c80f0f] origin-bottom"
+                style={{
+                  height: b.h,
+                  animation: isPlaying ? `waveform ${b.d} ease-in-out infinite ${b.delay}` : "none",
+                }}
+              />
+            ))}
           </div>
 
-          {/* Song Text (Static overlay over vinyl) */}
-          <div className="absolute left-[664px] top-[485px] flex text-white w-[250px] z-20 mx-[25px] my-[0px]">
-            <span className="font-['Inter'] font-semibold text-[19px] leading-[0.85] mt-1 mr-[10px] shrink-0">{activeSong.id}.</span>
-            <div className="font-['Inter'] font-medium text-[30px] leading-[0.96] break-words">
+          {/* Song title overlay */}
+          <div className="absolute left-[664px] top-[485px] flex text-white w-[250px] z-20 mx-[25px]">
+            <span className="font-['Inter'] font-semibold text-[19px] leading-[0.85] mt-1 mr-[10px] shrink-0 tabular-nums">
+              {activeSong.id.toString().padStart(2, "0")}.
+            </span>
+            <div className="font-['Inter'] font-medium text-[30px] leading-[0.96] break-words uppercase">
               {activeSong.title}
             </div>
           </div>
-          
-          {/* Red Dot Indicator animating along the arc */}
-          <div 
-            className={`absolute -translate-x-1/2 -translate-y-1/2 z-20 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-            style={{ left: `${dotX}px`, top: `${dotY}px`, transition: isDragging ? 'none' : 'all 100ms linear' }}
+
+          {/* Draggable arc dot */}
+          <div
+            className={`absolute -translate-x-1/2 -translate-y-1/2 z-20 ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
+            style={{ left: `${dotX}px`, top: `${dotY}px` }}
             onPointerDown={handlePointerDown}
+            data-cursor="drag"
           >
             <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
               <circle cx="18" cy="18" r="18" fill="#FFFCF3" />
@@ -285,142 +389,174 @@ export function Songs() {
             </svg>
           </div>
 
-          {/* Runtime underneath the vinyl arc */}
-          <div className="absolute left-[818px] top-[923px] flex font-['JetBrains_Mono'] font-medium text-[19px] gap-[5px] z-20">
-            <span className="text-black">{currentMinutes}:{currentSeconds}</span>
+          {/* Runtime display — bottom of vinyl arc */}
+          <div className="absolute left-[818px] top-[923px] flex font-['JetBrains_Mono'] font-medium text-[19px] gap-[5px] z-20 tabular-nums">
+            <span className="text-black">{elapsedFormatted}</span>
             <span className="text-black">/</span>
-            <span className="text-black/50">{activeSong.time}</span>
+            <span className="text-black/50">{totalFormatted}</span>
           </div>
-
         </div>
 
-        {/* ARTIST NAME & GENRES */}
+        {/* ARTIST NAME */}
         <div className="absolute left-[740px] top-[127px] w-[736px] flex flex-col z-10" data-name="Artist Name">
-          <p className="font-['Space_Grotesk'] text-[160px] font-normal leading-[0.853] tracking-[-8px] text-black self-start whitespace-nowrap">{activeSong.artist1}</p>
-          <div className="w-full flex justify-start">
-            <p className="font-['Space_Grotesk'] text-[160px] font-normal leading-[0.853] tracking-[-8px] text-black text-left w-full whitespace-nowrap">{activeSong.artist2}</p>
-          </div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`artist-${activeSongId}-${currentArtistIndex}`}
+              initial={{ opacity: 0, filter: "blur(6px)", y: 12 }}
+              animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+              exit={{ opacity: 0, filter: "blur(6px)", y: -12 }}
+              transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
+              className="flex flex-col w-full"
+            >
+              {renderArtistText()}
+            </motion.div>
+          </AnimatePresence>
         </div>
 
-        <div className="absolute left-[740px] top-[408px] flex gap-[18px] font-['Inter',sans-serif] font-medium text-[26px] tracking-[-2px] text-black z-10" data-name="Genres">
-          <span>INDIE - FOLK ,</span>
-          <span>CHAMBER POP ,</span>
-          <span>BALLAD</span>
+        {/* GENRES — animated on song change */}
+        <div
+          className="absolute left-[740px] z-10 transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]"
+          style={{ top: artistLines.length === 1 ? "296px" : "408px" }}
+          data-name="Genres"
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`genres-${activeSongId}`}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.45, ease: [0.76, 0, 0.24, 1] }}
+              className="flex gap-[18px] font-['Inter',sans-serif] font-medium text-[26px] tracking-[-2px] text-black uppercase"
+            >
+              {activeSong.genres.map((g, i) => (
+                <span key={i}>
+                  {g}{i < activeSong.genres.length - 1 ? " ," : ""}
+                </span>
+              ))}
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         {/* SONGS LIST */}
         <div className="absolute left-[740px] right-[0px] top-[516px] flex flex-col gap-[36px] z-10" data-name="Top Songs">
-          
           {/* Header */}
           <div className="flex justify-between w-full items-center pl-[20px] pr-[10px]">
             <div className="flex items-center gap-[24px]">
-              <h3 className="text-[#c80f0f] text-[30px] font-['Inter',sans-serif] font-normal tracking-[-2px] whitespace-nowrap leading-[0.853]">SOME FAVOURITES</h3>
-              <button 
+              <h3 className="text-[#c80f0f] text-[30px] font-['Inter',sans-serif] font-normal tracking-[-2px] whitespace-nowrap leading-[0.853]">
+                SOME FAVOURITES
+              </h3>
+              <button
                 onClick={togglePlay}
                 className="w-[24px] h-[26px] flex items-center justify-center text-[#c80f0f] hover:scale-110 transition-transform shrink-0"
               >
                 {isPlaying ? (
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" />
+                  </svg>
                 ) : (
                   <svg width="36" height="38" viewBox="0 0 36 38" fill="none">
-                    <g filter="url(#filter0_d_2_3930)">
-                      <path d="M26.2407 15.6599C27.6083 16.4258 27.6083 18.3753 26.2407 19.1412L12.5698 26.804C11.1685 27.5891 9.38883 26.5796 9.38883 24.9634L9.38883 9.83777C9.38883 8.22156 11.1685 7.21204 12.5698 7.99712L26.2407 15.6599Z" fill="#C80F0F"/>
+                    <g filter="url(#playFilter)">
+                      <path d="M26.2407 15.6599C27.6083 16.4258 27.6083 18.3753 26.2407 19.1412L12.5698 26.804C11.1685 27.5891 9.38883 26.5796 9.38883 24.9634L9.38883 9.83777C9.38883 8.22156 11.1685 7.21204 12.5698 7.99712L26.2407 15.6599Z" fill="#C80F0F" />
                     </g>
                     <defs>
-                      <filter id="filter0_d_2_3930" x="0" y="0" width="36" height="38" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                        <feFlood floodOpacity="0" result="BackgroundImageFix"/>
-                        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                        <feOffset dx="1" dy="2"/>
-                        <feGaussianBlur stdDeviation="3"/>
-                        <feComposite in2="hardAlpha" operator="out"/>
-                        <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.39 0"/>
-                        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2_3930"/>
-                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_2_3930" result="shape"/>
+                      <filter id="playFilter" x="0" y="0" width="36" height="38" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                        <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                        <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                        <feOffset dx="1" dy="2" /><feGaussianBlur stdDeviation="3" />
+                        <feComposite in2="hardAlpha" operator="out" />
+                        <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.39 0" />
+                        <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow" />
+                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape" />
                       </filter>
                     </defs>
                   </svg>
                 )}
               </button>
             </div>
-            <button className="text-[19px] font-['Inter',sans-serif] font-medium underline tracking-[-1.5px] text-black leading-[0.853] hover:opacity-70 transition-opacity whitespace-nowrap">VIEW PLAYLIST</button>
+            <a
+              href="https://open.spotify.com/playlist/1dnd3RjsOKjrIyneiw4iaC?si=573117f8991d4ef0"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cursor="dot-only"
+              className="text-[19px] font-['Inter',sans-serif] font-medium underline tracking-[-1.5px] text-black leading-[0.853] hover:opacity-70 transition-opacity whitespace-nowrap"
+            >
+              VIEW PLAYLIST
+            </a>
           </div>
-          
-          {/* Track List + Scrollbar Container */}
+
+          {/* Track list */}
           <div className="relative w-full h-[422px] overflow-hidden">
-            
-            {/* Songs Column */}
-            <div 
+            <div
               ref={scrollRef}
               onScroll={handleScroll}
               data-lenis-prevent="true"
               className="absolute left-0 right-[24px] top-0 flex flex-col gap-[6px] h-[422px] overflow-y-auto"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
-              <style>{`
-                ::-webkit-scrollbar { display: none; }
-              `}</style>
-              {songs.map((song, i) => {
+              <style>{`::-webkit-scrollbar { display: none; }`}</style>
+              {songsData.map((song, i) => {
                 const isActive = song.id === activeSongId;
                 return (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-50px" }}
-                    transition={{ delay: i * 0.1, duration: 0.5 }}
-                    key={`${song.id}-${i}`} 
+                    transition={{ delay: i * 0.04, duration: 0.4 }}
+                    key={song.id}
                     onClick={() => handleSongClick(song.id)}
-                    className={`flex justify-between items-center w-full group transition-colors duration-300 cursor-pointer rounded-[14px] px-[20px] py-[10px] ${isActive ? 'bg-black/[0.04]' : 'bg-transparent hover:bg-black/[0.02]'}`}
+                    data-cursor={isActive && isPlaying ? "pause" : "play"}
+                    className={`flex justify-between items-center w-full group transition-colors duration-300 cursor-pointer rounded-[14px] px-[20px] py-[10px] ${isActive ? "bg-black/[0.04]" : "bg-transparent hover:bg-black/[0.02]"}`}
                   >
-                    {/* Left: ID, Cover, Titles */}
+                    {/* Left: number + art + titles */}
                     <div className="flex items-center gap-[28px] min-w-0 flex-1 mr-[20px]">
-                      
-                      {/* ID and Cover (122px) */}
                       <div className="flex items-center justify-between w-[122px] shrink-0">
-                        <span className="font-['Inter',sans-serif] tracking-[-1px] font-semibold text-[19px] text-black leading-[0.853] whitespace-nowrap">{song.id}</span>
+                        <span className="font-['Inter',sans-serif] tracking-[-1px] font-semibold text-[19px] text-black leading-[0.853] whitespace-nowrap tabular-nums">
+                          {(i + 1).toString().padStart(2, "0")}
+                        </span>
                         <div className="w-[70px] h-[70px] rounded-[6px] shrink-0 transition-transform duration-500 group-hover:scale-110 relative overflow-hidden bg-[#d9d9d9]">
-                          {song.cover && <img src={song.cover} alt="Album Cover" className="w-full h-full object-cover pointer-events-none absolute inset-0" />}
+                          {song.cover && (
+                            <img src={song.cover} alt="Cover" className="w-full h-full object-cover pointer-events-none absolute inset-0" />
+                          )}
                         </div>
                       </div>
-
-                      {/* Song Title and Album */}
-                      <div className="flex flex-col items-start min-w-0 flex-1 leading-[0.96]">
-                        <span className="font-['Inter',sans-serif] tracking-[-1px] font-medium text-[19px] text-black uppercase whitespace-nowrap overflow-hidden text-ellipsis w-full">{song.title}</span>
-                        <span className="font-['Inter',sans-serif] tracking-[-1px] font-medium text-[19px] text-black/50 uppercase whitespace-nowrap overflow-hidden text-ellipsis w-full mt-[6px]">{song.album}</span>
+                      <div className="flex flex-col items-start min-w-0 flex-1 leading-[0.96] pr-4">
+                        <span className="font-['Inter',sans-serif] tracking-[-1px] font-semibold text-[21px] text-black uppercase whitespace-nowrap overflow-hidden text-ellipsis w-full leading-[0.85]">
+                          {song.title}
+                        </span>
+                        <span className="font-['Inter',sans-serif] tracking-[-1px] font-medium text-[19px] text-black/50 uppercase whitespace-nowrap overflow-hidden text-ellipsis w-full mt-[6px] leading-[0.85]">
+                          {song.album}
+                        </span>
                       </div>
-
                     </div>
 
-                    {/* Right: Time */}
-                    <span className="font-['JetBrains_Mono'] font-medium text-[19px] text-black leading-[0.86] whitespace-nowrap shrink-0">{song.time}</span>
+                    {/* Right: duration */}
+                    <span className="font-['JetBrains_Mono'] font-medium text-[19px] text-black/40 leading-[0.86] whitespace-nowrap shrink-0 tabular-nums">
+                      {song.duration}
+                    </span>
                   </motion.div>
                 );
               })}
             </div>
 
-            {/* Custom Scrollbar */}
-            <div className="absolute right-0 top-[27px] w-[9px] h-[368px] bg-black/20 shrink-0 rounded-full overflow-hidden">
-              <motion.div 
-                className="absolute left-0 w-[9px] h-[191px] bg-black rounded-full" 
+            {/* Scrollbar */}
+            <div className="absolute right-0 top-[27px] w-[9px] h-[368px] bg-black/20 rounded-full overflow-hidden">
+              <motion.div
+                className="absolute left-0 w-[9px] h-[191px] bg-black rounded-full"
                 animate={{ top: scrollProgress * (368 - 191) }}
                 transition={{ type: "spring", stiffness: 400, damping: 40, mass: 0.8 }}
               />
             </div>
-
           </div>
         </div>
 
-        {/* HANGING TAG (Top Right) */}
-        {/* Adjusted to precisely match the overlapping tag look aligned with the new wider song list */}
+        {/* Hanging Tag */}
         <div className="absolute right-[-50px] top-[90px] w-[270px] h-[339px] z-30" data-name="Hanging Tag">
-          
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="relative w-full h-[400px]">
-               <img src="/src/imports/bookmark.png" alt="Tag Background" className="w-full h-full object-contain pointer-events-none" />
+              <img src="/src/imports/bookmark.png" alt="Tag" className="w-full h-full object-contain pointer-events-none" />
             </div>
           </div>
-
         </div>
-
       </div>
     </section>
   );

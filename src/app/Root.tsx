@@ -9,6 +9,7 @@ import { Songs } from "./components/Songs";
 import { Art } from "./components/Art";
 import { Footer } from "./components/Footer";
 import { Navbar } from "./components/Navbar";
+import { CustomCursor } from "./components/CustomCursor";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Outlet } from "react-router";
@@ -27,6 +28,8 @@ export default function Root() {
       smoothTouch: false,
       touchMultiplier: 2,
     });
+    // Expose lenis globally for use in other components like Navbar
+    (window as any).lenis = lenis;
 
     lenis.on('scroll', ScrollTrigger.update);
 
@@ -39,11 +42,13 @@ export default function Root() {
     return () => {
       lenis.destroy();
       gsap.ticker.remove(lenis.raf);
+      delete (window as any).lenis;
     };
   }, []);
 
   return (
     <div className="w-full overflow-x-hidden bg-[#fffcf3] text-black font-sans">
+      <CustomCursor />
       <Navbar />
       <Hero />
       <About />

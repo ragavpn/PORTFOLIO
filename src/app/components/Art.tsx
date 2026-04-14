@@ -361,146 +361,224 @@ function Frame33() {
   );
 }
 
-function Frame37() {
+// ── SOCIAL LINK ─────────────────────────────────────────────────────────────
+function SocialLink({ href, label, iconSrc, iconW, iconH }: {
+  href: string;
+  label: string;
+  iconSrc: string;
+  iconW: number;
+  iconH: number;
+}) {
+  const [hovered, setHovered] = React.useState(false);
   return (
-    <div className="content-stretch flex items-center justify-between relative shrink-0 w-[343.5px]">
-      <div className="h-0 relative shrink-0 w-[23px]">
-        <div className="absolute inset-[-5.77px_0_-5.77px_-4.35%]">
-          <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 11.547">
-            <path d={svgPaths.p30d94e00} fill="var(--stroke-0, white)" id="Line 3" opacity="0.5" />
-          </svg>
-        </div>
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-cursor="dot-only"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '17.656px',
+        textDecoration: 'none',
+        opacity: hovered ? 1 : 0.8,
+        transition: 'opacity 0.3s ease',
+        flexShrink: 0,
+      }}
+    >
+      <div style={{ width: iconW, height: iconH, position: 'relative', flexShrink: 0 }}>
+        <img
+          alt={label}
+          src={iconSrc}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
+        />
       </div>
-      <p className="font-['Inter_Display:Medium',sans-serif] leading-[1.02] not-italic opacity-50 relative shrink-0 text-[#fffcf3] text-[28px] tracking-[-0.56px] whitespace-nowrap">ragavpn2005@gmail.com</p>
-    </div>
+      <span style={{
+        fontFamily: "'Inter Display', sans-serif",
+        fontWeight: 500,
+        fontSize: '22.262px',
+        lineHeight: 1.02,
+        letterSpacing: '-0.4452px',
+        color: '#ffffff',
+        textDecoration: 'underline',
+        whiteSpace: 'nowrap',
+      }}>
+        {label}
+      </span>
+    </a>
   );
 }
 
-function Frame21() {
-  return (
-    <div className="content-stretch flex flex-col gap-[11px] items-start relative shrink-0">
-      <p className="font-['Inter_Display:Medium',sans-serif] leading-[1.02] not-italic opacity-80 relative shrink-0 text-[#fffcf3] text-[38.667px] tracking-[-0.7733px] w-[344.667px]">Ragav Palaniswamy</p>
-      <Frame37 />
-    </div>
-  );
-}
+// ── CONTACT US (blue card) ───────────────────────────────────────────────────
+function ContactUs() {
+  const [emailHovered, setEmailHovered] = React.useState(false);
 
-function Frame22() {
-  return (
-    <div className="content-stretch flex gap-[17.656px] items-center relative shrink-0">
-      <div className="h-[29.938px] relative shrink-0 w-[29.939px]" data-name="Path_2520">
-        <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 29.9388 29.9377">
-          <path d={svgPaths.p13110b80} fill="var(--fill-0, #FFFCF3)" id="Path_2520" />
-        </svg>
-      </div>
-      <p className="decoration-solid font-['Inter_Display:Medium',sans-serif] leading-[1.02] not-italic opacity-80 relative shrink-0 text-[22.262px] text-white tracking-[-0.4452px] underline whitespace-nowrap">Linkedin</p>
-    </div>
-  );
-}
+  // Icon assets from Figma
+  const linkedinSrc = 'http://localhost:3845/assets/bbf1483e098046406a31354c015a13b8a5fbea30.svg';
+  const instagramSrc = 'http://localhost:3845/assets/1bc6a58e83e53bc522325d99e98c3a330de6378f.svg';
+  const behanceSrc   = 'http://localhost:3845/assets/c762f624322b7b8e1456c6cc1259397a0c3fdc4e.svg';
+  const portfolioWordmarkSrc = 'http://localhost:3845/assets/8f5b27b1cb6d4d2361aed8e4e9965eb73d647384.svg';
 
-function Frame23() {
   return (
-    <div className="content-stretch flex gap-[17.656px] items-center relative shrink-0">
-      <div className="relative shrink-0 size-[33.622px]" data-name="Vector">
-        <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 33.622 33.622">
-          <g id="Vector">
-            <path d={svgPaths.pb75300} fill="var(--fill-0, #FFFCF3)" />
-            <path d={svgPaths.p4346900} fill="var(--fill-0, #FFFCF3)" />
-            <path d={svgPaths.p36d46b00} fill="var(--fill-0, #FFFCF3)" />
-          </g>
-        </svg>
-      </div>
-      <p className="decoration-solid font-['Inter_Display:Medium',sans-serif] leading-[1.02] not-italic opacity-80 relative shrink-0 text-[22.262px] text-white tracking-[-0.4452px] underline whitespace-nowrap">Instagram</p>
-    </div>
-  );
-}
-
-function Frame24() {
-  return (
-    <div className="content-stretch flex gap-[17.656px] items-center relative shrink-0">
-      <div className="h-[32.781px] relative shrink-0 w-[33.622px]" data-name="Vector">
-        <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 33.622 32.7814">
-          <g id="Vector">
-            <path d={svgPaths.p2abfdb00} fill="var(--fill-0, #FFFCF3)" />
-            <path d={svgPaths.p2d596580} fill="var(--fill-0, #FFFCF3)" />
-            <path d={svgPaths.p1053980} fill="var(--fill-0, #FFFCF3)" />
-            <path d={svgPaths.p24a46600} fill="var(--fill-0, #FFFCF3)" />
-          </g>
-        </svg>
-      </div>
-      <p className="decoration-solid font-['Inter_Display:Medium',sans-serif] leading-[1.02] not-italic opacity-80 relative shrink-0 text-[22.262px] text-white tracking-[-0.4452px] underline whitespace-nowrap">Behance</p>
-    </div>
-  );
-}
-
-function Frame25() {
-  return (
-    <div className="content-stretch flex gap-[23.798px] items-start relative shrink-0 w-full">
-      <Frame22 />
-      <Frame23 />
-      <Frame24 />
-    </div>
-  );
-}
-
-function Frame29() {
-  return (
-    <div className="content-stretch flex flex-col gap-[44px] items-start relative shrink-0 w-full">
-      <Frame21 />
-      <Frame25 />
-    </div>
-  );
-}
-
-function Frame35() {
-  return (
-    <div className="content-stretch flex flex-col gap-[67px] items-start mb-[-171px] relative shrink-0 w-full">
-      <Frame33 />
-      <Frame29 />
-    </div>
-  );
-}
-
-function Frame34() {
-  return (
-    <div className="content-stretch flex gap-[113px] items-end mb-[-171px] relative shrink-0">
-      <p className="font-['Inter_Display',sans-serif] font-black leading-[1.02] not-italic relative shrink-0 text-[#fffcf3] text-[110.958px] tracking-[-3.329px] whitespace-nowrap">2026</p>
-      <div className="h-[698.868px] relative shrink-0 w-[713.767px]" data-name="Vector">
-        <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 713.767 698.868">
-          <g id="Vector">
-            <path d={svgPaths.p29f1e300} fill="var(--fill-0, #FFFCF3)" />
-            <path d={svgPaths.p135a1c00} fill="var(--fill-0, #FFFCF3)" />
-            <path d={svgPaths.p1fedae80} fill="var(--fill-0, #FFFCF3)" />
-            <path d={svgPaths.p3204cc00} fill="var(--fill-0, #FFFCF3)" />
-            <path d={svgPaths.p18ff5900} fill="var(--fill-0, #FFFCF3)" />
-            <path d={svgPaths.p2e04ea00} fill="var(--fill-0, #FFFCF3)" />
-            <path d={svgPaths.p37a4cc00} fill="var(--fill-0, #FFFCF3)" />
-            <path d={svgPaths.p2f379900} fill="var(--fill-0, #FFFCF3)" />
-            <path d={svgPaths.p36e3ab80} fill="var(--fill-0, #FFFCF3)" />
-          </g>
-        </svg>
-      </div>
-    </div>
-  );
-}
-
-function Frame36() {
-  return (
-    <div className="absolute content-stretch flex flex-col items-end left-[53.57px] pb-[171px] top-[67px] w-[1244.43px]">
-      <Frame35 />
-      <Frame34 />
-    </div>
-  );
-}
-
-function Frame38() {
-  return (
-    <div className="absolute content-stretch flex flex-col items-start left-[-2px] px-[75px] top-[62px]">
-      <div className="flex h-[72.605px] items-center justify-center relative shrink-0 w-[90.57px]" style={{ "--transform-inner-width": "1185", "--transform-inner-height": "21" } as React.CSSProperties}>
-        <div className="flex-none rotate-15">
-          <div className="h-[53.912px] relative w-[79.319px]" data-name="image 16">
+    <div
+      className="absolute bg-[#1735f4] h-[1114px] left-[572px] rounded-[62.336px] top-[52px] w-[1298px]"
+      data-name="Contact Us"
+      data-cursor="scroll"
+      style={{ position: 'absolute', overflow: 'visible' }}
+    >
+      {/* ── LET'S [starburst] IMAGINE / TOGETHER. ── */}
+      <div
+        className="absolute flex flex-col items-start"
+        style={{ left: 53.57, top: 67, width: 1244.43 }}
+      >
+        {/* Row: LET'S + starburst + animated word */}
+        <div className="flex items-center gap-[28px]">
+          <p style={{
+            fontFamily: "'Inter Display', sans-serif",
+            fontWeight: 400,
+            fontSize: '122.528px',
+            lineHeight: 1.02,
+            letterSpacing: '-2.4506px',
+            color: '#fffcf3',
+            whiteSpace: 'nowrap',
+          }}>
+            {"LET'S "}
+          </p>
+          {/* Starburst sticker */}
+          <div style={{ height: 86.547, width: 85.451, position: 'relative', flexShrink: 0 }}>
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <img alt="" className="absolute h-[344.83%] left-[-56.77%] max-w-none top-[-136.02%] w-[182.29%]" src={imgImage16} />
+              <img
+                alt=""
+                src={imgImage16}
+                className="absolute max-w-none"
+                style={{ height: '379.75%', left: '-179.49%', top: '-255.27%', width: '299.15%' }}
+              />
+            </div>
+          </div>
+          {/* Cycling word: IMAGINE / WORK / BUILD / CREATE */}
+          <div style={{ height: 152.026, width: 550.955, overflow: 'hidden', position: 'relative', flexShrink: 0 }}>
+            <Frame20 />
+          </div>
+        </div>
+
+        {/* TOGETHER. */}
+        <p style={{
+          fontFamily: "'Inter Display', sans-serif",
+          fontWeight: 400,
+          fontSize: '122.528px',
+          lineHeight: 1.02,
+          letterSpacing: '-2.4506px',
+          color: '#fffcf3',
+        }}>
+          TOGETHER.
+        </p>
+      </div>
+
+      {/* ── NAME + EMAIL ── */}
+      <div
+        className="absolute flex flex-col"
+        style={{ left: 53.57, top: 411.03, gap: 11 }}
+      >
+        <p style={{
+          fontFamily: "'Inter Display', sans-serif",
+          fontWeight: 500,
+          fontSize: '38.667px',
+          lineHeight: 1.02,
+          letterSpacing: '-0.7733px',
+          color: '#fffcf3',
+          opacity: 0.8,
+          whiteSpace: 'nowrap',
+        }}>
+          Ragav Palaniswamy
+        </p>
+
+        {/* Email row */}
+        <a
+          href="mailto:ragavpn2005@gmail.com"
+          data-cursor="dot-only"
+          onMouseEnter={() => setEmailHovered(true)}
+          onMouseLeave={() => setEmailHovered(false)}
+          style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}
+        >
+          <svg width="24" height="12" viewBox="0 0 24 11.547" fill="none" style={{ flexShrink: 0, opacity: 0.5 }}>
+            <path d="M 0 5.7735 L 24 5.7735 M 18.2265 0 L 24 5.7735 L 18.2265 11.547" stroke="white" strokeWidth="2" />
+          </svg>
+          <span style={{
+            fontFamily: "'Inter Display', sans-serif",
+            fontWeight: 500,
+            fontSize: '28px',
+            lineHeight: 1.02,
+            letterSpacing: '-0.56px',
+            color: '#fffcf3',
+            whiteSpace: 'nowrap',
+            display: 'inline-block',
+            opacity: emailHovered ? 1 : 0.5,
+            transform: emailHovered ? 'translateX(10px)' : 'translateX(0)',
+            transition: 'opacity 0.3s ease, transform 0.3s ease',
+          }}>
+            ragavpn2005@gmail.com
+          </span>
+        </a>
+      </div>
+
+      {/* ── SOCIAL LINKS ── */}
+      <div
+        className="absolute flex items-center"
+        style={{ left: 53.57, top: 534.03, gap: 23.798 }}
+      >
+        <SocialLink href="https://www.linkedin.com/in/ragav-palaniswamy-55aa97183/"                         label="Linkedin"  iconSrc={linkedinSrc}  iconW={29.939} iconH={29.938} />
+        <SocialLink href="https://www.instagram.com/ragavwithouttheh"  label="Instagram" iconSrc={instagramSrc} iconW={33.622} iconH={33.622} />
+        <SocialLink href="https://www.behance.net/ragavpn"             label="Behance"   iconSrc={behanceSrc}   iconW={33.622} iconH={32.781} />
+      </div>
+
+      {/* ── 2026 ── */}
+      <p
+        className="absolute"
+        style={{
+          fontFamily: "'Inter Display', sans-serif",
+          fontWeight: 900,
+          fontSize: '110.958px',
+          lineHeight: 1.02,
+          letterSpacing: '-3.3287px',
+          color: '#fffcf3',
+          left: 193.23,
+          top: 982.52,
+          whiteSpace: 'nowrap',
+        }}
+      >
+        2026
+      </p>
+
+      {/* ── PORTFOLIO WORDMARK SVG ── */}
+      <div
+        className="absolute"
+        style={{ height: 698.868, left: 584.23, top: 396.65, width: 713.767 }}
+      >
+        <img
+          alt=""
+          src={portfolioWordmarkSrc}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
+        />
+      </div>
+
+      {/* ── STICKER (top left of card) ── */}
+      <div
+        className="absolute flex flex-col items-start px-[75px]"
+        style={{ left: -2, top: 62 }}
+      >
+        <div style={{ display: 'flex', height: 72.605, width: 90.57, alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+          <div style={{ transform: 'rotate(15deg)', flexShrink: 0 }}>
+            <div style={{ height: 53.912, width: 79.319, position: 'relative' }}>
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <img
+                  alt=""
+                  src={imgImage16}
+                  className="absolute max-w-none"
+                  style={{ height: '344.83%', left: '-56.77%', top: '-136.02%', width: '182.29%' }}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -509,14 +587,6 @@ function Frame38() {
   );
 }
 
-function ContactUs() {
-  return (
-    <div className="absolute bg-[#1735f4] h-[1114px] left-[572px] overflow-clip rounded-[62.336px] top-[52px] w-[1298px]" data-name="Contact Us">
-      <Frame36 />
-      <Frame38 />
-    </div>
-  );
-}
 
 function Frame26() {
   return (
@@ -681,13 +751,13 @@ export function Art() {
   }, [scale]);
 
   return (
-    <section className="bg-[#fffcf3] relative w-full" style={{ height: 3700 * scale }}>
+    <section id="art-trail-zone" className="bg-[#fffcf3] relative w-full" style={{ height: 3700 * scale }} data-cursor="scroll" data-trail-height-ratio="0.243">
       <div
         ref={containerRef}
         className="absolute origin-top-left w-[1920px] h-[3700px]"
         style={{ transform: `scale(${scale})` }}
       >
-        <div className="absolute h-[2043px] left-[-641px] opacity-40 top-[132px] w-[2773px]" data-name="Background">
+        <div className="absolute h-[2043px] left-[-641px] opacity-40 top-[132px] w-[2773px] pointer-events-none" data-name="Background">
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <img alt="" className="absolute h-[176.61%] left-0 max-w-none top-[-26.04%] w-full" src={imgBackground} />
           </div>

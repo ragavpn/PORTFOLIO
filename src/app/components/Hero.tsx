@@ -4,7 +4,7 @@ import svgPaths from "../../imports/svg-hsdg76jmon";
 
 export function Hero() {
   return (
-    <section className="min-h-screen relative w-full bg-[#fffcf3] z-20 flex items-center justify-center">
+    <section id="hero-section" className="min-h-screen relative w-full bg-[#fffcf3] z-20 flex items-center justify-center">
       <div className="relative flex flex-col items-center justify-center text-center z-10 w-full px-4 pt-20">
         <div className="w-[80vw] md:w-[70vw] max-w-[1100px] mx-auto" data-name="Hi, I’m Ragav">
           <svg className="block w-full h-auto mx-[-6px] my-[-10px]" fill="none" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1189.46 310.012">

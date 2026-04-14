@@ -234,6 +234,7 @@ export function About() {
 
   return (
     <section 
+      id="about-section"
       ref={containerRef}
       className="min-h-screen relative w-full flex flex-col items-center justify-center py-25"
     >
@@ -260,6 +261,7 @@ export function About() {
           <div
             key={i}
             ref={(el) => (tagRefs.current[i] = el)}
+            data-cursor="drag"
             className="absolute top-0 left-0 bg-[#1735f4] flex items-center justify-center px-[46.7px] py-[8.4px] rounded-[49.8px] shadow-lg cursor-pointer hover:bg-[#152edb] transition-colors pointer-events-auto select-none"
             style={{ 
               willChange: "transform",

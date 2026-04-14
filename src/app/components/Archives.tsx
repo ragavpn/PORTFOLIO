@@ -85,6 +85,7 @@ export function Archives() {
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [zoomMode, setZoomMode] = useState("NORMAL"); // User preference
   const [activeImageIndex, setActiveImageIndex] = useState<number | null>(null);
+  const [isZoomClosing, setIsZoomClosing] = useState(false);
   
   const currentZoomLevel = useRef(0.6);
   const currentGap = useRef(32);
@@ -446,6 +447,7 @@ export function Archives() {
   const closeZoomMode = () => {
     if (activeImageIndex === null || !sectionRef.current) return;
     audioSystem.current.play("close");
+    setIsZoomClosing(true);
     
     // Hide Title
     gsap.to(titleOverlayRef.current, { opacity: 0, duration: 0.3 });
@@ -480,9 +482,21 @@ export function Archives() {
         duration: 1.0,
         ease: "power4.inOut",
         onComplete: () => {
+          // Immediately make source element visible underneath, but keep clone on top
           gsap.set(sourceEl, { opacity: 1 });
-          if (cloneContainer.parentNode) cloneContainer.parentNode.removeChild(cloneContainer);
+          
+          // Gradually fade out the fully bright clone to smoothly reveal the vignette-darkened source underneath!
+          gsap.to(cloneContainer, {
+            opacity: 0,
+            duration: 0.5,
+            ease: "power2.out",
+            onComplete: () => {
+              if (cloneContainer.parentNode) cloneContainer.parentNode.removeChild(cloneContainer);
+            }
+          });
+          
           setActiveImageIndex(null);
+          setIsZoomClosing(false);
           
           // Re-enable dragging!
           const newW = COLS * (ITEM_SIZE + currentGap.current) - currentGap.current;
@@ -535,9 +549,17 @@ export function Archives() {
       cloneImg.className = "w-full h-full object-cover pointer-events-none absolute top-0 left-0";
       cloneImg.style.opacity = "1";
       cloneContainer.appendChild(cloneImg);
+      
+      // Internal Fade Mask to simulate the native vignette and prevent instant blinding "pop"
+      const fadeMask = document.createElement("div");
+      fadeMask.className = "absolute inset-0 bg-black pointer-events-none";
+      fadeMask.style.opacity = "0.7"; // Mimic the vignette depth approximately
+      cloneContainer.appendChild(fadeMask);
+      
       sectionRef.current.appendChild(cloneContainer);
 
       gsap.set(sourceEl, { opacity: 0 });
+      gsap.to(fadeMask, { opacity: 0, duration: 0.6, ease: "power2.out" });
 
       // Determine intrinsic uncropped aspect ratio sizes mapped internally
       const aspect = sourceEl.naturalWidth / sourceEl.naturalHeight || 1;
@@ -604,6 +626,7 @@ export function Archives() {
       <div 
         ref={canvasWrapperRef} 
         className="absolute top-0 left-0 origin-top-left cursor-grab active:cursor-grabbing" 
+        data-cursor="drag"
       >
         {IMAGES.map((imgSrc, i) => {
           return (
@@ -655,7 +678,12 @@ export function Archives() {
 
       {/* Close Button For Zoom View */}
       <button 
-        className={`archives-close-button !z-[9999] ${activeImageIndex !== null ? 'active !opacity-100 !translate-x-0 transition-all duration-500 delay-300' : ''}`}
+        className={`archives-close-button !z-[9999] transition-all duration-[700ms] ease-[cubic-bezier(0.87,0,0.13,1)]`}
+        style={{
+          opacity: activeImageIndex !== null && !isZoomClosing ? 1 : 0,
+          pointerEvents: activeImageIndex !== null && !isZoomClosing ? 'all' : 'none',
+          transform: activeImageIndex !== null && !isZoomClosing ? 'translateY(-50%) translateX(0px)' : 'translateY(-50%) translateX(60px)'
+        }}
         onClick={closeZoomMode}
       >
         <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

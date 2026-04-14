@@ -48,7 +48,7 @@ export function Travel() {
             trigger: triggerRef.current,
             start: "top top",
             end: "+=4000", // Smooth scroll duration
-            scrub: 1,
+            scrub: true,
             pin: true,
           },
         });
@@ -70,7 +70,7 @@ export function Travel() {
   }, []);
 
   return (
-    <section ref={containerRef} className="bg-[#fffcf3] relative w-full" data-name="Travel">
+    <section id="journal-section" ref={containerRef} className="bg-[#fffcf3] relative w-full" data-name="Travel">
       <div ref={triggerRef} className="w-full h-screen relative">
         
         {/* Exact 1920x1080 Canvas Scaled to Window */}
