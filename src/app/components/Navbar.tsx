@@ -308,9 +308,9 @@ export function Navbar() {
                   className="absolute flex flex-col gap-[5px] font-['Inter_Display',sans-serif] text-[16px] text-black tracking-[-0.96px] leading-[0.87]"
                   style={{ left: "41%" }}
                 >
-                  <a href="#" className="cursor-pointer hover:opacity-60 transition-opacity">Instagram - Personal</a>
-                  <a href="#" className="cursor-pointer hover:opacity-60 transition-opacity">Instagram - Art</a>
-                  <a href="#" className="cursor-pointer hover:opacity-60 transition-opacity">Spotify</a>
+                  <a href="https://www.instagram.com/ragavwithouttheh" target="_blank" rel="noopener noreferrer" className="cursor-pointer hover:opacity-60 transition-opacity">Instagram — ragavwithouttheh</a>
+                  <a href="https://www.instagram.com/rgxv.ui" target="_blank" rel="noopener noreferrer" className="cursor-pointer hover:opacity-60 transition-opacity">Instagram — rgxv.ui</a>
+                  <a href="https://open.spotify.com/user/61ea69ooda9ch57149ylpfeh9?si=6f37d19b5ef7493b" target="_blank" rel="noopener noreferrer" className="cursor-pointer hover:opacity-60 transition-opacity">Spotify</a>
                 </div>
 
                 {/* ©2026 — right */}
