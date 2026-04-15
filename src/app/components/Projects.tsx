@@ -445,7 +445,7 @@ export function Projects() {
           <div className="flex-1 flex justify-center absolute inset-0 pointer-events-none items-center">
             <div className="bg-white/5 rounded-md px-16 py-1 flex items-center justify-center">
               <span className="text-[11px] text-white/50 font-['Inter_Display',sans-serif] tracking-wide">
-                ragavwithouttheh.work
+                ragavwithouttheh.in
               </span>
             </div>
           </div>
