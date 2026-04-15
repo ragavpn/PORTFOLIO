@@ -4,13 +4,26 @@ import svgPaths8tskrlw096 from "../../imports/svg-8tskrlw096";
 import svgPathsuxavwq7xjp from "../../imports/svg-uxavwq7xjp";
 
 const MENU_EASE: [number, number, number, number] = [0.76, 0, 0.24, 1];
-
+/**
+ * Core Application Navigation Overlay Component.
+ * 
+ * Houses the fully animated fullscreen overlay menu mapped iteratively to static route targets.
+ * Subscribes organically to custom window `portfolioReady` events exclusively surfaced after
+ * root loading sequences settle, securely preventing menu access during initialization physics.
+ * Integrates explicitly with Lenis global variables to hijack DOM scrolls during programmatic traversal.
+ * 
+ * @returns {JSX.Element} Natively sticky navigation UI component.
+ */
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isTeleporting, setIsTeleporting] = useState(false);
   const [navRevealed, setNavRevealed] = useState(false);
 
+  /**
+   * Listen to discrete initialization signals broadcasted by Hero/Loading sequences
+   * unlocking interactivity safely behind CSS entrance bounds.
+   */
   useEffect(() => {
     const onReveal = () => setNavRevealed(true);
     window.addEventListener("heroReveal", onReveal);
@@ -24,6 +37,7 @@ export function Navbar() {
     };
   }, []);
 
+  /** Master route map statically anchoring anchor strings to DOM section IDs. */
   const menuLinks = [
     { num: "(01)", label: "Home", target: "hero-section" },
     { num: "(02)", label: "About", target: "about-section" },
@@ -134,8 +148,8 @@ export function Navbar() {
           />
         )}
       </AnimatePresence>
-      {/* Persistent hamburger */}
-      <div className="fixed top-0 left-0 w-full z-[100000] flex justify-between items-center px-10 py-8 pointer-events-none mix-blend-difference text-[#fffcf3]">
+      {/* Persistent navbar bar */}
+      <div className="fixed top-0 left-0 w-full z-[100000] flex justify-center md:justify-between items-center px-10 py-8 pointer-events-none mix-blend-difference text-[#fffcf3]">
         <div 
           className="cursor-pointer pointer-events-auto"
           style={{ 
@@ -143,7 +157,7 @@ export function Navbar() {
             transform: navRevealed ? "translateY(0px)" : "translateY(-20px)",
             transition: "opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s, transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s",
             fontFamily: `"SG Grotesk DEMO", sans-serif`,
-            fontSize: "25px",
+            fontSize: "clamp(16px, 3vw, 25px)",
             fontStyle: "normal",
             fontWeight: "300",
             lineHeight: "normal",
@@ -155,7 +169,7 @@ export function Navbar() {
         </div>
         <button
           onClick={isOpen ? closeMenu : openMenu}
-          className="cursor-pointer h-[16px] w-[55px] relative pointer-events-auto flex flex-col justify-between"
+          className="hidden md:flex cursor-pointer h-[16px] w-[55px] relative pointer-events-auto flex-col justify-between"
           aria-label="Toggle menu"
           style={{
             opacity: navRevealed ? 1 : 0,

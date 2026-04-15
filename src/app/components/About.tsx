@@ -12,7 +12,16 @@ const tags = [
   { text: "Digital Products" },
   { text: "Wireframing" },
 ];
-
+/**
+ * About Section providing a physics-based interactive tag pool.
+ * 
+ * Integrates an invisible HTML Canvas explicitly running `Matter.js` 2D rigid body physics,
+ * mapped securely onto arbitrary `div` components (labels) tracking rotation and spatial
+ * velocity across fixed `requestAnimationFrame` loops. Generates a reactive ground boundary
+ * tracking exact responsive window dimensions to dynamically reset falling physics.
+ * 
+ * @returns {JSX.Element} Reactive layout anchoring the absolute Matter physics boundaries.
+ */
 export function About() {
   const containerRef = useRef<HTMLElement>(null);
   const tagRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -41,11 +50,14 @@ export function About() {
       collisionFilter: { category: 0x0001 }
     };
     
-    // Create boundaries. The ground is made very thick to prevent tunneling. Top edge is exactly at height.
+    /** 
+     * Construct static infinite-mass container walls natively trapping the dynamic tags.
+     * The floor executes a massive absolute thickness explicitly to prevent high-velocity
+     * tunneling glitches through the rigid body boundaries.
+     */
     const ground = Bodies.rectangle(width / 2, height + 250, width * 2, 500, wallOptions);
     const leftWall = Bodies.rectangle(-250, height / 2, 500, height * 4, wallOptions);
     const rightWall = Bodies.rectangle(width + 250, height / 2, 500, height * 4, wallOptions);
-    // Move ceiling right to the top of the container so items bounce down when thrown 
     const ceiling = Bodies.rectangle(width / 2, -50, width * 2, 100, wallOptions);
 
     Composite.add(engine.world, [ground, leftWall, rightWall, ceiling]);

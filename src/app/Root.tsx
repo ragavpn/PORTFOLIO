@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Lenis from "@studio-freight/lenis";
 import { Hero } from "./components/Hero";
 import { About } from "./components/About";
@@ -17,7 +17,65 @@ import { Outlet } from "react-router";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * Global "wake-from-sleep" reload state threshold.
+ * Forces a hard reload dropping the cache if the tab was suspended 
+ * in the background for longer than 5 minutes to securely refresh 
+ * dynamic page resources.
+ */
+const SLEEP_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes
+let _hiddenAt = 0;
+
+function handlePageSleep() {
+  if (document.visibilityState === "hidden") {
+    _hiddenAt = Date.now();
+  } else if (document.visibilityState === "visible" && _hiddenAt > 0) {
+    const sleptFor = Date.now() - _hiddenAt;
+    if (sleptFor > SLEEP_THRESHOLD_MS) {
+      // Clear sesssion so the full loading sequence (7s counter) plays again
+      sessionStorage.removeItem("portfolio_visited");
+      window.location.reload();
+    }
+    _hiddenAt = 0;
+  }
+}
+
+document.addEventListener("visibilitychange", handlePageSleep);
+
+/**
+ * Root Application Component
+ * 
+ * Serves as the master wrapper for the entire SPA architecture.
+ * Initializes and binds the `Lenis` smooth scrolling engine tightly against 
+ * `GSAP` ticker timelines for high-performance physics-based DOM scrolling.
+ * Globally controls manual scroll restoration to forcibly retain strict `[0,0]` 
+ * constraints on fresh mounting until the initial LoadingScreen unmounts.
+ * 
+ * @returns {JSX.Element} The active Layout provider wrapping the Hero, Navbar, and Footer sequences.
+ */
 export default function Root() {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      // Artificially trigger all sequence animations because LoadingScreen is purposely bypassed natively.
+      const timer = setTimeout(() => {
+        window.dispatchEvent(new Event("portfolioReady"));
+        window.dispatchEvent(new Event("heroReveal"));
+        if ((window as any).lenis) (window as any).lenis.start();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isMobile]);
+
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -26,21 +84,22 @@ export default function Root() {
       gestureOrientation: "vertical",
       smoothWheel: true,
       wheelMultiplier: 1,
-      smoothTouch: false,
-      touchMultiplier: 2,
     });
 
-    // Force top scroll universally before lock
+    /**
+     * Natively force absolute top scrolling before initialization locks,
+     * overriding browser history DOM anchors.
+     */
     if ("scrollRestoration" in history) {
       history.scrollRestoration = "manual";
     }
     window.scrollTo(0, 0);
     lenis.scrollTo(0, { immediate: true });
     
-    // Stop immediately — LoadingScreen will start it when done
+    /** Stop scroll immediately — LoadingScreen securely restarts it organically when transition concludes. */
     lenis.stop();
 
-    // Expose lenis globally for Navbar + LoadingScreen
+    /** Expose lenis globally for Navbar + LoadingScreen programmatic interventions */
     (window as any).lenis = lenis;
 
     lenis.on("scroll", ScrollTrigger.update);
@@ -60,17 +119,27 @@ export default function Root() {
 
   return (
     <div className="w-full overflow-x-hidden bg-[#fffcf3] text-black font-sans">
-      {/* Loading screen mounts above everything — unmounts itself when done */}
-      <LoadingScreen />
-      <CustomCursor />
+      {/** 
+       * Primary Loading screen strictly mounts over the Z-index index universally stack 
+       * and mechanically unmounts itself permanently when transitions conclude.
+       */}
+      {!isMobile && <LoadingScreen />}
+      {!isMobile && <CustomCursor />}
+      
       <Navbar />
       <Hero />
-      <About />
-      <Projects />
-      <Archives />
-      <Travel />
-      <Songs />
-      <Art />
+      
+      {!isMobile && (
+        <>
+          <About />
+          <Projects />
+          <Archives />
+          <Travel />
+          <Songs />
+          <Art />
+        </>
+      )}
+      
       <Footer />
       <Outlet />
     </div>

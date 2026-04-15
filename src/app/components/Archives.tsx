@@ -40,36 +40,45 @@ const IMAGES = [
 ];
 
 const METADATA = [
-  { title: "Begin Before You're Ready", desc: "The work starts when you notice the quiet pull. Breathe once, clear the room inside you, and move one pixel forward." },
-  { title: "Negative Space, Positive Signal", desc: "Leave room around the idea. In the silence, the design answers back and shows you what to remove." },
-  { title: "Friction Is a Teacher", desc: "When the line resists, listen. Constraints are coordinatesÃ¢â‚¬â€plot them, then chart a cleaner route." },
-  { title: "Golden Minute", desc: "Catch the light while it's honest. One honest frame beats a hundred almosts." },
-  { title: "Shadow Carries Form", desc: "The dark reveals the edge. Let contrast articulate what you mean but can't yet say." },
-  { title: "City Breath", desc: "Steel, glass, heartbeat. Edit until the street's rhythm fits inside a single grid." },
-  { title: "Soft Focus, Sharp Intent", desc: "Blur the noise, not the purpose. What matters remains in crisp relief." },
-  { title: "Time-Tested, Future-Ready", desc: "Classics survive because they serve. Keep the spine, tune the surface, respect the lineage." },
-  { title: "Grace Under Revision", desc: "Drafts don't apologize. They evolve. Let elegance emerge through cuts, not flourishes." },
-  { title: "Style That Outlasts Seasons", desc: "Trends talk. Principles walk. Build on principles and let trends accessorize." },
-  { title: "Edges and Experiments", desc: "Push just past comfort. Leave a fingerprint the algorithm can't fake." },
-  { title: "Portrait of Attention", desc: "Form is what you see. Presence is what you feel. Aim for presence." },
-  { title: "Light Speaks First", desc: "Expose for truth. Shadows are sentences, highlights the punctuation." },
-  { title: "Contemporary Is a Moving Target", desc: "Design for now by listening deeper than now. The signal is older than the feed." },
-  { title: "Vision, Then Precision", desc: "Dream wide, ship tight. Let imagination roam and execution walk in single-point focus." },
-  { title: "Geometry of Poise", desc: "Angles carry attitude. Align posture, light, and line until the frame breathes." },
-  { title: "Natural Light, Natural Truth", desc: "Open the window and remove the mask. Authenticity needs less wattage, more honesty." },
-  { title: "Studio: The Controlled Wild", desc: "Dial every knob, then listen for the unscripted moment. Keep the lens ready." },
-  { title: "Invent the Angle", desc: "Rotate the problem ninety degrees. Fresh perspective isn't luckÃ¢â‚¬â€it's a habit." },
-  { title: "Editorial Nerve", desc: "Carry yourself like you belong, then earn it with craft. The camera can tell." },
-  { title: "Profession Is Practice", desc: "Repeat the fundamentals until they disappear. Mastery is subtle on purpose." },
-  { title: "Final Frame, Open Door", desc: "Endings are launchpads. Archive the take, thank the light, and start again at one." },
-  { title: "The Next Act", desc: "When the curtain falls, the real work begins. Keep the fire burning." },
-  { title: "Persistent Vision", desc: "Through the noise, keep the signal clear. Authentic work always finds its eyes." }
+  { title: "The Portal is Live", desc: "Launch the ecosystem. Make the digital gateway for Pragyan's tech festival official and live." },
+  { title: "Optimizing Intelligence", desc: "Deploy the framework. Translate complex generative AI workloads into a striking visual narrative." },
+  { title: "Brand Synergy", desc: "Bridge the branding. Integrate the mascot with sponsors for immediate cross-platform engagement." },
+  { title: "The Event Cluster", desc: "Structure the cluster. Organize critical dates and sponsors into a sophisticated 3D spherical hierarchy." },
+  { title: "Mechanical Prestige", desc: "Highlight the stakes. Demand attention for the flagship event through high-contrast mechanical precision." },
+  { title: "Legacy of Partnership", desc: "Honor the lineage. Provide a premium, structured layout to showcase integral festival partners." },
+  { title: "Mind Matters", desc: "Respect the subject. Use calming negative space and deliberate typography to explore mental health." },
+  { title: "The Panopticon Archive", desc: "Embody the paranoia. Translate digital surveillance and omnipresence into a tangible physical asset." },
+  { title: "Ethereal Entities", desc: "Drift through the void. Capture cosmic weightlessness using subtle gradients and minimal composition." },
+  { title: "The Architecture of Teams", desc: "Map the structure. Break down complex organizational sub-teams into a seamless digital experience." },
+  { title: "Rhythm in Motion", desc: "Set the tempo. Mimic the energetic cadence of salsa dancing to pull viewers into the cultural showcase." },
+  { title: "The Golden Jubilee", desc: "Celebrate the milestone. Drape the 50th edition inductions interface in a luxurious golden legacy." },
+  { title: "Under the Lens", desc: "Watch them closely. Immerse the inductions landing page in a subtly unsettling surveillance aesthetic." },
+  { title: "The Red Directive", desc: "Command the launch. Utilize an aggressive red visual language to drive immediate, urgent engagement." },
+  { title: "Robowars Registration", desc: "Arm the mechanics. Blend brutalist undertones with a high-conversion layout for flagship registrations." },
+  { title: "Orbital Vision", desc: "Process the data. Deliver clean, technical interface design for satellite imagery captioning logic." },
+  { title: "The Preference Matrix", desc: "Simplify the choice. Guide applicants through complex organizational systems without cognitive friction." },
+  { title: "Sonic Onboarding", desc: "Onboard the sound. Rely on dark contrast and fluid inputs to create a seamless musical entry point." },
+  { title: "Brewing Analytics", desc: "Organize the workflow. Prioritize operational clarity and rapid management through strict grid layouts." },
+  { title: "The Murder Mystery", desc: "Build the suspense. Employ heavy shadows and cryptic typography to invite immediate intrigue." },
+  { title: "Retro Workshop Interface", desc: "Revive the classic. Flawlessly recreate the tactile, iconic aesthetic of early operating systems." },
+  { title: "The Crown Jewels", desc: "Seat the royalty. Elegantly position each team firmly within the geographic gaps of a crown." },
+  { title: "Comic Launch", desc: "Break the mold. Announce the technical launch utilizing a vibrant, energetic comic-book layout." },
+  { title: "Know Your Fest", desc: "Demystify the chaos. Implement clean typographic hierarchy to make dense informational answers scan fast." }
 ];
 
 const COLS = 6;
 const ROWS = 4;
 const ITEM_SIZE = 506; // Massive intrinsic resolution so 60% zoom equals exactly 303.6px per Figma specs
-
+/**
+ * Immersive Interactive Polaroids Showcase Component.
+ * 
+ * Maps a grid of statically imported assets onto an absolute 2D floating coordinate canvas natively 
+ * hijacked by `GSAP Draggable` rigid body constraints. Calculates randomized polaroid scattering math
+ * explicitly anchoring custom intersections targeting active Z-index stacks to surface narrative 
+ * metadata synchronously when users actively drag nodes through the central target vector.
+ * 
+ * @returns {JSX.Element} Fluid drag-and-drop boundary layout holding scatter-plotted image assets.
+ */
 export function Archives() {
   const canvasWrapperRef = useRef<HTMLDivElement>(null);
   const splitLeftRef = useRef<HTMLDivElement>(null);
@@ -186,7 +195,11 @@ export function Archives() {
     return () => cancelAnimationFrame(animationId);
   }, [soundEnabled]);
 
-  // Viewport Intersection Observer for Dimming Logic
+  /**
+   * Viewport Intersection Observer for Dimming Logic.
+   * Cross-references native JS intersection APIs to seamlessly dim items natively drifting 
+   * out of bounds inside the global dragging canvas securely optimizing visual loads.
+   */
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -266,6 +279,18 @@ export function Archives() {
     currentGap.current = initialGap;
   }, []);
 
+  /**
+   * Physics Layout Draggable Engine configuration block.
+   * 
+   * Lazily reconfigures spatial boundary definitions dynamically mapped against scaled virtual grid layouts. 
+   * Safely kills legacy runtime hooks tracking coordinate constraints before re-binding 
+   * new viewport limit values preventing native over-scroll outside of global container coordinates.
+   * 
+   * @param {number} w - Absolute physical width tracking column layout combinations.
+   * @param {number} h - Absolute physical height tracking row layout combinations.
+   * @param {number} z - Current scalar Zoom ratio mapped natively directly bypassing CSS matrices.
+   * @param {number} currentGapValue - Absolute coordinate margin gap distance actively pushing matrix slots.
+   */
   const initDraggable = (w: number, h: number, z: number, currentGapValue: number) => {
     if (draggableInstance.current.length > 0) {
       draggableInstance.current[0].kill();

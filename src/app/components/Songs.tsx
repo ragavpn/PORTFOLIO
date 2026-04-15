@@ -1,12 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useMotionValue, useSpring } from "motion/react";
 import imgImage40 from "../../assets/a24cb39d900485d56afd7b02d380c9d99b9b4d16.png";
+import imgTag from "../../assets/hanging tag.png";
+import imgPin from "../../assets/red pin.png";
 import songsData from "../data/songs.json";
 
 // Glob import all mp3s
 const mp3Modules = import.meta.glob('../../songs/*.mp3', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
-// â”€â”€ Per-letter slide-on-hover component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/**
+ * Physical Physics-driven Typography Component.
+ * 
+ * Hijacks individual string characters explicitly mapping localized 2D translation vectors 
+ * upon hover. Leverages nested `<span/>` cloning overlapping out-of-bounds nodes to securely 
+ * simulate infinite marquee scrolling exclusively across a single character footprint structurally.
+ * 
+ * @param {string} ch - Single character chunk natively broken from source string arrays.
+ * @param {string} [className] - Optional custom layout utility tailwind tokens.
+ */
 function ShiftLetter({ ch, className }: { ch: string; className?: string }) {
   const [phase, setPhase] = React.useState<"ready" | "playing">("ready");
   const phaseRef      = React.useRef<"ready" | "playing">("ready");
@@ -88,6 +99,15 @@ function ShiftLetter({ ch, className }: { ch: string; className?: string }) {
   );
 }
 
+/**
+ * Massive Media Player & Audio Gallery Component.
+ * 
+ * Dynamically ingests local JSON structures statically alongside globbed local `.mp3` assets resolving 
+ * to active `Howl` / Web Audio API tracking components. Manages extreme physics configurations 
+ * directly binding mouse vector metrics into global sticky disc visuals spanning active layout layers.
+ * 
+ * @returns {JSX.Element} Fluid dynamic audio player UI wrapping a 2D hovering DOM disc tracker.
+ */
 export function Songs() {
   const [scale, setScale] = useState(1);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -107,6 +127,38 @@ export function Songs() {
   const isDraggingRef = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
   const vinylRef = useRef<HTMLDivElement>(null);
+
+  // ── Tag Physics Momentum Engine ───────────────────────────────────────────
+  const tagRotate = useMotionValue(0);
+  // High inertia, low damping rocks it gently back and forth like a real pendulum
+  const smoothedTagRotate = useSpring(tagRotate, { stiffness: 100, damping: 3.5, mass: 1.2 });
+  const lastMouseX = useRef(0);
+  const returnTimeout = useRef<number>(0);
+
+  const handleTagMouseEnter = (e: React.PointerEvent) => {
+    lastMouseX.current = e.clientX;
+  };
+  const handleTagMouseMove = (e: React.PointerEvent) => {
+    const deltaX = e.clientX - lastMouseX.current;
+    lastMouseX.current = e.clientX;
+    const currentRot = tagRotate.get();
+    
+    // Simulate pushing: gently convert cursor velocity to tiny angular nudges
+    // Subtraction means it physically swings away from the cursor's velocity!
+    let newRot = currentRot - deltaX * 0.15;
+    // Strictly cap to just a few pixels of visual swing!
+    newRot = Math.max(-4, Math.min(4, newRot));
+    tagRotate.set(newRot);
+
+    clearTimeout(returnTimeout.current);
+    returnTimeout.current = window.setTimeout(() => {
+      tagRotate.set(0); 
+    }, 150);
+  };
+  const handleTagMouseLeave = () => {
+    tagRotate.set(0);
+    clearTimeout(returnTimeout.current);
+  };
 
   // Parse original duration from json just in case M:SS format
   useEffect(() => {
@@ -634,11 +686,33 @@ export function Songs() {
         </div>
 
         {/* Hanging Tag */}
-        <div className="absolute right-[-50px] top-[90px] w-[270px] h-[339px] z-30" data-name="Hanging Tag">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="relative w-full h-[400px]">
-              <img src="/src/imports/bookmark.png" alt="Tag" className="w-full h-full object-contain pointer-events-none" />
-            </div>
+        <div 
+          className="absolute right-[-80px] top-[90px] w-[270px] h-[339px] z-30" 
+          data-name="Hanging Tag"
+        >
+          {/* Interactive Physics Zone Bounds */}
+          <div 
+            className="absolute inset-0 -mx-[40px] -my-[40px]"
+            onPointerEnter={handleTagMouseEnter}
+            onPointerMove={handleTagMouseMove}
+            onPointerLeave={handleTagMouseLeave}
+            style={{ cursor: "grab" }}
+          />
+
+          {/* Tag Body (Swings) */}
+          <motion.div 
+            className="absolute left-[0.47px] top-[1px] w-[228px] h-[339px] pointer-events-none"
+            style={{ 
+              rotate: smoothedTagRotate,
+              transformOrigin: "154px 0px" // Exact top pixel where the string geometrically starts
+            }}
+          >
+            <img src={imgTag} alt="Sleeve info" className="absolute inset-0 w-full h-full object-contain" />
+          </motion.div>
+
+          {/* Red Pin rigidly locked to the top pixel of the string precisely at X=154 */}
+          <div className="absolute left-[128px] top-[-26px] w-[52px] h-[52px] pointer-events-none z-10">
+             <img src={imgPin} alt="Pin" className="absolute inset-0 w-full h-full object-contain drop-shadow-sm" />
           </div>
         </div>
       </div>

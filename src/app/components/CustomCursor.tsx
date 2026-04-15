@@ -1,5 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-
+/**
+ * High-performance Custom Pointer Tracking overlay.
+ * 
+ * Hijacks the native OS pointer and aggressively tracks mouse coordinates using 
+ * explicit HTML5 `requestAnimationFrame` loops completely decoupled from React state rendering locks.
+ * Manages contextual intersection checking (e.g. `data-cursor="hidden"`) globally to 
+ * swap out physical reticles specifically based exactly on which visual elements reside below the pointer.
+ * 
+ * @returns {JSX.Element} The absolutely positioned global DOM pointer overlay components.
+ */
 export function CustomCursor() {
   const circleRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
@@ -12,7 +21,11 @@ export function CustomCursor() {
   // While the loading screen is active, suppress the SCROLL text ring
   const [isLoading, setIsLoading] = useState(true);
 
-  // ── Listen for loading complete ──────────────────────────────────────────
+  /**
+   * Suspend interactive elements universally while global LoadingScreen executes.
+   * Listens directly to dispatched `portfolioReady` events fired by initial mounts 
+   * to immediately unhide custom pointer visuals.
+   */
   useEffect(() => {
     const onReady = () => setIsLoading(false);
     window.addEventListener("portfolioReady", onReady);

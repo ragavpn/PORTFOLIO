@@ -1,9 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 
-// ── Slot-machine continuous column ──────────────────────────────────────────
-function SlotColumn({ value, max }: { value: number; max: number }) {
-  // Rent an array large enough to contain all digits needed for the scroll
+/**
+ * Physics-driven slot-machine column component that dynamically spins numbers.
+ * Utilizing native CSS `translateY` scaling calculated mapped against array maps to organically 
+ * recreate a cinematic rolling mechanical numbers effect tied securely to global states.
+ * 
+ * @param {number} targetValue - The exact numeric digit this specific column stops at.
+ * @param {number} max - The length interval array this column spins through dynamically.
+ * @param {number} duration - Easing cubic timeline scale spanning the transition velocity in milliseconds.
+ * @param {number} delay - Pre-offset throttle dictating stagger starts on the X-axis for each explicit block.
+ */
+function SlotColumn({ targetValue, max, duration, delay = 0 }: { targetValue: number; max: number; duration: number; delay?: number }) {
   const arr = Array.from({ length: max + 1 });
   return (
     <div
@@ -20,23 +28,14 @@ function SlotColumn({ value, max }: { value: number; max: number }) {
         style={{
           display: "flex",
           flexDirection: "column",
-          // Use exact sub-pixel translation for continuous smooth spin
-          transform: `translateY(-${value * 82}px)`,
-          // Hardware accelerate
+          // The CSS handles spinning automatically!
+          transform: `translateY(-${targetValue * 82}px)`,
+          transition: `transform ${duration}ms cubic-bezier(0.65, 0, 0.35, 1) ${delay}ms`,
           willChange: "transform",
         }}
       >
         {arr.map((_, i) => (
-          <div
-            key={i}
-            style={{
-              height: "82px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0
-            }}
-          >
+          <div key={i} style={{ height: "82px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
             {i % 10}
           </div>
         ))}
@@ -45,12 +44,25 @@ function SlotColumn({ value, max }: { value: number; max: number }) {
   );
 }
 
-// ── LoadingScreen ───────────────────────────────────────────────────────────
+/**
+ * Master Loading Screen Sequence Controller.
+ * 
+ * Orchestrates deeply nested asynchronous phase transitions on global mount loops ensuring
+ * visual elements enter exactly per predetermined timelines. Tracks `count` target states 
+ * securely off the main thread to decouple visual UX sequences from browser tab switching bugs.
+ * 
+ * Phase Math:
+ * -> 0-7000ms: Math slot-machine counter execution.
+ * -> 7000ms: Counter array unmounts. Background rect shrinks natively leveraging scale vectors.
+ * -> 8300ms: Sequence completion globally signals Lenis to resume processing user-scroll.
+ * 
+ * @returns {JSX.Element | null} Null strictly if visited prior over session thresholds.
+ */
 export function LoadingScreen() {
   const [count, setCount] = useState(0);
   const [showUI, setShowUI] = useState(true);
+  const [rectScale, setRectScale] = useState(1);
   const [mounted, setMounted] = useState(true);
-  const overlayRef = useRef<HTMLDivElement>(null);
   const hasRun = useRef(false);
 
   const isFirstVisit = !sessionStorage.getItem("portfolio_visited");
@@ -60,134 +72,70 @@ export function LoadingScreen() {
     if (hasRun.current) return;
     hasRun.current = true;
 
-    // Force top scroll and handle browser restorations
     if ("scrollRestoration" in history) {
       history.scrollRestoration = "manual";
     }
     window.scrollTo(0, 0);
 
-    // Lock lenis if available
     if ((window as any).lenis) (window as any).lenis.stop();
     (window as any).__portfolioLoading = true;
 
-    const start = performance.now();
-    const rafIdRef = { id: 0 };
-
-    const easeInOut = (t: number): number =>
-      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-
-    // Imperative WAAPI animation helper
-    const animEl = (
-      el: HTMLElement,
-      fromStyles: Record<string, string>,
-      toStyles: Record<string, string>,
-      durationMs: number,
-      easing = "cubic-bezier(0.76, 0, 0.24, 1)"
-    ): Promise<void> => {
-      return new Promise((resolve) => {
-        // Apply from styles to inline style first
-        for (const [k, v] of Object.entries(fromStyles)) {
-          (el.style as any)[k] = v;
-        }
-        // Give browser one frame to register
-        requestAnimationFrame(() => {
-          const anim = el.animate(
-            [fromStyles as Keyframe, toStyles as Keyframe],
-            { duration: durationMs, easing, fill: "none" }
-          );
-          anim.onfinish = () => {
-            // Persist final state to inline style
-            for (const [k, v] of Object.entries(toStyles)) {
-              (el.style as any)[k] = v;
-            }
-            resolve();
-          };
-          anim.oncancel = () => resolve();
-        });
-      });
-    };
-
     const runSequence = async () => {
-      // Small delay to make sure overlay DOM is ready
+      // ── Phase 1: Counter 000 → 100 via CSS ───────────────────────────────
       await new Promise<void>((r) => setTimeout(r, 60));
-      const overlay = overlayRef.current;
-      if (!overlay) return;
-
-      // ── Phase 1: Counter 000 → 100 ──────────────────────────────────────
-      await new Promise<void>((resolve) => {
-        const tick = (now: number) => {
-          const elapsed = now - start;
-          const prog = Math.min(elapsed / counterDuration, 1);
-          // Keep count as float to drive the smooth spin translation
-          setCount(easeInOut(prog) * 100);
-          if (prog < 1) {
-            rafIdRef.id = requestAnimationFrame(tick);
-          } else {
-            setCount(100);
-            resolve();
-          }
-        };
-        rafIdRef.id = requestAnimationFrame(tick);
-      });
-
-      // Hold at 100 briefly
+      
+      // Setting count to 100 explicitly triggers the slot machine's targetValue CSS transition securely
+      setCount(100);
+      
+      // Wait mechanically on the JS clock instead of the rAF visual clock so it ticks in background perfectly!
+      await new Promise((r) => setTimeout(r, counterDuration));
       await new Promise((r) => setTimeout(r, 200));
 
       // Fade out name + counter UI
       setShowUI(false);
       await new Promise((r) => setTimeout(r, 350));
 
-      // ── Phase 2: Collapse black rect to centre ───────────────────────────
-      await animEl(
-        overlay,
-        { transform: "scale(1)", borderRadius: "0%" },
-        { transform: "scale(0)", borderRadius: "0%" }, // No corner radius!
-        1200 // Slower collapse
-      );
-      overlay.style.transform = "scale(0)";
+      // ── Phase 2: Collapse black rect to centre via CSS ───────────────────────────
+      setRectScale(0);
+      await new Promise((r) => setTimeout(r, 1200));
 
       // Brief white-screen flash
       await new Promise((r) => setTimeout(r, 80));
 
-      // Signal Hero to start its reveal animations (Mask expands)
+      // Signal Hero to start its reveal animations exactly right now
       window.dispatchEvent(new CustomEvent("heroReveal"));
 
       // ── Done ─────────────────────────────────────────────────────────────
       sessionStorage.setItem("portfolio_visited", "true");
-      // Give __portfolioLoading false state to hero via custom event, lenis is started in Hero.tsx
       (window as any).__portfolioLoading = false;
       window.dispatchEvent(new CustomEvent("portfolioReady"));
 
-      // Short buffer then unmount
       await new Promise((r) => setTimeout(r, 100));
       setMounted(false);
     };
 
     runSequence().catch(console.error);
-
-    return () => {
-      cancelAnimationFrame(rafIdRef.id);
-    };
   }, []);
 
   if (!mounted) return null;
 
   return (
     <>
-      {/* ── Black overlay — animates through all phases ── */}
+      {/* ── Black overlay — naturally shrinks via CSS exactly when scale shrinks ── */}
       <div
-        ref={overlayRef}
         style={{
           position: "fixed",
           inset: 0,
           background: "#0a0a0a",
           zIndex: 999998,
           transformOrigin: "center center",
+          transform: `scale(${rectScale})`,
+          borderRadius: "0%",
+          transition: "transform 1200ms cubic-bezier(0.76, 0, 0.24, 1)",
           pointerEvents: "none",
         }}
       />
 
-      {/* ── "ragavwithouttheh" — top left ── */}
       <AnimatePresence>
         {showUI && (
           <motion.div
@@ -214,7 +162,6 @@ export function LoadingScreen() {
         )}
       </AnimatePresence>
 
-      {/* ── Counter — bottom right ── */}
       <AnimatePresence>
         {showUI && (
           <motion.div
@@ -239,9 +186,14 @@ export function LoadingScreen() {
               userSelect: "none",
             }}
           >
-            <SlotColumn value={count / 100} max={1} />
-            <SlotColumn value={count / 10} max={10} />
-            <SlotColumn value={count} max={100} />
+            <SlotColumn 
+              targetValue={count / 100} 
+              max={1} 
+              duration={count > 0 ? counterDuration / 2 : 0} 
+              delay={count > 0 ? counterDuration / 2 : 0} 
+            />
+            <SlotColumn targetValue={count / 10} max={10} duration={count > 0 ? counterDuration : 0} />
+            <SlotColumn targetValue={count} max={100} duration={count > 0 ? counterDuration : 0} />
           </motion.div>
         )}
       </AnimatePresence>

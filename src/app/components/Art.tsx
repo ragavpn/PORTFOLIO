@@ -31,7 +31,7 @@ function Frame1() {
     <div className="h-[265px] mb-[-64px] relative shrink-0 w-[1202px]">
       <p className="absolute font-['Instrument_Serif',serif] left-0 opacity-50 text-[186px] top-0 tracking-[-5.58px]">The</p>
       <p className="absolute font-['Sloop_Script',cursive] left-[250px] text-[197px] top-[17px]">Creativity</p>
-      <p className="absolute font-['Instrument_Serif',serif] left-[826px] opacity-50 text-[186px] top-0 tracking-[-5.58px]">doesnâ€™t</p>
+      <p className="absolute font-['Instrument_Serif',serif] left-[826px] opacity-50 text-[186px] top-0 tracking-[-5.58px]">doesn't</p>
     </div>
   );
 }
@@ -663,7 +663,16 @@ function Paintings() {
     </div>
   )
 }
-
+/**
+ * Abstract Experimental Canvas Rendering Section.
+ * 
+ * Orchestrates a heavily unconstrained canvas space mapping continuous cursor intersection 
+ * nodes over a constrained Y-axis bound natively triggering explicit declarative `requestAnimationFrame` 
+ * node painting behaviors. Operates through fully dynamic `useLayoutEffect` window scalar resizing logic 
+ * perfectly clamping physical CSS matrices rigidly against custom UI aspect ratios natively bypassing grid structures.
+ * 
+ * @returns {JSX.Element} Fluid viewport-locked pointer interaction canvas bounded by global scaling constraints.
+ */
 export function Art() {
   const containerRef = useRef<HTMLDivElement>(null);
   const trailContainerRef = useRef<HTMLDivElement>(null);
@@ -707,8 +716,6 @@ export function Art() {
       }
 
       const distance = Math.hypot(x - lastX, y - lastY);
-      
-      /* <-- CHANGE THIS VALUE (80) TO ADJUST HOW FAR APART THE IMAGES SPAWN --> */
       const spawnDistance = 20;
 
       if (distance < spawnDistance * scale) return;
