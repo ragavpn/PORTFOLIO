@@ -616,6 +616,14 @@ const cursorImages = [
   imgMyImage51
 ];
 
+// Eagerly preload hover trail assets immediately into memory on client load
+if (typeof window !== "undefined") {
+  cursorImages.forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
+}
+
 function MotionCard({ wrapperClass, initialX, initialY, zIndexBase, children }: any) {
   return (
     <motion.div

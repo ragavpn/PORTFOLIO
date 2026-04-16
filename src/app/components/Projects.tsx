@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "motion/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
+import { TechMarquee } from "./TechMarquee";
 gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
@@ -231,9 +231,9 @@ export function Projects() {
         `}
       </style>
       
-      {/* TV Static Background */}
+      {/* TV Static Overlay */}
       <div 
-        className="pointer-events-none absolute inset-0 z-0 mix-blend-screen overflow-hidden opacity-[0.18]"
+        className="pointer-events-none absolute inset-0 z-20 mix-blend-screen overflow-hidden opacity-[0.18]"
       >
         <div 
           className="w-[110%] h-[110%] -left-[5%] -top-[5%] absolute"
@@ -262,7 +262,7 @@ export function Projects() {
 
       <div className="w-full max-w-[1694px] mx-auto flex flex-col relative z-10 transition-all duration-700 ease-in-out">
         {/* Header */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between text-white pb-[90px] gap-8 md:gap-0">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between text-white pb-0 gap-8 md:gap-0">
           <div className="font-['Inter_Display',sans-serif] font-medium text-[clamp(20px,2vw,30px)] opacity-70 tracking-[-1.8px] leading-[0.87]">
             <AnimatePresence mode="popLayout" initial={false}>
               <motion.div 
@@ -337,6 +337,8 @@ export function Projects() {
             </p>
           </div>
         </div>
+
+        <TechMarquee />
 
         {/* Projects List */}
         <motion.div 
@@ -445,7 +447,7 @@ export function Projects() {
           <div className="flex-1 flex justify-center absolute inset-0 pointer-events-none items-center">
             <div className="bg-white/5 rounded-md px-16 py-1 flex items-center justify-center">
               <span className="text-[11px] text-white/50 font-['Inter_Display',sans-serif] tracking-wide">
-                ragavwithouttheh.in
+                ragavwithouttheh.work
               </span>
             </div>
           </div>
