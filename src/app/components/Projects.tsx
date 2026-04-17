@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "motion/react";
+import { useNavigate } from "react-router";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TechMarquee } from "./TechMarquee";
@@ -115,6 +116,33 @@ const projects = [
  * @returns {JSX.Element} Fluid project grid scaling bounds structurally across multiple axis depths.
  */
 export function Projects() {
+  const navigate = useNavigate();
+
+  const toSlug = (title: string) =>
+    title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+
+  const handleProjectClick = (title: string) => {
+    const slug = toSlug(title);
+    const overlay = document.createElement("div");
+    overlay.style.cssText =
+      "position:fixed;inset:0;background:#090909;z-index:9999;opacity:0;transition:opacity 0.3s ease;pointer-events:all;";
+    document.body.appendChild(overlay);
+    const bar = document.createElement("div");
+    bar.style.cssText =
+      "position:fixed;top:0;left:0;height:3px;background:#f5e647;width:0%;z-index:10000;transition:width 1.1s cubic-bezier(0.16,1,0.3,1);";
+    document.body.appendChild(bar);
+    requestAnimationFrame(() => {
+      overlay.style.opacity = "0.85";
+      bar.style.width = "100%";
+    });
+    if ((window as any).lenis) (window as any).lenis.stop();
+    setTimeout(() => {
+      document.body.removeChild(overlay);
+      document.body.removeChild(bar);
+      navigate(`/projects/${slug}`);
+    }, 1300);
+  };
+
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [filterDomain, setFilterDomain] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -371,6 +399,7 @@ export function Projects() {
                 key={project.title}
                 className="flex flex-col w-full relative group cursor-pointer overflow-hidden"
                 onMouseEnter={() => setHoveredIndex(globalIndex)}
+                onClick={() => handleProjectClick(project.title)}
                 data-cursor="hidden"
               >
                 {/* Top border line */}

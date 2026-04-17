@@ -1,12 +1,17 @@
 import { createBrowserRouter } from "react-router";
 import Root from "./Root";
+import ProjectDetail from "./components/ProjectDetail";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     Component: Root,
     children: [
-      { index: true, Component: () => null }, // Empty component because Root renders everything for now
+      { index: true, Component: () => null },
     ],
+  },
+  {
+    path: "/projects/:slug",
+    Component: ProjectDetail,
   },
 ]);
