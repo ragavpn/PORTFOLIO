@@ -109,6 +109,7 @@ export function LoadingScreen() {
         
         sessionStorage.setItem("portfolio_visited", "true");
         (window as any).__portfolioLoading = false;
+        (window as any).__appInitiated = true;
         setMounted(false);
         return;
       }
@@ -129,6 +130,7 @@ export function LoadingScreen() {
       window.dispatchEvent(new CustomEvent("portfolioReady"));
 
       await new Promise((r) => setTimeout(r, 100));
+      (window as any).__appInitiated = true;
       setMounted(false);
     };
 

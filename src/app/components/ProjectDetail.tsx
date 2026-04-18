@@ -361,10 +361,12 @@ function ProjectContent({ slug }: { slug: string }) {
   }, [isPresent, safeToRemove]);
 
   const [isSpaNav] = useState(() => {
-    const val = !!sessionStorage.getItem("portfolio_nav");
+    const fromNextProject = !!sessionStorage.getItem("portfolio_nav");
     sessionStorage.removeItem("portfolio_nav");
-    const hasLoaded = !!sessionStorage.getItem("portfolio_visited");
-    return val || hasLoaded;
+    // If the JS heap already ran the LoadingScreen dynamically, it implies a physical internal 
+    // soft routing sequence natively (e.g., clicking Back Arrow) so we suppress loading loops
+    const isSoftNav = !!(window as any).__appInitiated;
+    return fromNextProject || isSoftNav;
   });
 
   const navType = useNavigationType();
