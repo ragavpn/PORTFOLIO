@@ -17,6 +17,7 @@ export function CustomCursor() {
   const dotCursor = useRef({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
   const [isCursorHidden, setIsCursorHidden] = useState(false);
+  const [isDotOnlyMode, setIsDotOnlyMode] = useState(false);
   const [cursorMode, setCursorMode] = useState("SCROLL");
   // While the loading screen is active, suppress the SCROLL text ring
   const [isLoading, setIsLoading] = useState(true);
@@ -64,8 +65,8 @@ export function CustomCursor() {
           e.clientX >= rect.left &&
           e.clientX <= rect.right
         ) {
-          setIsCursorHidden(true);
-          setCursorMode("HIDDEN");
+          setIsCursorHidden(false);
+          setIsDotOnlyMode(true);
           return;
         }
       }
@@ -77,24 +78,31 @@ export function CustomCursor() {
 
       if (!cursorTarget) {
         setIsCursorHidden(false);
+        setIsDotOnlyMode(false);
         setCursorMode("SCROLL");
         return;
       }
 
-      const attr = cursorTarget.getAttribute("data-cursor");
+      const rawAttr = cursorTarget.getAttribute("data-cursor");
+      const attr = rawAttr ? rawAttr.toLowerCase() : null;
 
       if (attr === "hidden") {
         setIsCursorHidden(true);
-        setCursorMode("HIDDEN");
+        setIsDotOnlyMode(false);
         return;
       }
 
       setIsCursorHidden(false);
 
+      if (attr === "dot-only") {
+        setIsDotOnlyMode(true);
+        return;
+      }
+
+      setIsDotOnlyMode(false);
+
       if (attr === "hero-title") {
         setCursorMode("HERO_TITLE");
-      } else if (attr === "dot-only") {
-        setCursorMode("DOT_ONLY");
       } else if (attr === "drag") {
         setCursorMode("DRAG");
       } else if (attr === "play") {
@@ -196,7 +204,7 @@ export function CustomCursor() {
     !isLoading &&
     isVisible &&
     !isCursorHidden &&
-    cursorMode !== "DOT_ONLY" &&
+    !isDotOnlyMode &&
     !isHeroTitle;
 
   return (

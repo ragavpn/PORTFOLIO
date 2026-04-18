@@ -4,106 +4,8 @@ import { useNavigate } from "react-router";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TechMarquee } from "./TechMarquee";
+import { projectsData as projects } from "../data/projectsData";
 gsap.registerPlugin(ScrollTrigger);
-
-const projects = [
-  {
-    title: "Internal Tool",
-    domain: "software",
-    tags: ["Full Stack", "React"],
-    image: "https://images.unsplash.com/photo-1720962158883-b0f2021fb51e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB3ZWIlMjBhcHAlMjBkYXNoYm9hcmQlMjBpbnRlcmZhY2V8ZW58MXx8fHwxNzc1OTI5Njc1fDA&ixlib=rb-4.1.0&q=80&w=1080",
-  },
-  {
-    title: "AI Therapist",
-    domain: "software",
-    tags: ["Natural Language Processing", "Mental Health Tech"],
-    image: "https://images.unsplash.com/photo-1775440285627-ce48346bc58c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGF0Ym90JTIwY29udmVyc2F0aW9uYWwlMjBhaSUyMGludGVyZmFjZXxlbnwxfHx8fDE3NzU5Mjk2NzZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-  },
-  {
-    title: "Nocaine",
-    domain: "software",
-    tags: ["Microservices", "Cybersecurity"],
-    image: "https://images.unsplash.com/photo-1608742213509-815b97c30b36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjeWJlcnNlY3VyaXR5JTIwY29kZSUyMHNjcmVlbiUyMGFic3RyYWN0fGVufDF8fHx8MTc3NTkyOTY3NXww&ixlib=rb-4.1.0&q=80&w=1080",
-  },
-  {
-    title: "Hypothesis Interpolation",
-    domain: "software",
-    tags: ["Data Science", "Python"],
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1080",
-  },
-  {
-    title: "DonkeyCar",
-    domain: "software",
-    tags: ["Autonomous", "Robotics"],
-    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=1080",
-  },
-  {
-    title: "Causal Reasoning",
-    domain: "software",
-    tags: ["Machine Learning", "Research"],
-    image: "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&q=80&w=1080",
-  },
-  {
-    title: "Weld Detection",
-    domain: "software",
-    tags: ["Computer Vision", "Industrial"],
-    image: "https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&q=80&w=1080",
-  },
-  {
-    title: "Cosmic Carnage",
-    domain: "software",
-    tags: ["Game Dev", "C#"],
-    image: "https://images.unsplash.com/photo-1614294149010-950b698f72c0?auto=format&fit=crop&q=80&w=1080",
-  },
-  {
-    title: "Neuron",
-    domain: "software",
-    tags: ["Neural Networks", "AI"],
-    image: "https://images.unsplash.com/photo-1620712948343-0008cc890662?auto=format&fit=crop&q=80&w=1080",
-  },
-  {
-    title: "Median",
-    domain: "design",
-    tags: ["UI / UX"],
-    image: "https://images.unsplash.com/photo-1706509511838-4b101f379ef3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwdWklMjB1eCUyMGRlc2lnbiUyMHByb3RvdHlwZXxlbnwxfHx8fDE3NzU5Mjk2NzV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-  },
-  {
-    title: "Ballast",
-    domain: "design",
-    tags: ["UI / UX", "Mobile App"],
-    image: "https://images.unsplash.com/photo-1773611814475-e80ea69a4f2c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwbW9iaWxlJTIwYXBwJTIwaW50ZXJmYWNlJTIwb24lMjBwaG9uZXxlbnwxfHx8fDE3NzU5Mjk2NzV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-  },
-  {
-    title: "Homebase",
-    domain: "design",
-    tags: ["Product Design", "Web App"],
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1080"
-  },
-  {
-    title: "Eventozo",
-    domain: "design",
-    tags: ["Event Management", "App Design"],
-    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1080"
-  },
-  {
-    title: "Pragyan 2026",
-    domain: "design",
-    tags: ["Brand Identity", "Print"],
-    image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1080"
-  },
-  {
-    title: "Lunar Crater",
-    domain: "design",
-    tags: ["3D Modeling", "Concept Art"],
-    image: "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?auto=format&fit=crop&q=80&w=1080"
-  },
-  {
-    title: "Mental Health Chatbot",
-    domain: "design",
-    tags: ["Conversational UI", "Empathy"],
-    image: "https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=1080"
-  }
-];
 
 /**
  * Dynamic URL-Aware Interactive Projects Strategy.
@@ -123,24 +25,29 @@ export function Projects() {
 
   const handleProjectClick = (title: string) => {
     const slug = toSlug(title);
+    const currentScroll = (window as any).lenis?.scroll ?? window.scrollY;
+    sessionStorage.setItem("portfolioScrollY", String(currentScroll));
+
+    // Create overlay that persists through the route change
+    // (it's a raw DOM element so React's unmount doesn't remove it)
     const overlay = document.createElement("div");
+    overlay.id = "project-transition-overlay";
     overlay.style.cssText =
       "position:fixed;inset:0;background:#090909;z-index:9999;opacity:0;transition:opacity 0.3s ease;pointer-events:all;";
     document.body.appendChild(overlay);
     const bar = document.createElement("div");
+    bar.id = "project-transition-bar";
     bar.style.cssText =
-      "position:fixed;top:0;left:0;height:3px;background:#f5e647;width:0%;z-index:10000;transition:width 1.1s cubic-bezier(0.16,1,0.3,1);";
+      "position:fixed;top:0;left:0;height:4px;background:#fffcf3;width:0%;z-index:10000;transition:width 1.1s cubic-bezier(0.16,1,0.3,1);pointer-events:none;";
     document.body.appendChild(bar);
     requestAnimationFrame(() => {
-      overlay.style.opacity = "0.85";
+      overlay.style.opacity = "0.97"; // Near-opaque to hide transition
       bar.style.width = "100%";
     });
     if ((window as any).lenis) (window as any).lenis.stop();
-    setTimeout(() => {
-      document.body.removeChild(overlay);
-      document.body.removeChild(bar);
-      navigate(`/projects/${slug}`);
-    }, 1300);
+    sessionStorage.setItem("portfolio_nav", "1");
+    // Navigate WHILE overlay is still covering the screen
+    setTimeout(() => navigate(`/${slug}`), 1200);
   };
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -188,7 +95,7 @@ export function Projects() {
     window.history.pushState({}, "", url.toString());
   };
 
-  const defaultProjectsTitles = ["Internal Tool", "AI Therapist", "Nocaine", "Median", "Ballast"];
+  const defaultProjectsTitles = ["Internal Tool", "Causal Reasoning", "Nocaine", "Median", "Ballast"];
 
   const baseProjectsList = isExpanded 
        ? projects 
@@ -397,9 +304,11 @@ export function Projects() {
                    delay: i * (isExpanded ? 0.07 : 0.05) 
                 }}
                 key={project.title}
-                className="flex flex-col w-full relative group cursor-pointer overflow-hidden"
+                className={`flex flex-col w-full relative overflow-hidden ${project.hasContent ? "group cursor-pointer" : "group cursor-default opacity-40 hover:opacity-100 transition-opacity"}`}
                 onMouseEnter={() => setHoveredIndex(globalIndex)}
-                onClick={() => handleProjectClick(project.title)}
+                onClick={() => {
+                  if (project.hasContent) handleProjectClick(project.title);
+                }}
                 data-cursor="hidden"
               >
                 {/* Top border line */}

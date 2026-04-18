@@ -95,6 +95,24 @@ export function LoadingScreen() {
       setShowUI(false);
       await new Promise((r) => setTimeout(r, 350));
 
+      const isProjectPage = window.location.pathname !== '/';
+      
+      if (isProjectPage) {
+        // Lower rect z-index so ProjectDetail (z-index 50000) can slide over it smoothly
+        const rect = document.getElementById("loading-rect");
+        if (rect) rect.style.zIndex = "48000";
+        
+        window.dispatchEvent(new CustomEvent("portfolioReady"));
+        
+        // Wait safely for ProjectDetail's 2-second slide-up to finish
+        await new Promise((r) => setTimeout(r, 2200));
+        
+        sessionStorage.setItem("portfolio_visited", "true");
+        (window as any).__portfolioLoading = false;
+        setMounted(false);
+        return;
+      }
+
       // ── Phase 2: Collapse black rect to centre via CSS ───────────────────────────
       setRectScale(0);
       await new Promise((r) => setTimeout(r, 1200));
@@ -123,6 +141,7 @@ export function LoadingScreen() {
     <>
       {/* ── Black overlay — naturally shrinks via CSS exactly when scale shrinks ── */}
       <div
+        id="loading-rect"
         style={{
           position: "fixed",
           inset: 0,

@@ -29,7 +29,7 @@ export function Navbar() {
     window.addEventListener("heroReveal", onReveal);
     const onReady = () => setNavRevealed(true);
     window.addEventListener("portfolioReady", onReady);
-    const fallback = setTimeout(() => setNavRevealed(true), 6000);
+    const fallback = setTimeout(() => setNavRevealed(true), 15000);
     return () => {
       window.removeEventListener("heroReveal", onReveal);
       window.removeEventListener("portfolioReady", onReady);
@@ -68,12 +68,35 @@ export function Navbar() {
       closeMenu();
     }
     
+    // Intercept clicks when inside a Project overlay to cleanly transition out back to Root
+    if (window.location.pathname.length > 1) {
+      if (isOpen) {
+        closeMenu();
+        // Wait mechanically for the menu tearing-down animation before triggering exit curtain
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent("projectExit", { detail: { target } }));
+        }, 1750);
+      } else {
+        window.dispatchEvent(new CustomEvent("projectExit", { detail: { target } }));
+      }
+      return;
+    }
+    
     setTimeout(() => {
       // Disable pointer events temporarily to avoid hover triggers
       document.body.style.pointerEvents = "none";
       setTimeout(() => {
         document.body.style.pointerEvents = "";
       }, 2100);
+
+      // Force mechanical refresh tracking natively keeping 2.5s caching active
+      if (target === "magic-refresh") {
+        window.scrollTo(0, 0);
+        sessionStorage.removeItem("portfolio_visited");
+        sessionStorage.removeItem("portfolioScrollY");
+        window.location.href = "/";
+        return;
+      }
 
       if ((window as any).lenis) {
         (window as any).lenis.start();
@@ -163,7 +186,8 @@ export function Navbar() {
             lineHeight: "normal",
             letterSpacing: "-0.75px"
           }}
-          onClick={(e) => handleLinkClick(e, "hero-section")}
+          onClick={(e) => handleLinkClick(e, "magic-refresh")}
+          data-cursor="CLICK"
         >
           ragavwithouttheh
         </div>

@@ -7,11 +7,7 @@ export const router = createBrowserRouter([
     path: "/",
     Component: Root,
     children: [
-      { index: true, Component: () => null },
+      { path: ":slug", Component: ProjectDetail },
     ],
-  },
-  {
-    path: "/projects/:slug",
-    Component: ProjectDetail,
   },
 ]);

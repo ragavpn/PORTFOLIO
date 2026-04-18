@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import Lenis from "@studio-freight/lenis";
 import { Hero } from "./components/Hero";
 import { About } from "./components/About";
@@ -13,7 +13,7 @@ import { CustomCursor } from "./components/CustomCursor";
 import { LoadingScreen } from "./components/LoadingScreen";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -54,6 +54,35 @@ document.addEventListener("visibilitychange", handlePageSleep);
  * @returns {JSX.Element} The active Layout provider wrapping the Hero, Navbar, and Footer sequences.
  */
 export default function Root() {
+  const location = useLocation();
+  const [prevLocation, setPrevLocation] = useState(location.pathname);
+
+  useLayoutEffect(() => {
+    if (prevLocation !== "/" && location.pathname === "/") {
+      // Create pitch black overlay BEFORE browser paint to intercept the unmount flawlessly
+      const exit = document.createElement("div");
+      exit.style.cssText = "position:fixed;inset:0;background:#090909;z-index:999999;opacity:1;transition:opacity 0.65s ease;pointer-events:none;";
+      document.body.appendChild(exit);
+
+      // Restore scroll organically
+      const savedScroll = sessionStorage.getItem("portfolioScrollY");
+      if (savedScroll) {
+        const y = parseFloat(savedScroll);
+        window.scrollTo(0, y);
+        if ((window as any).lenis) (window as any).lenis.scrollTo(y, { immediate: true });
+      } else {
+        window.scrollTo(0, 0);
+        if ((window as any).lenis) (window as any).lenis.scrollTo(0, { immediate: true });
+      }
+
+      // Force DOM reflow then fade out perfectly mirroring Navbar exit mechanics explicitly Native
+      void exit.offsetWidth;
+      requestAnimationFrame(() => { exit.style.opacity = "0"; });
+      setTimeout(() => exit.remove(), 650);
+    }
+    setPrevLocation(location.pathname);
+  }, [location.pathname, prevLocation]);
+
   const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" ? window.innerWidth <= 768 : false
   );
@@ -78,26 +107,33 @@ export default function Root() {
 
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: 1.8,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
       wheelMultiplier: 1,
     });
 
-    /**
-     * Natively force absolute top scrolling before initialization locks,
-     * overriding browser history DOM anchors.
-     */
     if ("scrollRestoration" in history) {
       history.scrollRestoration = "manual";
     }
-    window.scrollTo(0, 0);
-    lenis.scrollTo(0, { immediate: true });
-    
-    /** Stop scroll immediately — LoadingScreen securely restarts it organically when transition concludes. */
-    lenis.stop();
+
+    // Check if we're returning from a project detail page
+    const savedScroll = sessionStorage.getItem("portfolioScrollY");
+    if (savedScroll) {
+      // Restore position then let lenis take over — skip the reset to top
+      const y = parseFloat(savedScroll);
+      sessionStorage.removeItem("portfolioScrollY");
+      window.scrollTo(0, y);
+      lenis.scrollTo(y, { immediate: true });
+      lenis.start();
+    } else {
+      window.scrollTo(0, 0);
+      lenis.scrollTo(0, { immediate: true });
+      /** Stop scroll — LoadingScreen restarts it when transition concludes */
+      lenis.stop();
+    }
 
     /** Expose lenis globally for Navbar + LoadingScreen programmatic interventions */
     (window as any).lenis = lenis;

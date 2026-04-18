@@ -11,6 +11,11 @@
           history.scrollRestoration = 'manual';
         }
         window.scrollTo(0, 0);
+        /* Dark bg on project pages so refresh never flashes white */
+        if (window.location.pathname.startsWith('/projects/')) {
+          document.documentElement.style.backgroundColor = '#090909';
+          document.body.style.backgroundColor = '#090909';
+        }
       </script>
     </head>
 

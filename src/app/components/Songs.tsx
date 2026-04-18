@@ -111,6 +111,7 @@ function ShiftLetter({ ch, className }: { ch: string; className?: string }) {
 export function Songs() {
   const [scale, setScale] = useState(1);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isAudioLoading, setIsAudioLoading] = useState(false);
   const [activeSongId, setActiveSongId] = useState("1");
   const [progress, setProgress] = useState(0);
   const [currentDuration, setCurrentDuration] = useState(0);
@@ -189,15 +190,22 @@ export function Songs() {
     setScrollProgress(maxScroll > 0 ? target.scrollTop / maxScroll : 0);
   };
 
-  const togglePlay = () => setIsPlaying((p) => !p);
+  const togglePlay = () => {
+    setIsPlaying((p) => {
+      if (!p) setIsAudioLoading(true);
+      return !p;
+    });
+  };
 
   const handleSongClick = (songId: string) => {
     if (songId === activeSongId) {
-      togglePlay();
+      if (!isPlaying) setIsAudioLoading(true);
+      setIsPlaying(p => !p);
       return;
     }
     setActiveSongId(songId);
     setProgress(0);
+    setIsAudioLoading(true);
     setIsPlaying(true);
   };
 
@@ -435,6 +443,9 @@ export function Songs() {
         src={activeAudioSrc}
         onLoadedMetadata={handleLoadedMetadata}
         onEnded={handleAudioEnded}
+        onWaiting={() => setIsAudioLoading(true)}
+        onPlaying={() => setIsAudioLoading(false)}
+        onCanPlay={() => setIsAudioLoading(false)}
       />
 
       {/* Main 1920Ã—1080 canvas */}
@@ -488,14 +499,22 @@ export function Songs() {
                 0%, 100% { transform: scaleY(0.2); }
                 50% { transform: scaleY(1); }
               }
+              @keyframes loadingWave {
+                0%, 100% { transform: scaleY(0.15); opacity: 0.4; }
+                50% { transform: scaleY(0.65); opacity: 1; }
+              }
             `}</style>
             {[{ h: "38px", d: "0.9s", delay: "0s" }, { h: "48px", d: "1.1s", delay: "0.2s" }, { h: "34px", d: "0.8s", delay: "0.4s" }, { h: "39px", d: "1.2s", delay: "0.1s" }].map((b, i) => (
               <div
                 key={i}
-                className="w-[7px] bg-[#c80f0f] origin-bottom"
+                className="w-[7px] bg-[#c80f0f] origin-bottom transition-opacity duration-300"
                 style={{
                   height: b.h,
-                  animation: isPlaying ? `waveform ${b.d} ease-in-out infinite ${b.delay}` : "none",
+                  animation: isAudioLoading && isPlaying 
+                    ? `loadingWave 0.8s ease-in-out infinite ${i * 0.15}s` 
+                    : isPlaying 
+                      ? `waveform ${b.d} ease-in-out infinite ${b.delay}` 
+                      : "none",
                 }}
               />
             ))}
