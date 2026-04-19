@@ -197,12 +197,169 @@ function FloatingCursor() {
 }
 
 
+// ─── Timelapse Video Player ──────────────────────────────────────────────────
+function TimelapseVideoPlayer({ videoSrc }: { videoSrc: string }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  // Modal Player Internal States
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  const togglePlay = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (videoRef.current) {
+      if (isPlaying) videoRef.current.pause();
+      else videoRef.current.play();
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    if (videoRef.current) {
+      videoRef.current.currentTime = (value / 100) * duration;
+      setProgress(value);
+    }
+  };
+
+  const skipForward = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (videoRef.current) {
+      videoRef.current.currentTime = Math.min(videoRef.current.currentTime + 10, duration);
+    }
+  };
+
+  return (
+    <>
+      <div 
+        className="w-full relative cursor-pointer group"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onClick={() => setModalOpen(true)}
+        data-cursor="CLICK"
+      >
+        <video 
+           src={videoSrc}
+           autoPlay
+           loop
+           muted
+           playsInline
+           className="w-full h-auto rounded-[17px] shadow-2xl overflow-hidden border border-white/10 opacity-90 transition-opacity hover:opacity-100"
+        />
+        
+        {/* Hover Expand Icon */}
+        <AnimatePresence>
+          {isHovered && (
+             <motion.div
+               initial={{ opacity: 0, scale: 0.9 }}
+               animate={{ opacity: 1, scale: 1 }}
+               exit={{ opacity: 0, scale: 0.9 }}
+               className="absolute bottom-4 right-4 bg-[#fffcf3]/10 backdrop-blur-md rounded-[12px] p-3 border border-white/20 shadow-lg pointer-events-none"
+             >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15 3H21V9M9 21H3V15M21 3L14 10M3 21L10 14" stroke="#FFFCF3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+             </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Full-Screen Lightbox Modal */}
+      <AnimatePresence>
+         {modalOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#090909]/80 backdrop-blur-md"
+              onClick={() => {
+                if(videoRef.current) videoRef.current.pause();
+                setModalOpen(false);
+              }}
+              onWheel={(e) => e.stopPropagation()}
+              data-cursor="dot-only"
+            >
+               <motion.div
+                  initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative w-full max-w-[1200px] px-8 flex flex-col items-center gap-6 cursor-auto"
+                  onClick={(e) => e.stopPropagation()}
+               >
+                  <video 
+                     ref={videoRef}
+                     src={videoSrc}
+                     playsInline
+                     className="w-full h-auto max-h-[80vh] rounded-[16px] shadow-2xl bg-black border border-white/10"
+                     onTimeUpdate={() => {
+                        if(videoRef.current && duration > 0) {
+                           setProgress((videoRef.current.currentTime / duration) * 100);
+                        }
+                     }}
+                     onLoadedMetadata={() => {
+                        if(videoRef.current) {
+                          setDuration(videoRef.current.duration);
+                          videoRef.current.play().catch(()=>console.log("Autoplay prevented"));
+                        }
+                        setIsPlaying(true);
+                     }}
+                     onEnded={() => setIsPlaying(false)}
+                     onClick={togglePlay}
+                  />
+
+                  {/* Custom Bottom Playback Controls */}
+                  <div className="absolute bottom-6 left-[50%] -translate-x-[50%] flex items-center gap-6 bg-[#1a1a1a]/80 backdrop-blur-lg border border-white/15 px-8 py-4 rounded-full shadow-2xl w-max">
+                     <button onClick={togglePlay} className="text-[#fffcf3] hover:opacity-70 transition-opacity outline-none" data-cursor="CLICK">
+                        {isPlaying ? (
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                             <rect x="6" y="4" width="4" height="16" fill="currentColor"/>
+                             <rect x="14" y="4" width="4" height="16" fill="currentColor"/>
+                          </svg>
+                        ) : (
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                             <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                          </svg>
+                        )}
+                     </button>
+                     <button onClick={skipForward} className="text-[#fffcf3] hover:opacity-70 transition-opacity outline-none relative group flex items-center justify-center p-1" data-cursor="CLICK">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                           <path d="M10 16a6 6 0 1 1 5-11.45V2"/>
+                           <path d="M15 2l5 2.5L15 7"/>
+                        </svg>
+                        <span className="absolute text-[8px] font-bold pt-1 pr-[2px]">10</span>
+                     </button>
+
+                     <input 
+                        type="range" 
+                        min="0" 
+                        max="100" 
+                        value={progress || 0}
+                        onChange={handleSeek}
+                        className="w-[300px] md:w-[400px] h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-[#fffcf3] [&::-webkit-slider-thumb]:rounded-full"
+                        data-cursor="CLICK"
+                     />
+                  </div>
+               </motion.div>
+            </motion.div>
+         )}
+      </AnimatePresence>
+    </>
+  );
+}
+
 // ─── Gallery Section ─────────────────────────────────────────────────────────
 function GallerySection({ slug }: { slug: string }) {
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [hoverTimer, setHoverTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState<{url: string, caption: string | null} | null>(null);
+  const isDraggingRef = useRef(false);
   
   // Inertia spring setup for tooltip positioning
   const tooltipX = useMotionValue(0);
@@ -237,28 +394,25 @@ function GallerySection({ slug }: { slug: string }) {
   const sequence = [...sourceItems, ...sourceItems, ...sourceItems];
 
   useAnimationFrame((_, delta) => {
-    const velocity = isHovered ? -0.1 : -0.5;
+    if (lightboxImage) return;
+    const velocity = isHovered ? -0.05 : -0.3;
     baseX.set(baseX.get() + velocity * (delta / 1000));
   });
 
 
   const handleMouseEnter = (idx: number) => {
     setHoveredIdx(idx);
-    const t = setTimeout(() => {
-      setTooltipVisible(true);
-      // Fire synthetic physics update structurally bridging data-cursor drop with CustomCursor event engine
-      const px = tooltipX.get();
-      const py = tooltipY.get();
-      const targetEl = document.elementFromPoint(px, py);
-      if (targetEl) {
-        targetEl.dispatchEvent(new MouseEvent('mousemove', { clientX: px, clientY: py, bubbles: true }));
-      }
-    }, 2500);
-    setHoverTimer(t);
+    setTooltipVisible(true);
+    // Fire synthetic physics update structurally bridging data-cursor drop with CustomCursor event engine
+    const px = tooltipX.get();
+    const py = tooltipY.get();
+    const targetEl = document.elementFromPoint(px, py);
+    if (targetEl) {
+      targetEl.dispatchEvent(new MouseEvent('mousemove', { clientX: px, clientY: py, bubbles: true }));
+    }
   };
   const handleMouseLeave = () => {
     setHoveredIdx(null);
-    if (hoverTimer) clearTimeout(hoverTimer);
     setTooltipVisible(false);
   };
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -276,19 +430,33 @@ function GallerySection({ slug }: { slug: string }) {
       <motion.div
         className="flex gap-[31px] w-max"
         data-cursor="DRAG"
+        onPanStart={() => {
+          isDraggingRef.current = true;
+        }}
+        onPanEnd={() => {
+          setTimeout(() => {
+            isDraggingRef.current = false;
+          }, 50);
+        }}
         onPan={(_, info) => {
-          // Accelerate Pan: converting pixel dragged to roughly matching percentage points
-          baseX.set(baseX.get() + info.delta.x * 0.015);
+          // Accelerate Pan: converting pixel dragged to roughly matching percentage points, lowered sensitivity per user request
+          baseX.set(baseX.get() + info.delta.x * 0.01);
         }}
         style={{ x: useTransform(baseX, (v) => `${wrap(-33.33, 0, v)}%`) }}
       >
         {sequence.map((item, idx) => (
           <div
             key={idx}
-            className="h-[492px] w-[760px] shrink-0 relative rounded-[17px] overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center group"
+            className="w-[871px] aspect-video shrink-0 relative rounded-[17px] overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center group cursor-pointer"
             onMouseEnter={() => handleMouseEnter(idx)}
             onMouseLeave={handleMouseLeave}
-            data-cursor={tooltipVisible && hoveredIdx === idx ? "dot-only" : undefined}
+            onClick={(e) => {
+              if (isDraggingRef.current) {
+                e.stopPropagation();
+                return;
+              }
+              setLightboxImage(item);
+            }}
           >
             {item.url ? (
               <img 
@@ -324,6 +492,44 @@ function GallerySection({ slug }: { slug: string }) {
           {sequence[hoveredIdx].caption}
         </motion.div>
       )}
+
+      {/* Lightbox Overlay */}
+      <AnimatePresence>
+        {lightboxImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#090909]/80 backdrop-blur-md"
+            onClick={() => setLightboxImage(null)}
+            onWheel={(e) => e.stopPropagation()}
+            data-cursor="dot-only"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="relative max-w-[85vw] max-h-[80vh] flex flex-col items-center gap-6 cursor-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={lightboxImage.url}
+                alt={lightboxImage.caption || "Expanded gallery image"}
+                className="w-auto h-auto max-w-full max-h-[70vh] rounded-[16px] object-contain shadow-2xl"
+                draggable={false}
+              />
+              
+              {lightboxImage.caption && (
+                <div className="bg-white/10 backdrop-blur-lg border border-white/15 px-8 py-3 rounded-full text-[#fffcf3] font-['Inter_Display',sans-serif] font-medium text-[20px] tracking-[-0.6px] shadow-xl">
+                  {lightboxImage.caption}
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -674,7 +880,10 @@ function ProjectContent({ slug }: { slug: string }) {
               data-cursor={nextProject.hasContent ? "CLICK" : undefined}
             >
               <img
-                src={nextProject.image}
+                src={(() => {
+                  const localImgs = Object.entries(import.meta.glob<{ default: string }>('/src/assets/projects/**/*.{png,jpg,jpeg,webp,gif}', { eager: true })).filter(([path]) => path.includes(`/${nextProject.slug}/`) && !path.toLowerCase().includes("-arch"));
+                  return localImgs.length > 0 ? localImgs[0][1].default : nextProject.image;
+                })()}
                 alt={nextProject.title}
                 className="w-full h-full object-cover"
               />
@@ -754,7 +963,7 @@ function ProjectContent({ slug }: { slug: string }) {
         {/* Tags + Tech Icons row */}
         <div className="flex items-center justify-between mt-8 pb-8">
           {/* Tags */}
-          <div className="flex gap-[21px] flex-wrap">
+          <div className="flex gap-[21px] flex-wrap items-center">
             {project.tags.map((tag) => (
               <div
                 key={tag}
@@ -765,6 +974,21 @@ function ProjectContent({ slug }: { slug: string }) {
                 </span>
               </div>
             ))}
+            
+            {project.domain === "software" && project.githubUrl && (
+              <a 
+                href={project.githubUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                title="View Source on GitHub"
+                className="border-[0.297px] border-[#fffcf3] flex items-center justify-center p-[9px] rounded-[6px] size-[44px] bg-transparent overflow-hidden shrink-0 transition-opacity hover:opacity-70 ml-2"
+                data-cursor="CLICK"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFFCF3" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 0.296997C5.37 0.296997 0 5.67199 0 12.297C0 17.6 3.438 22.097 8.205 23.682C8.805 23.795 9.025 23.424 9.025 23.105C9.025 22.82 9.015 22.065 9.01 21.065C5.672 21.789 4.968 19.455 4.968 19.455C4.422 18.07 3.633 17.7 3.633 17.7C2.546 16.956 3.717 16.971 3.717 16.971C4.922 17.055 5.555 18.207 5.555 18.207C6.625 20.042 8.364 19.512 9.05 19.205C9.158 18.429 9.467 17.9 9.81 17.6C7.145 17.3 4.344 16.268 4.344 11.67C4.344 10.36 4.809 9.29 5.579 8.45C5.444 8.147 5.039 6.927 5.684 5.274C5.684 5.274 6.689 4.952 8.984 6.504C9.944 6.237 10.964 6.105 11.984 6.099C13.004 6.105 14.024 6.237 14.984 6.504C17.264 4.952 18.269 5.274 18.269 5.274C18.914 6.927 18.509 8.147 18.389 8.45C19.154 9.29 19.619 10.36 19.619 11.67C19.619 16.28 16.814 17.295 14.144 17.59C14.564 17.95 14.954 18.686 14.954 19.81C14.954 21.416 14.939 22.706 14.939 23.096C14.939 23.411 15.149 23.786 15.764 23.666C20.565 22.092 24 17.592 24 12.297C24 5.67199 18.627 0.296997 12 0.296997Z"/>
+                </svg>
+              </a>
+            )}
           </div>
 
           {/* Tech Stack Icons — 44.5px version */}
@@ -846,9 +1070,20 @@ function ProjectContent({ slug }: { slug: string }) {
             </div>
           </div>
 
-          {/* Center Paragraph */}
-          <div className="flex-1 max-w-[800px] mx-auto text-[#fffcf3] font-['Inter_Display',sans-serif] text-[28px] leading-[1.2] tracking-[-0.85px] text-center shrink-0 min-h-[220px]">
-            <CascadeText text={tabContent[displayTab]} trigger={tabTrigger} />
+          {/* Center Paragraph - Grid ensures height matches the longest text natively avoiding layout shift */}
+          <div className="flex-1 max-w-[800px] mx-auto text-[#fffcf3] font-['Inter_Display',sans-serif] text-[28px] leading-[1.2] tracking-[-0.85px] text-center shrink-0 grid items-start">
+            
+            {/* Invisible boundaries forcing the component to accommodate all paragraphs natively */}
+            {tabs.map((tab) => (
+               <div key={`ghost-${tab.key}`} className="col-start-1 row-start-1 invisible pointer-events-none whitespace-pre-wrap" aria-hidden="true">
+                 {tabContent[tab.key]}
+               </div>
+            ))}
+
+            {/* Active Rendered Animated Text */}
+            <div className="col-start-1 row-start-1 relative">
+              <CascadeText text={tabContent[displayTab]} trigger={tabTrigger} />
+            </div>
           </div>
 
           {/* Right Nav — mirrored, shares same hover state */}
@@ -895,6 +1130,38 @@ function ProjectContent({ slug }: { slug: string }) {
                 </div>
              )}
           </div>
+        </div>
+      )}
+
+      {/* ── TIMELAPSE VISUALIZATION ── */}
+      {project.timelapse && (
+        <div className="w-full max-w-[1920px] mx-auto flex flex-col mt-[100px] mb-[100px] px-6 sm:px-12 md:px-24">
+            <h3 className="font-['Inter_Display',sans-serif] text-[30px] font-medium text-[#FFFCF3] leading-normal tracking-[-0.9px] mb-8">
+              {project.timelapse.heading}
+            </h3>
+            
+            <div className="flex flex-col md:flex-row items-center justify-between gap-16">
+              {/* Left Side: Video Player */}
+              <div className="w-full md:w-[60%] flex justify-center shrink-0">
+                 {Object.entries(import.meta.glob<{ default: string }>('/src/assets/projects/**/*.mp4', { eager: true }))
+                   .find(([path]) => path.includes(`/projects/${project.slug}/`)) ? (
+                     <TimelapseVideoPlayer 
+                       videoSrc={Object.entries(import.meta.glob<{ default: string }>('/src/assets/projects/**/*.mp4', { eager: true })).find(([path]) => path.includes(`/projects/${project.slug}/`))?.[1].default || ""}
+                     />
+                 ) : (
+                    <div className="w-full h-[400px] border border-white/20 flex items-center justify-center text-white/50 font-['Inter_Display',sans-serif] rounded-[17px]">
+                      [Timelapse MP4 Block: Save your file inside src/assets/projects/{project.slug}/]
+                    </div>
+                 )}
+              </div>
+
+              {/* Right Side: Descriptive Block */}
+              <div className="w-full md:w-[40%] flex flex-col justify-center items-start text-left shrink-0">
+                <p className="font-['Inter_Display',sans-serif] text-[30px] font-medium text-[#FFF] leading-normal tracking-[-1.2px]">
+                  {project.timelapse.text}
+                </p>
+              </div>
+            </div>
         </div>
       )}
 

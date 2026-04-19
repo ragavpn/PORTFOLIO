@@ -29,6 +29,7 @@ import imgDocker from "../../assets/tech-icons/docker.svg";
 import imgCopilot from "../../assets/tech-icons/githubcopilot.svg";
 import imgMongo from "../../assets/tech-icons/mongodb.svg";
 import imgPostgres from "../../assets/tech-icons/postgresql.svg";
+import imgAws from "../../assets/tech-icons/aws.svg";
 type TechStackItem = {
   name: string;
   src: string;

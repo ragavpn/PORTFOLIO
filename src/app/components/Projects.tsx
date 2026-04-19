@@ -20,6 +20,9 @@ gsap.registerPlugin(ScrollTrigger);
 export function Projects() {
   const navigate = useNavigate();
 
+  // Load local projects dynamically to supply the hover preview
+  const allImages = import.meta.glob<{ default: string }>('/src/assets/projects/**/*.{png,jpg,jpeg,webp,gif}', { eager: true });
+
   const toSlug = (title: string) =>
     title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 
@@ -95,7 +98,7 @@ export function Projects() {
     window.history.pushState({}, "", url.toString());
   };
 
-  const defaultProjectsTitles = ["Internal Tool", "Causal Reasoning", "Nocaine", "Median", "Ballast"];
+  const defaultProjectsTitles = ["Internal Tool", "Causal Reasoning", "Hypothesis Interpolation", "Median", "Ballast"];
 
   const baseProjectsList = isExpanded 
        ? projects 
@@ -397,7 +400,11 @@ export function Projects() {
             {hoveredIndex !== null && (
               <motion.img
                 key={hoveredIndex}
-                src={projects[hoveredIndex].image}
+                src={(() => {
+                  const p = projects[hoveredIndex];
+                  const localImgs = Object.entries(allImages).filter(([path]) => path.includes(`/projects/${p.slug}/`) && !path.toLowerCase().includes("-arch"));
+                  return localImgs.length > 0 ? localImgs[0][1].default : p.image;
+                })()}
                 alt="Project Preview"
                 initial={{ opacity: 0, scale: 1.05 }}
                 animate={{ opacity: 1, scale: 1 }}

@@ -11,6 +11,7 @@ import imgMongo from "../../assets/tech-icons/mongodb.svg";
 import imgFlask from "../../assets/tech-icons/flask.svg";
 import imgPytorch from "../../assets/tech-icons/pytorch.svg";
 import imgDocker from "../../assets/tech-icons/docker.svg";
+import imgAws from "../../assets/tech-icons/aws.svg";
 
 export type ProjectData = {
   hasContent: boolean;
@@ -32,8 +33,13 @@ export type ProjectData = {
   whatWasDone: string[];
   whatWasBuilt: string[];
   hasArchitecture?: boolean;
+  timelapse?: {
+    heading: string;
+    text: string;
+  };
   nextProject: string;
   image: string;
+  githubUrl?: string;
 };
 
 export const projectsData: ProjectData[] = [
@@ -50,6 +56,7 @@ export const projectsData: ProjectData[] = [
     role: "Full Stack Developer",
     team: "Individual Project",
     liveUrl: null,
+    githubUrl: "https://github.com/ragavpn/EGA-Internal-Tool",
     techStack: [
       { name: "React", src: imgReact },
       { name: "TypeScript", src: imgTs },
@@ -91,6 +98,7 @@ export const projectsData: ProjectData[] = [
     role: "Machine Learning Engineer",
     team: "Team of 3",
     liveUrl: null,
+    githubUrl: "https://github.com/elegantShock2258/ged-fed-learning",
     techStack: [
       { name: "Python", src: imgPython },
       { name: "Docker", src: imgDocker },
@@ -110,15 +118,55 @@ export const projectsData: ProjectData[] = [
       "Experimental evaluation pipeline comparing performance against standard federated learning baselines",
       "Research-ready implementation supporting reproducible experiments and academic publication",
     ],
+    timelapse: {
+      heading: "LOCAL TRAINING TIMELAPSE",
+      text: "A visual simulation showing how client models evolve during local training by dynamically adding new nodes and connections through neuroevolution. Each round concludes with aggregation of client models into a global consensus model, illustrating the collaborative learning process across distributed participants."
+    },
     nextProject: "weld-detection",
     image: "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&q=80&w=1080",
+  },
+  {
+    hasContent: true,
+    slug: "hypothesis-interpolation",
+    title: "Hypothesis Interpolation",
+    displayTitle: "HYPOTHESIS INTERPOLATION",
+    index: 3,
+    totalProjects: 16,
+    domain: "software",
+    tags: ["Production ML Systems", "RLHF "],
+    category: "Enterprise Analytics",
+    role: "Machine Learning Engineer",
+    team: "4 Engineers + 2 PM",
+    liveUrl: null,
+    techStack: [
+      { name: "Python", src: imgPython },
+      { name: "AWS", src: imgAws },
+      { name: "Docker", src: imgDocker },
+    ],
+    overview: "Developed a production-ready system that converts decision-tree outputs into clear natural-language explanations for risk and business analysts. The solution improved interpretability of root cause analysis workflows by translating encoded logic into structured summaries while preserving logical accuracy and scalability. Development progressed through iterative experimentation and culminated in a hybrid summarization pipeline deployed into an internal staging production environment. In parallel, an experimental reinforcement learning workflow was implemented to refine generated summaries using structured user feedback.",
+    challenges: "Decision-tree models used in enterprise analytics generated highly technical outputs that were difficult for non-technical stakeholders to interpret. Analysts often relied on manual decoding of encoded logic, slowing investigation workflows and increasing cognitive overhead. The system needed to produce interpretable explanations at scale while meeting enterprise requirements for reliability, traceability, and deployment readiness. At the same time, the project explored methods to continuously improve summary quality using feedback - driven learning mechanisms.",
+    reflections: "This project demonstrated the transition from model experimentation to enterprise-grade deployment while maintaining reliability and interpretability requirements. It required balancing deterministic logic, generative modeling, and system engineering constraints within a production environment. The experience strengthened skills in system design, production readiness, and applied machine learning, while reinforcing the importance of usability and feedback-driven improvement in enterprise analytics systems.",
+    whatWasDone: [
+      "Designed and implemented multiple solution approaches including rule-based templates, transformer-based summarization, and a production-ready hybrid pipeline",
+      "Standardized and consolidated metadata from fragmented sources to enable consistent interpretation of encoded decision-tree conditions",
+      "Productionized the system through modular architecture design, automated testing, code quality validation, and deployment pipeline integration",
+      "Developed an experimental reinforcement learning with human feedback (RLHF) workflow to iteratively refine summary outputs based on structured user ratings and feedback"
+    ],
+    whatWasBuilt: [
+      "A hybrid summarization pipeline that converts decision-tree logic into concise natural-language explanations for business and risk analysts",
+      "An event-driven processing workflow triggered by incoming data files in cloud storage and integrated into internal analytics systems",
+      "A containerized service exposed through a REST API for seamless integration into enterprise workflows",
+      "A feedback-driven RLHF prototype capable of improving summary quality through iterative reward-based refinement"
+    ],
+    nextProject: "donkeycar",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1080",
   },
   {
     hasContent: true,
     slug: "nocaine",
     title: "Nocaine",
     displayTitle: "NOCAINE",
-    index: 3,
+    index: 4,
     totalProjects: 16,
     domain: "software",
     tags: ["Distributed Systems", "Cybercrime Detection", "Machine Learning"],
@@ -154,30 +202,6 @@ export const projectsData: ProjectData[] = [
     hasArchitecture: true,
     nextProject: "hypothesis-interpolation",
     image: "https://images.unsplash.com/photo-1608742213509-815b97c30b36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-  },
-  {
-    hasContent: false,
-    slug: "hypothesis-interpolation",
-    title: "Hypothesis Interpolation",
-    displayTitle: "HYPOTHESIS INTERPOLATION",
-    index: 4,
-    totalProjects: 16,
-    domain: "software",
-    tags: ["Data Science", "Python"],
-    category: "Data Science",
-    role: "Data Engineer",
-    team: "Individual Project",
-    liveUrl: null,
-    techStack: [
-      { name: "Python", src: imgPython },
-    ],
-    overview: "Coming soon.",
-    challenges: "Coming soon.",
-    reflections: "Coming soon.",
-    whatWasDone: [],
-    whatWasBuilt: [],
-    nextProject: "donkeycar",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1080",
   },
   {
     hasContent: false,
