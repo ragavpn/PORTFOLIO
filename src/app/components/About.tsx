@@ -130,7 +130,24 @@ export function About() {
         if (mouseConstraint.body) {
           mouseConstraint.body = null;
         }
+        mouse.button = -1; // Force Matter to drop left click internally
       };
+      
+      // Actively tracks the true native browser cursor since Matter.js internal coordinates 
+      // strictly freeze when the cursor escapes the internal DOM bounds
+      const handleGlobalPointerMove = (e: PointerEvent) => {
+        const rect = container.getBoundingClientRect();
+        // Force drop if the cursor visually escapes the strict spatial boundaries of the About section
+        if (e.clientY < rect.top || e.clientY > rect.bottom || e.clientX < rect.left || e.clientX > rect.right) {
+           if (mouseConstraint.body) {
+              mouseConstraint.body = null;
+           }
+           // Critically: Reset Matter.js internal "mousedown" state so it stops ghost-grabbing!
+           mouse.button = -1; 
+        }
+      };
+
+      window.addEventListener('pointermove', handleGlobalPointerMove);
       window.addEventListener('pointerup', handleGlobalPointerUp);
       window.addEventListener('pointercancel', handleGlobalPointerUp);
 
@@ -141,22 +158,9 @@ export function About() {
       runner = Runner.create();
       Runner.run(runner, engine);
 
-      let lastMouseX = 0;
-      let lastMouseY = 0;
-
-      // Apply the self-righting "weebles" effect and anti-hold mechanics!
+      // Apply the self-righting "weebles" effect mechanics!
       Matter.Events.on(engine, 'beforeUpdate', () => {
         
-        // Anti-Holding Physics: Calculate instantaneous mouse pointer speed
-        const mouseSpeed = Math.abs(mouse.position.x - lastMouseX) + Math.abs(mouse.position.y - lastMouseY);
-        lastMouseX = mouse.position.x;
-        lastMouseY = mouse.position.y;
-
-        // If the user tries to hold an item still in mid-air (speed drops below 2 pixels per tick), rip it out of their grip!
-        if (mouseConstraint.body && mouseSpeed < 2) {
-           mouseConstraint.body = null;
-        }
-
         // Clamp the internal mouse position to strictly prevent pulling items beyond visible walls/floors
         if (mouse.position.y > height - 30) {
           mouse.position.y = height - 30;
@@ -225,6 +229,7 @@ export function About() {
       // Store cleanup references in the engine plugin to clean up properly
       engine.plugin.cleanup = () => {
         window.removeEventListener("resize", handleResize);
+        window.removeEventListener('pointermove', handleGlobalPointerMove);
         window.removeEventListener('pointerup', handleGlobalPointerUp);
         window.removeEventListener('pointercancel', handleGlobalPointerUp);
         resizeObserver.disconnect();
