@@ -299,7 +299,7 @@ export function Navbar() {
 
               {/* Body: two-column layout matching Figma */}
               {/* Left col: "(Links)" label at ~49px, links list at ~41.8% from panel left */}
-              <div className="flex-1 flex flex-row px-[49px] pt-[100px] relative">
+              <div className="flex-1 w-full relative pt-[82px] overflow-y-auto">
 
                 {/* Left sidebar label */}
                 <div className="flex items-start gap-[4px] absolute left-[49px] top-[100px]">
@@ -311,8 +311,8 @@ export function Navbar() {
                   </sup>
                 </div>
 
-                {/* Links column — starts at ~41.8% of panel width = matches Figma's 400px / 960px */}
-                <div className="absolute left-[41%] right-[44px] top-[82px] flex flex-col">
+                {/* Links column — Uses normal document flow natively forcing scrolling logic instead of strict overlapping boundaries */}
+                <div className="w-full pl-[41%] pr-[44px] flex flex-col pb-8">
                   {menuLinks.map((link, idx) => (
                     <motion.div
                       key={link.num}
@@ -353,8 +353,8 @@ export function Navbar() {
                 </div>
               </div>
 
-              {/* Bottom bar — (Social Media) label left, social links in middle column, ©2026 right */}
-              <div className="px-[49px] pb-[44px] flex items-end justify-between relative">
+                {/* Bottom bar — (Social Media) label left, social links in middle column, ©2026 right */}
+              <div className="px-[49px] pb-[30px] pt-[20px] flex items-end justify-between relative shrink-0">
 
                 {/* (Social Media) label — left column */}
                 <p className="font-['Inter_Display',sans-serif] font-light leading-[0.87] opacity-50 text-[25px] text-black tracking-[-1.5px] whitespace-nowrap">
@@ -363,8 +363,8 @@ export function Navbar() {
 
                 {/* Social links — positioned at same 41% column as links list */}
                 <div
-                  className="absolute flex flex-col gap-[5px] font-['Inter_Display',sans-serif] text-[16px] text-black tracking-[-0.96px] leading-[0.87]"
-                  style={{ left: "41%" }}
+                  className="absolute flex flex-col gap-[7px] font-['Inter_Display',sans-serif] text-[16px] text-black tracking-[-0.96px] leading-[0.87]"
+                  style={{ left: "41%", bottom: "30px" }}
                 >
                   <a href="https://www.instagram.com/ragavwithouttheh" target="_blank" rel="noopener noreferrer" className="cursor-pointer hover:opacity-60 transition-opacity">Instagram — Personal</a>
                   <a href="https://www.instagram.com/rgxv.ui" target="_blank" rel="noopener noreferrer" className="cursor-pointer hover:opacity-60 transition-opacity">Instagram — Art</a>
