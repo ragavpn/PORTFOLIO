@@ -23,6 +23,20 @@ export function Projects() {
   // Load local projects dynamically to supply the hover preview
   const allImages = import.meta.glob<{ default: string }>('/src/assets/projects/**/*.{png,jpg,jpeg,webp,gif}', { eager: true });
 
+  // Shared helper — resolves the single best preview URL for any given project
+  const getPreviewSrc = (p: typeof projects[number]): string => {
+    const all = Object.entries(allImages).filter(([path]) =>
+      path.toLowerCase().includes(`/projects/${p.slug}/`)
+    );
+    const preview = all.find(([path]) => path.toLowerCase().includes("/preview."));
+    if (preview) return preview[1].default;
+    const gallery = all.filter(([path]) => {
+      const lower = path.toLowerCase();
+      return !lower.includes("-arch") && !lower.includes("app flow");
+    });
+    return gallery.length > 0 ? gallery[0][1].default : p.image;
+  };
+
   const toSlug = (title: string) =>
     title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 
@@ -75,6 +89,18 @@ export function Projects() {
 
     return () => timers.forEach(clearTimeout);
   }, [isExpanded, filterDomain]);
+
+  // Silently preload all project preview images on mount so hover popup is instant
+  useEffect(() => {
+    projects.forEach(p => {
+      const src = getPreviewSrc(p);
+      if (src) {
+        const img = new Image();
+        img.src = src;
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // URL State hook
   useEffect(() => {
@@ -400,21 +426,7 @@ export function Projects() {
             {hoveredIndex !== null && (
               <motion.img
                 key={hoveredIndex}
-                src={(() => {
-                  const p = projects[hoveredIndex];
-                  const all = Object.entries(allImages).filter(([path]) =>
-                    path.toLowerCase().includes(`/projects/${p.slug}/`)
-                  );
-                  // Prefer a file explicitly named "preview.*"
-                  const preview = all.find(([path]) => path.toLowerCase().includes("/preview."));
-                  if (preview) return preview[1].default;
-                  // Otherwise first gallery image (excluding special assets)
-                  const gallery = all.filter(([path]) => {
-                    const lower = path.toLowerCase();
-                    return !lower.includes("-arch") && !lower.includes("app flow");
-                  });
-                  return gallery.length > 0 ? gallery[0][1].default : p.image;
-                })()}
+                src={getPreviewSrc(projects[hoveredIndex])}
                 alt="Project Preview"
                 initial={{ opacity: 0, scale: 1.05 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -426,7 +438,6 @@ export function Projects() {
                     path.toLowerCase().includes(`/projects/${p.slug}/`)
                   );
                   const hasPreview = all.some(([path]) => path.toLowerCase().includes("/preview."));
-                  // preview image: fit to width, center vertically; mobile without preview: same; else: cover
                   if (hasPreview || p.mobileGallery) return "absolute left-0 top-1/2 -translate-y-1/2 w-full h-auto";
                   return "absolute inset-0 w-full h-full object-cover";
                 })()}
