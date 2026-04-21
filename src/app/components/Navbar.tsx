@@ -246,29 +246,6 @@ export function Navbar() {
                   backgroundSize: "180px 180px",
                 }}
               />
-
-              {/* Dynamic Blur "Flashlight" Blob */}
-              {/* Note: This is nested *above* the grain but inside the overlay 
-                  so that it locally intensifies blur beneath it visually */}
-              <motion.div
-                className="absolute w-[60vw] h-[60vh] rounded-full pointer-events-none mix-blend-overlay"
-                style={{
-                  background: "radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 70%)",
-                  filter: "blur(40px)",
-                }}
-                initial={{ left: "-20%", bottom: "-10%", opacity: 0 }}
-                animate={{
-                  left: ["-20%", "40%", "-20%"],
-                  bottom: ["-10%", "50%", "-10%"],
-                  opacity: isClosing ? 0 : [0.6, 1, 0.6],
-                }}
-                transition={{
-                  duration: 12,
-                  ease: "easeInOut",
-                  repeat: Infinity,
-                  opacity: { duration: 0.5 }
-                }}
-              />
             </motion.div>
 
             {/* ↙ Arrow button — sits at bottom-left of the LEFT half, outside the menu panel */}
