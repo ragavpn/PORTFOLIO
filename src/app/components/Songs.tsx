@@ -29,29 +29,28 @@ function ShiftLetter({ ch, className }: { ch: string; className?: string }) {
     setPhase(p);
   };
 
-  // Listen for the clone's transitionend â€” it finishes last (80ms delay + 550ms duration)
+  // Listen for the clone's transitionend — it finishes last (80ms delay + 550ms duration)
   React.useEffect(() => {
     const el = cloneRef.current;
     if (!el) return;
-    const onEnd = () => {
-      if (pendingReset.current) {
-        pendingReset.current = false;
-        updatePhase("ready"); // instant snap back (transition: none when "ready")
-      }
+    const onEnd = (e: TransitionEvent) => {
+      // Must filter out any overlapping transition bubbles (like color/opacity) implicitly
+      if (e.propertyName !== "transform") return;
+      
+      // Snaps back immediately visually seamlessly resetting the marquee lock
+      updatePhase("ready"); 
     };
-    el.addEventListener("transitionend", onEnd);
-    return () => el.removeEventListener("transitionend", onEnd);
+    el.addEventListener("transitionend", onEnd as EventListener);
+    return () => el.removeEventListener("transitionend", onEnd as EventListener);
   }, []);
 
   const handleEnter = () => {
-    pendingReset.current = false;
     if (phaseRef.current === "ready") updatePhase("playing");
   };
 
-  const handleLeave = () => {
-    // Don't reset immediately â€” mark it and let transitionend handle the cleanup
-    pendingReset.current = true;
-  };
+  // If the user's mouse leaves early, the physics just finishes the current cycle and snaps.
+  // If the user rests their mouse inside permanently, the cycle naturally resolves to ready seamlessly.
+  const handleLeave = () => {};
 
   if (ch === " ") {
     return <span className={className} style={{ display: "inline-block", width: "0.3em" }}>&nbsp;</span>;
