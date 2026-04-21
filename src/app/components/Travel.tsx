@@ -21,6 +21,7 @@ interface ParsedPolaroid {
   dateObj: Date; // For sorting
   isVideo: boolean;
   src: string;
+  poster?: string;
   rotate: number; // organic random
   xDev: number; // organic random
   zIndex: number;
@@ -30,6 +31,8 @@ const rawPolaroids: ParsedPolaroid[] = [];
 
 for (const [path, url] of Object.entries(importParams)) {
   const filename = path.split('/').pop() || '';
+  if (filename.includes('-poster')) continue;
+
   const match = filename.match(/^(.*?)\s*-\s*(\d{1,2})\.(\d{1,2})\.(\d{2,4})\.(jpg|jpeg|png|mp4|heic)$/i);
   
   let title = "Unknown";
@@ -55,13 +58,23 @@ for (const [path, url] of Object.entries(importParams)) {
   const rot = (hash % 600) / 100 - 3; // -3 to +3 degrees
   const xDev = (hash % 2400) / 100 - 12; // -12 to 12 pixels displacement
 
+  const isVideo = filename.toLowerCase().endsWith('.mp4');
+  let posterUrl = undefined;
+  if (isVideo) {
+    const posterFilename = filename.replace('.mp4', '-poster.jpg');
+    // Find the URL mapping via the native glob string
+    const posterEntry = Object.entries(importParams).find(([p]) => p.endsWith(posterFilename));
+    if (posterEntry) posterUrl = posterEntry[1];
+  }
+
   rawPolaroids.push({
     id: filename,
     title,
     date: dateStr,
     dateObj,
-    isVideo: filename.toLowerCase().endsWith('.mp4'),
+    isVideo,
     src: url as string,
+    poster: posterUrl as string | undefined,
     rotate: rot,
     xDev: xDev,
     zIndex: 0, // Assigned iteratively after sorting
@@ -84,19 +97,50 @@ const RIGHT_TEXT = "...travelling has felt\nmore like home than\nany house i've 
 const CHAR_MS = 35;
 
 // ── Intelligent Video Controller Component ──────────────────────────────────
-function VideoPolaroid({ src, isActive }: { src: string; isActive: boolean }) {
+function VideoPolaroid({ src, poster, isActive }: { src: string; poster?: string; isActive: boolean }) {
   const vidRef = useRef<HTMLVideoElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
   
+  // Just-In-Time Forward Loading Queue Controller
+  useEffect(() => {
+    const el = vidRef.current;
+    if (!el) return;
+    
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          obs.disconnect(); // Fire exactly once upon intersection entry
+        }
+      },
+      // Trigger preload 1000px before it formally enters the screen
+      { rootMargin: "1000px 0px" } 
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   // Power save and aesthetic constraint — strictly loop precisely only when top of stack
   useEffect(() => {
-    if (isActive) {
+    if (isActive && shouldLoad) {
       vidRef.current?.play().catch(() => {});
     } else {
       vidRef.current?.pause();
     }
-  }, [isActive]);
+  }, [isActive, shouldLoad]);
 
-  return <video ref={vidRef} src={src} muted loop playsInline className="absolute inset-0 w-full h-full object-cover pointer-events-none" />;
+  return (
+    <video 
+      ref={vidRef} 
+      src={shouldLoad ? src : undefined} 
+      poster={poster}
+      preload="none"
+      muted 
+      loop 
+      playsInline 
+      className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-filter duration-700 ease-out ${!shouldLoad ? 'blur-sm scale-110' : 'blur-0 scale-100'}`} 
+    />
+  );
 }
 
 
@@ -312,7 +356,7 @@ export function Travel() {
                   <div className="absolute left-[30.1px] top-[27.4px] w-[789.75px] h-[480px] flex flex-col gap-[28.6px]">
                     <div className="bg-black w-full h-[400.41px] rounded-[9.23px] shrink-0 overflow-hidden relative">
                       {p.isVideo ? (
-                        <VideoPolaroid src={p.src} isActive={activeIndex === i} />
+                        <VideoPolaroid src={p.src} poster={p.poster} isActive={activeIndex === i} />
                       ) : (
                         <img src={p.src} alt={p.title} className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
                       )}

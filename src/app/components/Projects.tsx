@@ -307,7 +307,7 @@ export function Projects() {
                    delay: i * (isExpanded ? 0.07 : 0.05) 
                 }}
                 key={project.title}
-                className={`flex flex-col w-full relative overflow-hidden ${project.hasContent ? "group cursor-pointer" : "group cursor-default opacity-40 hover:opacity-100 transition-opacity"}`}
+                className={`flex flex-col w-full relative ${project.hasContent ? "group cursor-pointer" : "group cursor-default opacity-40 hover:opacity-100 transition-opacity"}`}
                 onMouseEnter={() => setHoveredIndex(globalIndex)}
                 onClick={() => {
                   if (project.hasContent) handleProjectClick(project.title);
