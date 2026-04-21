@@ -296,15 +296,15 @@ export function Projects() {
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0, filter: "blur(4px)" }}
                 transition={{ 
-                   opacity: { duration: isExpanded ? 0.8 : 0.4 },
+                   opacity: { duration: isExpanded ? 0.8 : 0.4, delay: i * (isExpanded ? 0.07 : 0.05) },
                    height: { 
                       type: "spring", 
                       stiffness: isExpanded ? 80 : 160, 
                       damping: isExpanded ? 24 : 22, 
-                      mass: isExpanded ? 1.8 : 1.2 
+                      mass: isExpanded ? 1.8 : 1.2,
+                      delay: i * (isExpanded ? 0.07 : 0.05)
                    },
-                   filter: { duration: isExpanded ? 0.8 : 0.4 },
-                   delay: i * (isExpanded ? 0.07 : 0.05) 
+                   filter: { duration: isExpanded ? 0.8 : 0.4, delay: i * (isExpanded ? 0.07 : 0.05) },
                 }}
                 key={project.title}
                 className={`flex flex-col w-full relative ${project.hasContent ? "group cursor-pointer" : "group cursor-default opacity-40 hover:opacity-100 transition-opacity"}`}
