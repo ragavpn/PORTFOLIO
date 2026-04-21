@@ -52,13 +52,16 @@ export function About() {
     
     /** 
      * Construct static infinite-mass container walls natively trapping the dynamic tags.
-     * The floor executes a massive absolute thickness explicitly to prevent high-velocity
-     * tunneling glitches through the rigid body boundaries.
+     * Walls use extreme thickness (5000px) so even the highest-velocity bodies cannot
+     * tunnel through in a single physics tick. Walls are intentionally placed far outside
+     * the visible area so their inner face aligns exactly with the container edge.
+     * Left/right walls are taller than the container so corners are fully sealed.
      */
-    const ground = Bodies.rectangle(width / 2, height + 250, width * 2, 500, wallOptions);
-    const leftWall = Bodies.rectangle(-250, height / 2, 500, height * 4, wallOptions);
-    const rightWall = Bodies.rectangle(width + 250, height / 2, 500, height * 4, wallOptions);
-    const ceiling = Bodies.rectangle(width / 2, -50, width * 2, 100, wallOptions);
+    const wallThickness = 5000;
+    const ground  = Bodies.rectangle(width / 2,        height + wallThickness / 2, width + wallThickness * 2, wallThickness, wallOptions);
+    const ceiling = Bodies.rectangle(width / 2,        -wallThickness / 2,         width + wallThickness * 2, wallThickness, wallOptions);
+    const leftWall  = Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height + wallThickness * 2, wallOptions);
+    const rightWall = Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height + wallThickness * 2, wallOptions);
 
     Composite.add(engine.world, [ground, leftWall, rightWall, ceiling]);
 
@@ -189,6 +192,23 @@ export function About() {
           const balancingForce = 0.4; 
           
           body.torque = -(body.angle - targetAngle) * balancingForce;
+
+          // ── Velocity cap: prevent tunneling at extreme throw forces ──────────
+          const maxSpeed = 40;
+          const vx = body.velocity.x;
+          const vy = body.velocity.y;
+          const speed = Math.sqrt(vx * vx + vy * vy);
+          if (speed > maxSpeed) {
+            const scale = maxSpeed / speed;
+            Matter.Body.setVelocity(body, { x: vx * scale, y: vy * scale });
+          }
+
+          // ── Escape-hatch clamp: teleport back if body somehow slips out bounds ─
+          const margin = 10;
+          if (body.position.x < margin)           Matter.Body.setPosition(body, { x: margin, y: body.position.y });
+          if (body.position.x > width - margin)   Matter.Body.setPosition(body, { x: width - margin, y: body.position.y });
+          if (body.position.y < margin)            Matter.Body.setPosition(body, { x: body.position.x, y: margin });
+          if (body.position.y > height - margin)  Matter.Body.setPosition(body, { x: body.position.x, y: height - margin });
         });
       });
 
@@ -209,14 +229,15 @@ export function About() {
         if (!containerRef.current) return;
         width = containerRef.current.clientWidth;
         height = containerRef.current.clientHeight;
-        Matter.Body.setPosition(ground, { x: width / 2, y: height + 250 });
-        Matter.Body.setVertices(ground, Matter.Bodies.rectangle(width / 2, height + 250, width * 2, 500).vertices);
-        Matter.Body.setPosition(rightWall, { x: width + 250, y: height / 2 });
-        Matter.Body.setVertices(rightWall, Matter.Bodies.rectangle(width + 250, height / 2, 500, height * 4).vertices);
-        Matter.Body.setPosition(leftWall, { x: -250, y: height / 2 });
-        Matter.Body.setVertices(leftWall, Matter.Bodies.rectangle(-250, height / 2, 500, height * 4).vertices);
-        Matter.Body.setPosition(ceiling, { x: width / 2, y: -50 });
-        Matter.Body.setVertices(ceiling, Matter.Bodies.rectangle(width / 2, -50, width * 2, 100).vertices);
+        const wt = 5000;
+        Matter.Body.setPosition(ground,     { x: width / 2,          y: height + wt / 2 });
+        Matter.Body.setVertices(ground,     Matter.Bodies.rectangle(width / 2, height + wt / 2, width + wt * 2, wt).vertices);
+        Matter.Body.setPosition(ceiling,    { x: width / 2,          y: -wt / 2 });
+        Matter.Body.setVertices(ceiling,    Matter.Bodies.rectangle(width / 2, -wt / 2, width + wt * 2, wt).vertices);
+        Matter.Body.setPosition(leftWall,   { x: -wt / 2,            y: height / 2 });
+        Matter.Body.setVertices(leftWall,   Matter.Bodies.rectangle(-wt / 2, height / 2, wt, height + wt * 2).vertices);
+        Matter.Body.setPosition(rightWall,  { x: width + wt / 2,     y: height / 2 });
+        Matter.Body.setVertices(rightWall,  Matter.Bodies.rectangle(width + wt / 2, height / 2, wt, height + wt * 2).vertices);
       };
       window.addEventListener("resize", handleResize);
 

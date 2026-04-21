@@ -402,15 +402,34 @@ export function Projects() {
                 key={hoveredIndex}
                 src={(() => {
                   const p = projects[hoveredIndex];
-                  const localImgs = Object.entries(allImages).filter(([path]) => path.includes(`/projects/${p.slug}/`) && !path.toLowerCase().includes("-arch"));
-                  return localImgs.length > 0 ? localImgs[0][1].default : p.image;
+                  const all = Object.entries(allImages).filter(([path]) =>
+                    path.toLowerCase().includes(`/projects/${p.slug}/`)
+                  );
+                  // Prefer a file explicitly named "preview.*"
+                  const preview = all.find(([path]) => path.toLowerCase().includes("/preview."));
+                  if (preview) return preview[1].default;
+                  // Otherwise first gallery image (excluding special assets)
+                  const gallery = all.filter(([path]) => {
+                    const lower = path.toLowerCase();
+                    return !lower.includes("-arch") && !lower.includes("app flow");
+                  });
+                  return gallery.length > 0 ? gallery[0][1].default : p.image;
                 })()}
                 alt="Project Preview"
                 initial={{ opacity: 0, scale: 1.05 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="absolute inset-0 w-full h-full object-cover"
+                className={(() => {
+                  const p = projects[hoveredIndex];
+                  const all = Object.entries(allImages).filter(([path]) =>
+                    path.toLowerCase().includes(`/projects/${p.slug}/`)
+                  );
+                  const hasPreview = all.some(([path]) => path.toLowerCase().includes("/preview."));
+                  // preview image: fit to width, center vertically; mobile without preview: same; else: cover
+                  if (hasPreview || p.mobileGallery) return "absolute left-0 top-1/2 -translate-y-1/2 w-full h-auto";
+                  return "absolute inset-0 w-full h-full object-cover";
+                })()}
               />
             )}
           </AnimatePresence>

@@ -30,6 +30,7 @@ import imgCopilot from "../../assets/tech-icons/githubcopilot.svg";
 import imgMongo from "../../assets/tech-icons/mongodb.svg";
 import imgPostgres from "../../assets/tech-icons/postgresql.svg";
 import imgAws from "../../assets/tech-icons/aws.svg";
+import imgJupyter from "../../assets/tech-icons/jupyternotebook.svg";
 type TechStackItem = {
   name: string;
   src: string;
@@ -62,7 +63,9 @@ const TECH_STACK: TechStackItem[] = [
   { name: "Docker", src: imgDocker },
   { name: "Copilot", src: imgCopilot },
   { name: "MongoDB", src: imgMongo },
-  { name: "PostgreSQL", src: imgPostgres }
+  { name: "PostgreSQL", src: imgPostgres },
+  { name: "AWS", src: imgAws },
+  { name: "Jupyter", src: imgJupyter }
 ];
 
 export function TechMarquee() {

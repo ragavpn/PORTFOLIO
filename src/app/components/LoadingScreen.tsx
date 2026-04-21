@@ -66,21 +66,38 @@ export function LoadingScreen() {
   const hasRun = useRef(false);
 
   const isFirstVisit = !sessionStorage.getItem("portfolio_visited");
-  const counterDuration = isFirstVisit ? 7000 : 2500;
+  const counterDuration = isFirstVisit ? 5000 : 2500;
 
   useEffect(() => {
     if (hasRun.current) return;
     hasRun.current = true;
 
+    // Enforce scroll restoration override and clamp to top.
+    // Browser scroll restoration fires async (after JS) so we must fight it
+    // with a rAF loop for the first ~300ms to guarantee top-of-page on every load.
     if ("scrollRestoration" in history) {
       history.scrollRestoration = "manual";
     }
     window.scrollTo(0, 0);
 
+    let clampActive = true;
+    const clampToTop = () => {
+      if (!clampActive) return;
+      if (window.scrollY !== 0) window.scrollTo(0, 0);
+      requestAnimationFrame(clampToTop);
+    };
+    const clampRaf = requestAnimationFrame(clampToTop);
+    // Release the clamp after 300ms — the loading overlay is fully covering the page by then
+    const clampTimer = setTimeout(() => {
+      clampActive = false;
+      cancelAnimationFrame(clampRaf);
+    }, 300);
+
     if ((window as any).lenis) (window as any).lenis.stop();
     (window as any).__portfolioLoading = true;
 
     const runSequence = async () => {
+
       // ── Phase 1: Counter 000 → 100 via CSS ───────────────────────────────
       await new Promise<void>((r) => setTimeout(r, 60));
       
@@ -135,6 +152,11 @@ export function LoadingScreen() {
     };
 
     runSequence().catch(console.error);
+
+    return () => {
+      clampActive = false;
+      clearTimeout(clampTimer);
+    };
   }, []);
 
   if (!mounted) return null;
