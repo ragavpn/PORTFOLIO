@@ -296,18 +296,18 @@ export function Projects() {
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0, filter: "blur(4px)" }}
                 transition={{ 
-                   opacity: { duration: isExpanded ? 0.8 : 0.4, delay: i * (isExpanded ? 0.07 : 0.05) },
+                   opacity: { duration: 0.8, delay: i * 0.07 },
                    height: { 
                       type: "spring", 
-                      stiffness: isExpanded ? 80 : 160, 
-                      damping: isExpanded ? 24 : 22, 
-                      mass: isExpanded ? 1.8 : 1.2,
-                      delay: i * (isExpanded ? 0.07 : 0.05)
+                      stiffness: 80, 
+                      damping: 24, 
+                      mass: 1.8,
+                      delay: i * 0.07
                    },
-                   filter: { duration: isExpanded ? 0.8 : 0.4, delay: i * (isExpanded ? 0.07 : 0.05) },
+                   filter: { duration: 0.8, delay: i * 0.07 },
                 }}
                 key={project.title}
-                className={`flex flex-col w-full relative ${project.hasContent ? "group cursor-pointer" : "group cursor-default opacity-40 hover:opacity-100 transition-opacity"}`}
+                className={`flex flex-col w-full relative overflow-hidden ${project.hasContent ? "group cursor-pointer" : "group cursor-default opacity-40 hover:opacity-100 transition-opacity"}`}
                 onMouseEnter={() => setHoveredIndex(globalIndex)}
                 onClick={() => {
                   if (project.hasContent) handleProjectClick(project.title);
@@ -348,7 +348,7 @@ export function Projects() {
                   </div>
 
                   {/* Calculated Virtual Index */}
-                  <span className={`font-['Instrument_Serif'] italic text-white leading-[0.87] opacity-80 group-hover:opacity-100 transition-all duration-300 ${isExpanded ? "text-[clamp(20px,2vw,30px)]" : "text-[clamp(24px,3vw,37px)]"}`}>
+                  <span className={`font-['Instrument_Serif'] italic text-white leading-[0.87] opacity-80 group-hover:opacity-100 transition-all duration-300 pr-3 shrink-0 ${isExpanded ? "text-[clamp(20px,2vw,30px)]" : "text-[clamp(24px,3vw,37px)]"}`}>
                     {String(i + 1).padStart(2, '0')}
                   </span>
                 </motion.div>
