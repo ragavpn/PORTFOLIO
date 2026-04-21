@@ -283,9 +283,8 @@ export function Navbar() {
             {/* Right-half menu panel */}
             <motion.div
               key="menu"
-              className="fixed top-0 right-0 z-[99998] bg-[#fffcf3] flex flex-col"
+              className="fixed top-0 right-0 z-[99998] bg-[#fffcf3] flex flex-col w-full md:w-[50vw] h-screen"
               data-cursor="dot-only"
-              style={{ width: "50vw", height: "100vh" }}
               initial={{ y: "-100%" }}
               animate={{ y: isClosing ? "-100%" : "0%" }}
               transition={{ delay: isClosing ? 0.5 : 0, duration: 1.2, ease: MENU_EASE }}

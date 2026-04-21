@@ -134,7 +134,7 @@ export function Hero() {
           </svg>
         </div>
 
-        {/* â”€â”€ Sub-text (Desktop) â”€â”€ */}
+        {/* ── Sub-text (Desktop) ── */}
         <div
           className={`hidden md:flex flex-col font-sans items-center justify-center text-[#090909] tracking-[-0.02em] font-light uppercase whitespace-nowrap z-20 mx-[0px] my-[5px] ${baseTransition}`}
           style={{
@@ -145,10 +145,10 @@ export function Hero() {
             transitionDelay: revealed ? "800ms" : "0ms",
           }}
         >
-          <p className="font-['Inter',sans-serif] m-[0px] text-[44px] tracking-[-3px]">
+          <p className="font-['Inter',sans-serif] m-[0px] text-[clamp(24px,3vw,44px)] tracking-[-0.05em]">
             I'm a Software Engineer currently working
           </p>
-          <p className="font-['Inter',sans-serif] text-[44px] mx-[0px] my-[-15px] tracking-[-3px]">
+          <p className="font-['Inter',sans-serif] text-[clamp(24px,3vw,44px)] mx-[0px] mt-[0px] mb-[-15px] tracking-[-0.05em]">
             @ CAPITAL ONE IN BLR
           </p>
         </div>

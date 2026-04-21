@@ -664,8 +664,8 @@ function GallerySection({ slug, mobile }: { slug: string; mobile?: boolean }) {
             className={[
               "shrink-0 relative rounded-[17px] overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center group cursor-pointer",
               mobile
-                ? "w-[360px] aspect-[393/852]"   // iPhone 16 portrait: 393×852
-                : "w-[871px] aspect-video",       // 16:9 landscape default
+                ? "w-full max-w-[360px] aspect-[393/852]"
+                : "w-full max-w-[871px] aspect-video",
             ].join(" ")}
             onMouseEnter={(e) => handleMouseEnter(idx, e)}
             onMouseLeave={handleMouseLeave}
@@ -1098,7 +1098,7 @@ function ProjectContent({ slug }: { slug: string }) {
           {/* Top Divider */}
           <div className="absolute top-[180px] left-10 right-10 h-px bg-white/20" />
           {/* Center Column Container */}
-          <div className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] w-[650px] flex flex-col items-start mt-[10px]">
+          <div className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] w-full max-w-[650px] flex flex-col items-start mt-[10px]">
             {/* Project counter (Aligned to Top-Left of Image) */}
             <div className="relative w-[166px] h-[38px] mb-[16px] shrink-0">
               <span className="absolute left-0 top-0 font-['Inter_Display',sans-serif] font-semibold text-[20px] text-[#fffcf3] tracking-[-0.6px]">
@@ -1332,7 +1332,7 @@ function ProjectContent({ slug }: { slug: string }) {
         <div className="flex items-start justify-between w-full gap-8 pb-24">
 
           {/* Left Nav — ellipse measured from real DOM */}
-          <div className="relative w-[200px] shrink-0" ref={navContainerRef}>
+          <div className="hidden lg:block relative w-[200px] shrink-0" ref={navContainerRef}>
             <motion.div
               className="absolute left-0 w-[7px] h-[7px] rounded-full bg-[#fffcf3] pointer-events-none"
               animate={{ top: ellipseY }}
@@ -1373,7 +1373,7 @@ function ProjectContent({ slug }: { slug: string }) {
           </div>
 
           {/* Right Nav — mirrored, shares same hover state */}
-          <div className="relative w-[200px] shrink-0">
+          <div className="hidden lg:block relative w-[200px] shrink-0">
             <motion.div
               className="absolute right-0 w-[7px] h-[7px] rounded-full bg-[#fffcf3] pointer-events-none"
               animate={{ top: ellipseY }}
@@ -1519,7 +1519,7 @@ function ProjectContent({ slug }: { slug: string }) {
           className="w-full bg-[#fffcf3] relative overflow-hidden"
           style={{ y: processY, opacity: processOpacity }}
         >
-          <div className="px-[98px] pt-[72px] pb-[100px] max-w-[1920px] mx-auto">
+          <div className="px-6 md:px-[98px] pt-[72px] pb-[100px] max-w-[1920px] mx-auto">
             {/* Heading */}
             <div className="text-center mb-6">
               <h2
@@ -1528,7 +1528,7 @@ function ProjectContent({ slug }: { slug: string }) {
               >
                 THE PROCESS
               </h2>
-              <p className="font-['Inter_Display',sans-serif] font-medium text-[36px] text-black tracking-[-1.3px]">
+              <p className="font-['Inter_Display',sans-serif] font-medium text-[clamp(20px,2vw,36px)] text-black tracking-[-1.3px]">
                 <MoveUpText>FROM CONCEPT TO REALITY</MoveUpText>
               </p>
             </div>
@@ -1537,9 +1537,9 @@ function ProjectContent({ slug }: { slug: string }) {
             <div className="w-full h-px bg-black/60 my-10" />
 
             {/* Two columns */}
-            <div ref={processListRef} className="flex items-start justify-between gap-16 mt-12">
+            <div ref={processListRef} className="flex flex-col md:flex-row items-start justify-between gap-10 lg:gap-16 mt-12">
               {/* Design Approach / What was done */}
-              <div className="flex-1">
+              <div className="flex-1 w-full">
                 <p className="font-['Inter_Display',sans-serif] font-semibold text-[26px] text-black tracking-[-0.8px] mb-7">
                   <MoveUpText>{project.domain === "design" ? "DESIGN APPROACH" : "WHAT WAS DONE"}</MoveUpText>
                 </p>
@@ -1551,7 +1551,7 @@ function ProjectContent({ slug }: { slug: string }) {
               </div>
 
               {/* Deliverables / What was built */}
-              <div className="flex-1">
+              <div className="flex-1 w-full mt-4 md:mt-0">
                 <p className="font-['Inter_Display',sans-serif] font-semibold text-[26px] text-black tracking-[-0.8px] mb-7">
                   <MoveUpText>{project.domain === "design" ? "DELIVERABLES" : "WHAT WAS BUILT"}</MoveUpText>
                 </p>
