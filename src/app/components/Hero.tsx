@@ -148,7 +148,7 @@ export function Hero() {
           <p className="font-['Inter',sans-serif] m-[0px] text-[clamp(24px,3vw,44px)] tracking-[-0.05em]">
             I'm a Software Engineer currently working
           </p>
-          <p className="font-['Inter',sans-serif] text-[clamp(24px,3vw,44px)] mx-[0px] mt-[0px] mb-[-15px] tracking-[-0.05em]">
+          <p className="font-['Inter',sans-serif] text-[clamp(24px,3vw,44px)] mx-[0px] mt-[-15px] mb-[-15px] tracking-[-0.05em]">
             @ CAPITAL ONE IN BLR
           </p>
         </div>
