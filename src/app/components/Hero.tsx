@@ -145,10 +145,10 @@ export function Hero() {
             transitionDelay: revealed ? "800ms" : "0ms",
           }}
         >
-          <p className="font-['Inter',sans-serif] font-normal m-[0px] text-[clamp(24px,3vw,44px)] tracking-[-0.05em]">
+          <p className="font-['Inter',sans-serif] font-light m-[0px] text-[clamp(24px,3vw,44px)] tracking-[-0.05em]">
             Creative Developer living in Bangalore,
           </p>
-          <p className="font-['Inter',sans-serif] font-normal text-[clamp(24px,3vw,44px)] mx-[0px] mt-[-15px] mb-[-15px] tracking-[-0.05em]">
+          <p className="font-['Inter',sans-serif] font-light text-[clamp(24px,3vw,44px)] mx-[0px] mt-[-15px] mb-[-15px] tracking-[-0.05em]">
             Freelancer, and working @ CAPITAL ONE
           </p>
         </div>
