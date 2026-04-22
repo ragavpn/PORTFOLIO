@@ -611,37 +611,55 @@ function GallerySection({ slug, mobile }: { slug: string; mobile?: boolean }) {
   const sourceItems = hasImages ? projectImages : placeholders;
   const sequence = [...sourceItems, ...sourceItems, ...sourceItems];
 
-  useAnimationFrame((_, delta) => {
+  const lastUpdateRef = useRef(0);
+  const globalMouseRef = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const trackGlobalMouse = (e: MouseEvent) => {
+      globalMouseRef.current.x = e.clientX;
+      globalMouseRef.current.y = e.clientY;
+      tooltipX.set(e.clientX);
+      tooltipY.set(e.clientY);
+    };
+    window.addEventListener("mousemove", trackGlobalMouse, { passive: true });
+    return () => window.removeEventListener("mousemove", trackGlobalMouse);
+  }, [tooltipX, tooltipY]);
+
+  useAnimationFrame((time, delta) => {
     if (lightboxImage) return;
     const velocity = isHovered ? -0.05 : -0.3;
     baseX.set(baseX.get() + velocity * (delta / 1000));
-  });
 
+    // Throttle DOM intersection checks to ~15fps (every 66ms) to keep it perfectly performant
+    if (time - lastUpdateRef.current > 66) {
+      lastUpdateRef.current = time;
 
-  const handleMouseEnter = (idx: number, e: React.MouseEvent) => {
-    setHoveredIdx(idx);
-    setTooltipVisible(true);
-    // Fire synthetic physics update structurally bridging data-cursor drop with CustomCursor event engine accurately using real DOM events!
-    const targetEl = document.elementFromPoint(e.clientX, e.clientY);
-    if (targetEl) {
-      targetEl.dispatchEvent(new MouseEvent('mousemove', { clientX: e.clientX, clientY: e.clientY, bubbles: true }));
+      // Ensure the CustomCursor synchronizes when the gallery drags or auto-scrolls
+      window.dispatchEvent(new Event("force-cursor-update"));
+
+      // Dynamically determine which gallery item is currently under the stationary mouse
+      const targetEl = document.elementFromPoint(globalMouseRef.current.x, globalMouseRef.current.y);
+      const galleryItem = targetEl?.closest('[data-gallery-idx]');
+      if (galleryItem) {
+        const idx = parseInt(galleryItem.getAttribute("data-gallery-idx") || "-1", 10);
+        if (idx !== -1 && idx !== hoveredIdx) {
+          setHoveredIdx(idx);
+          setTooltipVisible(true);
+        }
+      } else {
+        if (hoveredIdx !== null) {
+          setHoveredIdx(null);
+          setTooltipVisible(false);
+        }
+      }
     }
-  };
-  const handleMouseLeave = () => {
-    setHoveredIdx(null);
-    setTooltipVisible(false);
-  };
-  const handleMouseMove = (e: React.MouseEvent) => {
-    tooltipX.set(e.clientX);
-    tooltipY.set(e.clientY);
-  };
+  });
 
   return (
     <div
       className="w-full bg-[#090909] py-16 overflow-hidden relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onMouseMove={handleMouseMove}
     >
       <motion.div
         className="flex gap-[31px] w-max"
@@ -663,14 +681,13 @@ function GallerySection({ slug, mobile }: { slug: string; mobile?: boolean }) {
         {sequence.map((item, idx) => (
           <div
             key={idx}
+            data-gallery-idx={idx}
             className={[
               "shrink-0 relative rounded-[17px] overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center group cursor-pointer",
               mobile
                 ? "w-full max-w-[360px] aspect-[393/852]"
                 : "w-full max-w-[871px] aspect-video",
             ].join(" ")}
-            onMouseEnter={(e) => handleMouseEnter(idx, e)}
-            onMouseLeave={handleMouseLeave}
             onClick={(e) => {
               if (isDraggingRef.current) {
                 e.stopPropagation();

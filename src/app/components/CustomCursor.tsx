@@ -134,6 +134,7 @@ export function CustomCursor() {
 
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("force-cursor-update", onScroll);
 
     let rafId: number;
     let lastTime = performance.now();
@@ -182,6 +183,7 @@ export function CustomCursor() {
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("force-cursor-update", onScroll);
       cancelAnimationFrame(rafId);
       document.body.style.cursor = "auto";
     };
