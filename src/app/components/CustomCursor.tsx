@@ -102,6 +102,8 @@ export function CustomCursor() {
         setCursorMode("HERO_TITLE");
       } else if (attr === "drag") {
         setCursorMode("DRAG");
+      } else if (attr === "drag-click") {
+        setCursorMode("DRAG_CLICK");
       } else if (attr === "play") {
         setCursorMode("PLAY");
       } else if (attr === "pause") {
@@ -188,6 +190,17 @@ export function CustomCursor() {
 
   const renderTextPaths = () => {
     switch (cursorMode) {
+      case "DRAG_CLICK":
+        return (
+          <>
+            <textPath href="#circleTextPath" startOffset="0%">
+              DRAG
+            </textPath>
+            <textPath href="#circleTextPath" startOffset="50%">
+              CLICK
+            </textPath>
+          </>
+        );
       case "PLAY":
         return (
           <>

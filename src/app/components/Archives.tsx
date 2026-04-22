@@ -660,6 +660,7 @@ export function Archives() {
               key={i}
               className="absolute bg-transparent overflow-hidden" 
               onClick={() => enterZoomMode(i)}
+              data-cursor="drag-click"
             >
               <img 
                 id={`grid-img-${i}`}
