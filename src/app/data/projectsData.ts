@@ -13,12 +13,27 @@ import imgPytorch from "../../assets/tech-icons/pytorch.svg";
 import imgDocker from "../../assets/tech-icons/docker.svg";
 import imgAws from "../../assets/tech-icons/aws.svg";
 import imgJupyter from "../../assets/tech-icons/jupyternotebook.svg";
-import imgDonkeyCar from "../../assets/projects/donkeycar/image.png";
 import imgMedianAppFlow from "../../assets/projects/median/app flow.png";
 import imgBallastAppFlow from "../../assets/projects/ballast/app flow.png";
 import imgHomebaseAppFlow from "../../assets/projects/homebase/app flow.png";
 import imgEventozoAppFlow from "../../assets/projects/eventozo/app flow.png";
 import imgInstagram from "../../assets/icons/instagram.svg";
+// ── Project preview images (bundled by Vite for instant availability) ──────
+import previewInternalTool from "../../assets/projects/internal-tool/preview.png";
+import previewCausalReasoning from "../../assets/projects/causal-reasoning/preview.png";
+import previewHypothesisInterp from "../../assets/projects/hypothesis-interpolation/preview.png";
+import previewNocaine from "../../assets/projects/nocaine/preview.png";
+import previewDonkeycar from "../../assets/projects/donkeycar/preview.png";
+import previewAiTherapist from "../../assets/projects/ai-therapist/preview.png";
+import previewWeldDetection from "../../assets/projects/weld-detection/preview.jpg";
+import previewCosmicCarnage from "../../assets/projects/cosmic-carnage/preview.png";
+import previewNeuron from "../../assets/projects/neuron/preview.png";
+import previewMedian from "../../assets/projects/median/preview.png";
+import previewBallast from "../../assets/projects/ballast/preview.png";
+import previewHomebase from "../../assets/projects/homebase/preview.png";
+import previewEventozo from "../../assets/projects/eventozo/preview.png";
+import previewPragyan from "../../assets/projects/pragyan-2026/preview.png";
+
 
 export type ProjectData = {
   hasContent: boolean;
@@ -93,7 +108,7 @@ export const projectsData: ProjectData[] = [
       "Administrative portal for device registration and inspection monitoring",
     ],
     nextProject: "ai-therapist",
-    image: "https://images.unsplash.com/photo-1720962158883-b0f2021fb51e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: previewInternalTool,
   },
   {
     hasContent: true,
@@ -133,7 +148,7 @@ export const projectsData: ProjectData[] = [
       text: "A visual simulation showing how client models evolve during local training by dynamically adding new nodes and connections through neuroevolution. Each round concludes with aggregation of client models into a global consensus model, illustrating the collaborative learning process across distributed participants."
     },
     nextProject: "weld-detection",
-    image: "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&q=80&w=1080",
+    image: previewCausalReasoning,
   },
   {
     hasContent: true,
@@ -169,7 +184,7 @@ export const projectsData: ProjectData[] = [
       "A feedback-driven RLHF prototype capable of improving summary quality through iterative reward-based refinement"
     ],
     nextProject: "donkeycar",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1080",
+    image: previewHypothesisInterp,
   },
   {
     hasContent: true,
@@ -211,7 +226,7 @@ export const projectsData: ProjectData[] = [
     ],
     hasArchitecture: true,
     nextProject: "hypothesis-interpolation",
-    image: "https://images.unsplash.com/photo-1608742213509-815b97c30b36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: previewNocaine,
   },
   {
     hasContent: true,
@@ -247,7 +262,7 @@ export const projectsData: ProjectData[] = [
       "Reproducible experimentation setup for autonomous driving research"
     ],
     nextProject: "causal-reasoning",
-    image: imgDonkeyCar,
+    image: previewDonkeycar,
     skipGallery: true,
   },
   {
@@ -286,7 +301,7 @@ export const projectsData: ProjectData[] = [
       "Conceptual speech interaction mode for multilingual emotional input recognition"
     ],
     nextProject: "nocaine",
-    image: "https://images.unsplash.com/photo-1775440285627-ce48346bc58c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: previewAiTherapist,
   },
   {
     hasContent: true,
@@ -323,7 +338,7 @@ export const projectsData: ProjectData[] = [
     ],
     skipGallery: true,
     nextProject: "cosmic-carnage",
-    image: "https://besgroup.com/services/testing/non-destructive-testing/radiography/",
+    image: previewWeldDetection,
   },
   {
     hasContent: true,
@@ -359,7 +374,7 @@ export const projectsData: ProjectData[] = [
     ],
     skipGallery: false,
     nextProject: "neuron",
-    image: "https://images.unsplash.com/photo-1614294149010-950b698f72c0?auto=format&fit=crop&q=80&w=1080",
+    image: previewCosmicCarnage,
   },
   {
     hasContent: true,
@@ -398,7 +413,7 @@ export const projectsData: ProjectData[] = [
     ],
     skipGallery: false,
     nextProject: "median",
-    image: "https://images.unsplash.com/photo-1620712948343-0008cc890662?auto=format&fit=crop&q=80&w=1080",
+    image: previewNeuron,
   },
   {
     hasContent: true,
@@ -436,7 +451,7 @@ export const projectsData: ProjectData[] = [
     appFlowImage: imgMedianAppFlow,
     mobileGallery: true,
     nextProject: "ballast",
-    image: "https://images.unsplash.com/photo-1706509511838-4b101f379ef3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: previewMedian,
   },
   {
     hasContent: true,
@@ -475,7 +490,7 @@ export const projectsData: ProjectData[] = [
     appFlowImage: imgBallastAppFlow,
     mobileGallery: true,
     nextProject: "homebase",
-    image: "https://images.unsplash.com/photo-1773611814475-e80ea69a4f2c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: previewBallast,
   },
   {
     hasContent: true,
@@ -513,7 +528,7 @@ export const projectsData: ProjectData[] = [
     appFlowText: "The application flow guides users from authentication into the main dashboard where they can browse events, place bets through the bet slip, track performance through analytics, and manage account activity. Each section is connected through a consistent navigation structure that supports quick interactions and continuous engagement.",
     appFlowImage: imgHomebaseAppFlow,
     nextProject: "eventozo",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1080",
+    image: previewHomebase,
   },
   {
     hasContent: true,
@@ -549,7 +564,7 @@ export const projectsData: ProjectData[] = [
     appFlowText: "The application flow guides event planners through discovering organizers, reviewing services, initiating bookings, and managing event reservations. The platform also supports organizers listing venues for rent through a dedicated portal, enabling a complete marketplace experience for event planning and hosting.",
     appFlowImage: imgEventozoAppFlow,
     nextProject: "pragyan-2026",
-    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1080",
+    image: previewEventozo,
   },
   {
     hasContent: true,
@@ -584,7 +599,7 @@ export const projectsData: ProjectData[] = [
     ],
     instagramUrl: "https://www.instagram.com/p/DUX_u9ejRy6/?img_index=1",
     nextProject: "internal-tool",
-    image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1080",
+    image: previewPragyan,
   },
 ];
 

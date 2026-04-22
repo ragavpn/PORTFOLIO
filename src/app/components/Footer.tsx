@@ -183,7 +183,9 @@ export function Footer() {
             </p>
 
             <a
-              href="mailto:ragavpn2005@gmail.com"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=ragavpn2005@gmail.com&su=Connecting%20from%20your%20portfolio&body=Hi%20Ragav%2C%0D%0A%0D%0AI%20saw%20your%20portfolio%20and%20would%20love%20to%20connect%20with%20you%20further.%0D%0A%0D%0AThanks%20and%20regards%2C%0D%0A%5BYour%20Name%5D"
+              target="_blank"
+              rel="noopener noreferrer"
               onMouseEnter={() => setEmailHovered(true)}
               onMouseLeave={() => setEmailHovered(false)}
               style={{ display: "flex", alignItems: "center", gap: 16, textDecoration: "none" }}

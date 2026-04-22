@@ -903,18 +903,31 @@ function ProjectContent({ slug }: { slug: string }) {
           exit.remove(); // ← prevents orphaned black div accumulation
         };
       } else {
-        // Next Project Slide Up
-        const t = setTimeout(() => setPageVisible(true), 30);
+        // Next Project Slide Up or SPA Nav from Home
+        const bar = document.getElementById("project-transition-bar");
+        const overlay = document.getElementById("project-transition-overlay");
+
+        // Force the bar to 100% immediately now that the component has actually mounted
+        if (bar) {
+          bar.style.transition = "width 0.3s ease-out, opacity 0.4s ease-out 0.3s";
+          bar.style.width = "100%";
+          bar.style.opacity = "0";
+        }
+
+        // Wait for the bar to hit 100% before revealing the page
+        const tVis = setTimeout(() => setPageVisible(true), 300);
+        
+        // Remove overlay and bar from DOM only AFTER the 1.4s slide-up finishes covering it
         const tClean = setTimeout(() => {
-          document.getElementById("project-transition-overlay")?.remove();
-          document.getElementById("project-transition-bar")?.remove();
-        }, 1600);
+          overlay?.remove();
+          bar?.remove();
+        }, 1800);
+
         return () => {
-          clearTimeout(t);
+          clearTimeout(tVis);
           clearTimeout(tClean);
-          // Also remove overlays if component unmounts mid-transition
-          document.getElementById("project-transition-overlay")?.remove();
-          document.getElementById("project-transition-bar")?.remove();
+          overlay?.remove();
+          bar?.remove();
         };
       }
     } else {
@@ -1025,17 +1038,17 @@ function ProjectContent({ slug }: { slug: string }) {
     const bar = document.createElement("div");
     bar.id = "project-transition-bar";
     bar.style.cssText =
-      `position:fixed;top:0;left:0;height:4px;background:#fffcf3;width:0%;z-index:${localZIndex + 2};transition:width 1.1s cubic-bezier(0.16,1,0.3,1);`;
+      `position:fixed;top:0;left:0;height:4px;background:#fffcf3;width:0%;z-index:${localZIndex + 2};transition:width 10s cubic-bezier(0.1, 1, 0.3, 1);pointer-events:none;`;
     document.body.appendChild(bar);
     requestAnimationFrame(() => {
       // Opacity reduced down by ~15% from 0.97
       overlay.style.opacity = "0.70";
-      bar.style.width = "100%";
+      bar.style.width = "85%";
     });
     setTimeout(() => {
       sessionStorage.setItem("portfolio_nav", "1");
       navigate(`/${nextProject.slug}`);
-    }, 1200);
+    }, 350);
   };
 
   const handleHome = () => handleExit();
@@ -1098,7 +1111,10 @@ function ProjectContent({ slug }: { slug: string }) {
           {/* Top Divider */}
           <div className="absolute top-[180px] left-10 right-10 h-px bg-white/20" />
           {/* Center Column Container */}
-          <div className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] w-full max-w-[650px] flex flex-col items-start mt-[10px]">
+          <div 
+            className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] flex flex-col items-start mt-[10px]"
+            style={{ width: 'min(85vw, 650px, 60vh * 1.77)' }}
+          >
             {/* Project counter (Aligned to Top-Left of Image) */}
             <div className="relative w-[166px] h-[38px] mb-[16px] shrink-0">
               <span className="absolute left-0 top-0 font-['Inter_Display',sans-serif] font-semibold text-[20px] text-[#fffcf3] tracking-[-0.6px]">
@@ -1120,23 +1136,7 @@ function ProjectContent({ slug }: { slug: string }) {
               data-cursor={nextProject.hasContent ? "CLICK" : undefined}
             >
               <img
-                src={(() => {
-                  const all = Object.entries(import.meta.glob<{ default: string }>('/src/assets/projects/**/*.{png,jpg,jpeg,webp,gif}', { eager: true }))
-                    .filter(([path]) => path.toLowerCase().includes(`/${nextProject.slug}/`));
-                  // Prefer a file explicitly named "preview.*"
-                  const preview = all.find(([path]) => path.toLowerCase().includes("/preview."));
-                  if (preview) return preview[1].default;
-                  // Otherwise first gallery image (excluding special assets)
-                  const gallery = all.filter(([path]) => {
-                    const lower = path.toLowerCase();
-                    return !lower.includes("-arch")
-                      && !lower.includes("flow_diagram")
-                      && !lower.includes("rlhf_approach")
-                      && !lower.includes("intra_predictor")
-                      && !lower.includes("app flow");
-                  });
-                  return gallery.length > 0 ? gallery[0][1].default : nextProject.image;
-                })()}
+                src={nextProject.image}
                 alt={nextProject.title}
                 className="w-full h-full object-cover object-top"
               />

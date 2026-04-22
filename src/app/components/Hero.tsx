@@ -172,7 +172,7 @@ export function Hero() {
 
       {/* ── Hero image (Desktop: absolute positioned) ── */}
       <div
-        className={`hidden md:block absolute right-[5%] top-[30%] w-[30vw] max-w-[360px] z-30 overflow-hidden rounded-2xl ${baseTransition}`}
+        className={`hidden md:block absolute right-[2%] xl:right-[5%] top-[30%] w-[clamp(100px,25vw,360px)] z-30 overflow-hidden rounded-2xl ${baseTransition}`}
         data-name="Hero Image"
         style={{
           opacity: revealed ? 1 : 0,

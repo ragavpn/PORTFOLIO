@@ -500,7 +500,9 @@ function ContactUs() {
 
         {/* Email row */}
         <a
-          href="mailto:ragavpn2005@gmail.com"
+          href="https://mail.google.com/mail/?view=cm&fs=1&to=ragavpn2005@gmail.com&su=Connecting%20from%20your%20portfolio&body=Hi%20Ragav%2C%0D%0A%0D%0AI%20saw%20your%20portfolio%20and%20would%20love%20to%20connect%20with%20you%20further.%0D%0A%0D%0AThanks%20and%20regards%2C%0D%0A%5BYour%20Name%5D"
+          target="_blank"
+          rel="noopener noreferrer"
           data-cursor="dot-only"
           onMouseEnter={() => setEmailHovered(true)}
           onMouseLeave={() => setEmailHovered(false)}
@@ -705,6 +707,11 @@ export function Art() {
     let lastY = 0;
     let hasMoved = false;
 
+    // ── Window-level cursor position tracker (used by scroll handler) ────
+    const clientPos = { x: -1, y: -1 };
+    const trackMouse = (e: MouseEvent) => { clientPos.x = e.clientX; clientPos.y = e.clientY; };
+    window.addEventListener('mousemove', trackMouse, { passive: true });
+
     const handleMouseMove = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -724,13 +731,17 @@ export function Art() {
       }
 
       const distance = Math.hypot(x - lastX, y - lastY);
-      const spawnDistance = 20;
+      const spawnDistance = 30;
 
       if (distance < spawnDistance * scale) return;
 
       lastX = x;
       lastY = y;
+      spawnImage(x, y);
+    };
 
+    // ── Shared image spawner ─────────────────────────────────────────────
+    function spawnImage(x: number, y: number) {
       const img = document.createElement("img");
       img.src = cursorImages[imgIndex % cursorImages.length];
       img.className = "absolute pointer-events-none object-contain overflow-visible";
@@ -759,14 +770,43 @@ export function Art() {
         if (container.contains(img)) {
           container.removeChild(img);
         }
-      }, 600);
+      }, 500);
+    }
+
+    // ── Scroll handler: section moves under cursor → spawn images ────────
+    const handleScroll = () => {
+      if (clientPos.x < 0) return;
+      const rect = container.getBoundingClientRect();
+      const x = clientPos.x - rect.left;
+      const y = clientPos.y - rect.top;
+
+      // Only spawn in trail zone
+      if (x < 0 || x > rect.width || y < 0 || y > 900 * scale) return;
+
+      if (!hasMoved) { lastX = x; lastY = y; hasMoved = true; }
+
+      const distance = Math.hypot(x - lastX, y - lastY);
+      // Use a smaller threshold on scroll so it feels responsive
+      if (distance < 8 * scale) return;
+
+      lastX = x;
+      lastY = y;
+      spawnImage(x, y);
     };
 
     const section = containerRef.current?.parentElement;
     if (section) {
       section.addEventListener("mousemove", handleMouseMove as EventListener);
-      return () => section.removeEventListener("mousemove", handleMouseMove as EventListener);
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      return () => {
+        section.removeEventListener("mousemove", handleMouseMove as EventListener);
+        window.removeEventListener("scroll", handleScroll);
+        window.removeEventListener("mousemove", trackMouse);
+      };
     }
+    return () => {
+      window.removeEventListener("mousemove", trackMouse);
+    };
   }, [scale]);
 
   return (

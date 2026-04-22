@@ -47,23 +47,21 @@ export function CustomCursor() {
       (el as HTMLElement).style.cursor = "none";
     });
 
-    const onMouseMove = (e: MouseEvent) => {
-      mouse.current.x = e.clientX;
-      mouse.current.y = e.clientY;
-      if (!isVisible) setIsVisible(true);
-
+    // ── Shared cursor state evaluator ─────────────────────────────────────
+    // Called from both mousemove AND scroll so state updates without mouse movement.
+    const evaluateCursor = (clientX: number, clientY: number, target: Element | null) => {
       // Check if cursor is inside the Art image trail zone
       const artZone = document.getElementById("art-trail-zone");
       if (artZone) {
         const rect = artZone.getBoundingClientRect();
-        const relY = e.clientY - rect.top;
+        const relY = clientY - rect.top;
         const scale = rect.height / 3700;
         const trailHeight = 900 * scale;
         if (
           relY >= 0 &&
           relY <= trailHeight &&
-          e.clientX >= rect.left &&
-          e.clientX <= rect.right
+          clientX >= rect.left &&
+          clientX <= rect.right
         ) {
           setIsCursorHidden(false);
           setIsDotOnlyMode(true);
@@ -71,10 +69,9 @@ export function CustomCursor() {
         }
       }
 
-      const target = e.target as HTMLElement;
-      const cursorTarget = target.closest(
+      const cursorTarget = target?.closest(
         "[data-cursor], a, button, [role='button']"
-      );
+      ) ?? null;
 
       if (!cursorTarget) {
         setIsCursorHidden(false);
@@ -120,19 +117,53 @@ export function CustomCursor() {
       }
     };
 
+    const onMouseMove = (e: MouseEvent) => {
+      mouse.current.x = e.clientX;
+      mouse.current.y = e.clientY;
+      if (!isVisible) setIsVisible(true);
+      evaluateCursor(e.clientX, e.clientY, e.target as Element);
+    };
+
+    // Re-evaluate on scroll — the page moves under the cursor without any mouse event
+    const onScroll = () => {
+      const el = document.elementFromPoint(mouse.current.x, mouse.current.y);
+      evaluateCursor(mouse.current.x, mouse.current.y, el);
+    };
+
     window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("scroll", onScroll, { passive: true });
 
     let rafId: number;
-    const update = () => {
-      dotCursor.current.x += (mouse.current.x - dotCursor.current.x) * 0.8;
-      dotCursor.current.y += (mouse.current.y - dotCursor.current.y) * 0.8;
+    let lastTime = performance.now();
 
-      // For hero-title mode, slow the ring lerp way down so the big circle trails dreamily
-      const ringLerp = cursorMode === "HERO_TITLE" ? 0.04 : 0.055;
-      circleCursor.current.x +=
-        (mouse.current.x - circleCursor.current.x) * ringLerp;
-      circleCursor.current.y +=
-        (mouse.current.y - circleCursor.current.y) * ringLerp;
+    const update = (now: number) => {
+      // Delta time in seconds, capped at 50ms (20fps floor) to prevent huge jumps after tab-switch
+      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      lastTime = now;
+
+      // Time-normalised lerp factor: at 60fps dt≈0.0167, factor≈(1-(1-k)^(dt/targetDt))
+      // We target the same "feel" as k=0.8 at 60fps for the dot, k=0.055 for the ring
+      const dotFactor    = 1 - Math.pow(1 - 0.8,   dt * 60);
+      const normalLerp   = 1 - Math.pow(1 - 0.055, dt * 60);
+      const heroLerp     = 1 - Math.pow(1 - 0.04,  dt * 60);
+      const ringFactor   = cursorMode === "HERO_TITLE" ? heroLerp : normalLerp;
+
+      dotCursor.current.x += (mouse.current.x - dotCursor.current.x) * dotFactor;
+      dotCursor.current.y += (mouse.current.y - dotCursor.current.y) * dotFactor;
+
+      // If the ring has fallen too far behind (e.g. after a fast flick), snap it closer
+      const dx = mouse.current.x - circleCursor.current.x;
+      const dy = mouse.current.y - circleCursor.current.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist > 150) {
+        // Snap ring to within 150px of the real cursor so it never visibly lags
+        const ratio = (dist - 150) / dist;
+        circleCursor.current.x += dx * ratio;
+        circleCursor.current.y += dy * ratio;
+      }
+
+      circleCursor.current.x += (mouse.current.x - circleCursor.current.x) * ringFactor;
+      circleCursor.current.y += (mouse.current.y - circleCursor.current.y) * ringFactor;
 
       if (dotRef.current) {
         dotRef.current.style.transform = `translate3d(${dotCursor.current.x}px, ${dotCursor.current.y}px, 0)`;
@@ -144,13 +175,15 @@ export function CustomCursor() {
       rafId = requestAnimationFrame(update);
     };
 
-    update();
+    rafId = requestAnimationFrame(update);
 
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(rafId);
       document.body.style.cursor = "auto";
     };
+
   }, [isVisible, cursorMode]);
 
   const renderTextPaths = () => {

@@ -20,22 +20,7 @@ gsap.registerPlugin(ScrollTrigger);
 export function Projects() {
   const navigate = useNavigate();
 
-  // Load local projects dynamically to supply the hover preview
-  const allImages = import.meta.glob<{ default: string }>('/src/assets/projects/**/*.{png,jpg,jpeg,webp,gif}', { eager: true });
 
-  // Shared helper — resolves the single best preview URL for any given project
-  const getPreviewSrc = (p: typeof projects[number]): string => {
-    const all = Object.entries(allImages).filter(([path]) =>
-      path.toLowerCase().includes(`/projects/${p.slug}/`)
-    );
-    const preview = all.find(([path]) => path.toLowerCase().includes("/preview."));
-    if (preview) return preview[1].default;
-    const gallery = all.filter(([path]) => {
-      const lower = path.toLowerCase();
-      return !lower.includes("-arch") && !lower.includes("app flow");
-    });
-    return gallery.length > 0 ? gallery[0][1].default : p.image;
-  };
 
   const toSlug = (title: string) =>
     title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
@@ -55,22 +40,27 @@ export function Projects() {
     const bar = document.createElement("div");
     bar.id = "project-transition-bar";
     bar.style.cssText =
-      "position:fixed;top:0;left:0;height:4px;background:#fffcf3;width:0%;z-index:10000;transition:width 1.1s cubic-bezier(0.16,1,0.3,1);pointer-events:none;";
+      "position:fixed;top:0;left:0;height:4px;background:#fffcf3;width:0%;z-index:10000;transition:width 10s cubic-bezier(0.1, 1, 0.3, 1);pointer-events:none;";
     document.body.appendChild(bar);
     requestAnimationFrame(() => {
       overlay.style.opacity = "0.97"; // Near-opaque to hide transition
-      bar.style.width = "100%";
+      bar.style.width = "85%"; // Slowly crawl to 85% until component mounts
     });
     if ((window as any).lenis) (window as any).lenis.stop();
     sessionStorage.setItem("portfolio_nav", "1");
-    // Navigate WHILE overlay is still covering the screen
-    setTimeout(() => navigate(`/${slug}`), 1200);
+    // Wait just enough for overlay to cover screen, then trigger React route load
+    setTimeout(() => navigate(`/${slug}`), 350);
   };
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [filterDomain, setFilterDomain] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  // Tracks last known cursor viewport position so scroll listener can use elementFromPoint
+  const lastClientPos = useRef({ x: -1, y: -1 });
+  // Motion values for smooth mouse tracking — start off-screen to avoid top-left flash
+  const mouseX = useMotionValue(-9999);
+  const mouseY = useMotionValue(-9999);
   
   /**
    * Brute-force GSAP trigger offsets sequentially along Framer Layout transitions.
@@ -90,16 +80,63 @@ export function Projects() {
     return () => timers.forEach(clearTimeout);
   }, [isExpanded, filterDomain]);
 
+  // Update cursor position on window mousemove so scroll listener always has fresh coords
+  // Also drive mouseX/mouseY so the popup tracks the cursor even during scroll
+  useEffect(() => {
+    const track = (e: MouseEvent) => {
+      lastClientPos.current = { x: e.clientX, y: e.clientY };
+      // Keep popup position in sync with the cursor at all times
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (rect) {
+        mouseX.set(e.clientX - rect.left);
+        mouseY.set(e.clientY - rect.top);
+      }
+    };
+    window.addEventListener('mousemove', track, { passive: true });
+    return () => window.removeEventListener('mousemove', track);
+  }, [mouseX, mouseY]);
+
+  // When the page scrolls, re-check which project row is under the stationary cursor
+  // Also update popup position since the container moves relative to viewport on scroll
+  useEffect(() => {
+    const onScroll = () => {
+      const { x, y } = lastClientPos.current;
+      if (x < 0) return; // cursor never entered viewport yet
+
+      // Always keep popup coords fresh (container rect changes as page scrolls)
+      const section = containerRef.current;
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        mouseX.set(x - rect.left);
+        mouseY.set(y - rect.top);
+      }
+
+      const el = document.elementFromPoint(x, y);
+      const row = el?.closest('[data-global-index]') as HTMLElement | null;
+      if (row) {
+        const idx = parseInt(row.dataset.globalIndex ?? '-1', 10);
+        if (idx >= 0) { setHoveredIndex(idx); return; }
+      }
+      // Cursor is over the section but not a project row — clear popup
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+          setHoveredIndex(null);
+        }
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [mouseX, mouseY]);
+
   // Silently preload all project preview images on mount so hover popup is instant
   useEffect(() => {
     projects.forEach(p => {
-      const src = getPreviewSrc(p);
-      if (src) {
+      if (p.image) {
         const img = new Image();
-        img.src = src;
+        img.src = p.image;
       }
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // URL State hook
@@ -154,16 +191,13 @@ export function Projects() {
     }
   };
 
-  // Motion values for smooth mouse tracking
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
   const springConfig = { damping: 25, stiffness: 200, mass: 0.5 };
   const x = useSpring(mouseX, springConfig);
   const y = useSpring(mouseY, springConfig);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!containerRef.current) return;
+    lastClientPos.current = { x: e.clientX, y: e.clientY };
     const rect = containerRef.current.getBoundingClientRect();
     mouseX.set(e.clientX - rect.left);
     mouseY.set(e.clientY - rect.top);
@@ -322,17 +356,18 @@ export function Projects() {
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0, filter: "blur(4px)" }}
                 transition={{ 
-                   opacity: { duration: 0.8, delay: i * 0.07 },
+                   opacity: { duration: 0.4, delay: i * 0.04 },
                    height: { 
                       type: "spring", 
-                      stiffness: 80, 
-                      damping: 24, 
-                      mass: 1.8,
-                      delay: i * 0.07
+                      stiffness: 120, 
+                      damping: 20, 
+                      mass: 1.0,
+                      delay: i * 0.04
                    },
-                   filter: { duration: 0.8, delay: i * 0.07 },
+                   filter: { duration: 0.4, delay: i * 0.04 },
                 }}
                 key={project.title}
+                data-global-index={globalIndex}
                 className={`flex flex-col w-full relative overflow-hidden ${project.hasContent ? "group cursor-pointer" : "group cursor-default opacity-40 hover:opacity-100 transition-opacity"}`}
                 onMouseEnter={() => setHoveredIndex(globalIndex)}
                 onClick={() => {
@@ -422,28 +457,26 @@ export function Projects() {
 
         {/* Browser Content (Project Image) */}
         <div className="flex-1 relative bg-black overflow-hidden">
-          <AnimatePresence mode="popLayout">
-            {hoveredIndex !== null && (
+          {projects.map((p, index) => {
+            const isActive = hoveredIndex === index;
+            return (
               <motion.img
-                key={hoveredIndex}
-                src={getPreviewSrc(projects[hoveredIndex])}
-                alt="Project Preview"
-                initial={{ opacity: 0, scale: 1.05 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
+                key={p.slug}
+                src={p.image}
+                alt={`${p.title} Preview`}
+                initial={false}
+                animate={{
+                  opacity: isActive ? 1 : 0,
+                  scale: isActive ? 1 : 1.05,
+                }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className={(() => {
-                  const p = projects[hoveredIndex];
-                  const all = Object.entries(allImages).filter(([path]) =>
-                    path.toLowerCase().includes(`/projects/${p.slug}/`)
-                  );
-                  const hasPreview = all.some(([path]) => path.toLowerCase().includes("/preview."));
-                  if (hasPreview || p.mobileGallery) return "absolute left-0 top-1/2 -translate-y-1/2 w-full h-auto";
-                  return "absolute inset-0 w-full h-full object-cover";
-                })()}
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{
+                  zIndex: isActive ? 10 : 0,
+                }}
               />
-            )}
-          </AnimatePresence>
+            );
+          })}
         </div>
       </motion.div>
     </section>
