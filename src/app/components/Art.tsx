@@ -349,7 +349,7 @@ function Frame30() {
 function Frame31() {
   return (
     <div className="content-stretch flex gap-[28px] items-center relative shrink-0">
-      <p className="font-['Inter_Display:Regular',sans-serif] leading-[1.02] not-italic relative shrink-0 text-[#fffcf3] text-[122.528px] tracking-[-2.4506px] whitespace-nowrap">LETâ€™S </p>
+      <p className="font-['Inter_Display:Regular',sans-serif] leading-[1.02] not-italic relative shrink-0 text-[#fffcf3] text-[122.528px] tracking-[-2.4506px] whitespace-nowrap">LET'S </p>
       <Frame32 />
       <Frame30 />
     </div>
@@ -365,7 +365,7 @@ function Frame33() {
   );
 }
 
-// â”€â”€ SOCIAL LINK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SOCIAL LINK ──────────────────────────────────────────────────────────────────
 function SocialLink({ href, label, iconSrc, iconW, iconH }: {
   href: string;
   label: string;
@@ -415,7 +415,7 @@ function SocialLink({ href, label, iconSrc, iconW, iconH }: {
   );
 }
 
-// â”€â”€ CONTACT US (blue card) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CONTACT US (blue card) ───────────────────────────────────────────────────────
 function ContactUs() {
   const [emailHovered, setEmailHovered] = React.useState(false);
 
@@ -432,7 +432,7 @@ function ContactUs() {
       data-cursor="scroll"
       style={{ position: 'absolute', overflow: 'visible' }}
     >
-      {/* â”€â”€ LET'S [starburst] IMAGINE / TOGETHER. â”€â”€ */}
+      {/* ── LET'S [starburst] IMAGINE / TOGETHER. ── */}
       <div
         className="absolute flex flex-col items-start"
         style={{ left: 53.57, top: 67, width: 1244.43 }}
@@ -480,7 +480,7 @@ function ContactUs() {
         </p>
       </div>
 
-      {/* â”€â”€ NAME + EMAIL â”€â”€ */}
+      {/* ── NAME + EMAIL ── */}
       <div
         className="absolute flex flex-col"
         style={{ left: 53.57, top: 411.03, gap: 11 }}
@@ -529,7 +529,7 @@ function ContactUs() {
         </a>
       </div>
 
-      {/* â”€â”€ SOCIAL LINKS â”€â”€ */}
+      {/* ── SOCIAL LINKS ── */}
       <div
         className="absolute flex items-center"
         style={{ left: 53.57, top: 534.03, gap: 23.798 }}
@@ -539,7 +539,7 @@ function ContactUs() {
         <SocialLink href="https://www.behance.net/ragavpn"             label="Behance"   iconSrc={behanceSrc}   iconW={33.622} iconH={32.781} />
       </div>
 
-      {/* â”€â”€ 2026 â”€â”€ */}
+      {/* ── 2026 ── */}
       <p
         className="absolute"
         style={{
@@ -557,7 +557,7 @@ function ContactUs() {
         2026
       </p>
 
-      {/* â”€â”€ PORTFOLIO WORDMARK SVG â”€â”€ */}
+      {/* ── PORTFOLIO WORDMARK SVG ── */}
       <div
         className="absolute"
         style={{ height: 698.868, left: 584.23, top: 396.65, width: 713.767 }}
@@ -569,7 +569,7 @@ function ContactUs() {
         />
       </div>
 
-      {/* â”€â”€ STICKER (top left of card) â”€â”€ */}
+      {/* ── STICKER (top left of card) ── */}
       <div
         className="absolute flex flex-col items-start px-[75px]"
         style={{ left: -2, top: 62 }}
@@ -742,6 +742,8 @@ export function Art() {
 
     // ── Shared image spawner ─────────────────────────────────────────────
     function spawnImage(x: number, y: number) {
+      if (!container) return;
+      
       const img = document.createElement("img");
       img.src = cursorImages[imgIndex % cursorImages.length];
       img.className = "absolute pointer-events-none object-contain overflow-visible";
@@ -767,7 +769,7 @@ export function Art() {
       });
 
       setTimeout(() => {
-        if (container.contains(img)) {
+        if (container && container.contains(img)) {
           container.removeChild(img);
         }
       }, 500);

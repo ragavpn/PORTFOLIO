@@ -59,7 +59,7 @@ import { imgVector } from "./svg-pa1my";
 function Frame27() {
   return (
     <div className="content-stretch flex flex-col font-['Inter_Display:Light',sans-serif] items-center justify-center leading-[normal] not-italic pb-[5px] relative shrink-0 text-[#090909] text-[47px] text-center tracking-[-1.41px] uppercase whitespace-nowrap">
-      <p className="relative shrink-0">Iâ€™m a Software Engineer currently working</p>
+      <p className="relative shrink-0">I’m a Software Engineer currently working</p>
       <p className="relative shrink-0">@ CAPITAL ONE IN BLR</p>
     </div>
   );
@@ -68,9 +68,9 @@ function Frame27() {
 function Frame140() {
   return (
     <div className="absolute content-stretch flex flex-col gap-[7px] items-center left-[357.88px] top-[254.11px] w-[1189.465px]">
-      <div className="h-[310.012px] relative shrink-0 w-[1189.465px]" data-name="Hi, Iâ€™m Ragav">
+      <div className="h-[310.012px] relative shrink-0 w-[1189.465px]" data-name="Hi, I’m Ragav">
         <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 1189.46 310.012">
-          <g id="Hi, IÃ¢Â€Â™m Ragav">
+          <g id="Hi, I’m Ragav">
             <path d={svgPaths.p197bf980} fill="var(--fill-0, #090909)" />
             <path d={svgPaths.p39f16080} fill="var(--fill-0, #090909)" />
             <path d={svgPaths.p1c08f280} fill="var(--fill-0, #090909)" />
@@ -846,7 +846,7 @@ function Content() {
   return (
     <div className="content-stretch flex font-['Just_Another_Hand:Regular',sans-serif] items-center justify-between leading-[85.62999725341797%] relative shrink-0 text-[77px] w-full" data-name="Content">
       <p className="h-[139px] opacity-50 relative shrink-0 w-[402px]">Growing up in the UAE to doing my bachelors in South India..</p>
-      <p className="h-[139px] opacity-50 relative shrink-0 text-right w-[402px]">...travelling has felt more like home than any house iâ€™ve lived in.</p>
+      <p className="h-[139px] opacity-50 relative shrink-0 text-right w-[402px]">...travelling has felt more like home than any house i’ve lived in.</p>
     </div>
   );
 }
@@ -1246,7 +1246,7 @@ function Tag() {
         </div>
       </div>
       <div className="-translate-x-full absolute font-['Inter_Display:Regular',sans-serif] h-[156px] leading-[0] left-[176px] not-italic text-[19px] text-right text-white top-[154px] tracking-[-1.14px] w-[81px] whitespace-pre-wrap">
-        <p className="leading-[1.04] mb-0">A Music Loverâ€™s Worst Nightmare</p>
+        <p className="leading-[1.04] mb-0">A Music Lover’s Worst Nightmare</p>
         <p className="leading-[1.04] mb-0">&nbsp;</p>
         <p className="leading-[1.04]">{` - Picking their Top Songs`}</p>
       </div>
@@ -1477,7 +1477,7 @@ function Frame107() {
   return (
     <div className="content-stretch flex flex-col font-['Inter_Display:Medium',sans-serif] items-start leading-[0.96] not-italic relative shrink-0 text-[19px] w-[223px]">
       <p className="relative shrink-0 text-black w-full">NOT OK</p>
-      <p className="relative shrink-0 text-[rgba(0,0,0,0.5)] w-full">EVERYONEâ€™S A STAR</p>
+      <p className="relative shrink-0 text-[rgba(0,0,0,0.5)] w-full">EVERYONE’S A STAR</p>
     </div>
   );
 }
@@ -1665,7 +1665,7 @@ function Frame127() {
   return (
     <div className="content-stretch flex flex-col font-['Inter_Display:Medium',sans-serif] items-start leading-[0.96] not-italic relative shrink-0 text-[19px] w-[223px]">
       <p className="relative shrink-0 text-black w-full">NOT OK</p>
-      <p className="relative shrink-0 text-[rgba(0,0,0,0.5)] w-full">EVERYONEâ€™S A STAR</p>
+      <p className="relative shrink-0 text-[rgba(0,0,0,0.5)] w-full">EVERYONE’S A STAR</p>
     </div>
   );
 }
@@ -5085,7 +5085,7 @@ function Frame1() {
     <div className="h-[265px] mb-[-64px] relative shrink-0 w-[1202px]">
       <p className="absolute font-['Instrument_Serif:Regular',sans-serif] left-0 opacity-50 text-[186px] top-0 tracking-[-5.58px]">The</p>
       <p className="absolute font-['Sloop_Script:Regular',sans-serif] left-[250px] text-[197px] top-[17px]">Creativity</p>
-      <p className="absolute font-['Instrument_Serif:Regular',sans-serif] left-[826px] opacity-50 text-[186px] top-0 tracking-[-5.58px]">doesnâ€™t</p>
+      <p className="absolute font-['Instrument_Serif:Regular',sans-serif] left-[826px] opacity-50 text-[186px] top-0 tracking-[-5.58px]">doesn’t</p>
     </div>
   );
 }
@@ -5380,7 +5380,7 @@ function Frame149() {
 function Frame150() {
   return (
     <div className="content-stretch flex gap-[28px] items-center relative shrink-0">
-      <p className="font-['Inter_Display:Regular',sans-serif] leading-[1.02] not-italic relative shrink-0 text-[#fffcf3] text-[122.528px] tracking-[-2.4506px] whitespace-nowrap">{`LETâ€™S `}</p>
+      <p className="font-['Inter_Display:Regular',sans-serif] leading-[1.02] not-italic relative shrink-0 text-[#fffcf3] text-[122.528px] tracking-[-2.4506px] whitespace-nowrap">{`LET’S `}</p>
       <Frame151 />
       <Frame149 />
     </div>

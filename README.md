@@ -34,9 +34,5 @@ A high-performance, interactive portfolio built with **React**, **Vite**, **GSAP
    npm run build
    ```
 
-## 🎨 Design
-
-The project is based on the [PORTFOLIO Figma Design](https://www.figma.com/design/pTMkl5nhxrgAkc8autFV13/PORTFOLIO). All interaction physics (damping, friction, and easing) are calibrated to match high-end creative gallery references.
-
 ---
 *Created by Ragav Palaniswamy*

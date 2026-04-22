@@ -68,6 +68,14 @@ const TECH_STACK: TechStackItem[] = [
   { name: "Jupyter", src: imgJupyter }
 ];
 
+/**
+ * Infinite Scrolling Technologies Marquee Component.
+ * 
+ * Maps a duplicated array of technology icons across an infinitely looping CSS animation.
+ * The marquee uses CSS `translateX` for high-performance hardware-accelerated scrolling.
+ * 
+ * @returns {JSX.Element} Fluid infinite scrolling marquee banner.
+ */
 export function TechMarquee() {
   const [isHovered, setIsHovered] = useState(false);
   const baseX = useMotionValue(0);

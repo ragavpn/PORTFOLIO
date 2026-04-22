@@ -359,6 +359,13 @@ export function Archives() {
     return { minX, maxX, minY, maxY };
   };
 
+  /**
+   * Calculates the target zoom scalar based on the selected mode.
+   * "FIT" dynamically computes maximum bounds against current viewport limits.
+   * 
+   * @param {string} mode - The requested zoom preset ("ZOOM_OUT", "NORMAL", "ZOOM_IN", "FIT").
+   * @returns {number} The absolute scalar float to apply to the coordinate grid.
+   */
   const getTargetZoom = (mode: string) => {
     if (mode === "ZOOM_OUT") return 0.3;
     if (mode === "NORMAL") return 0.6;
@@ -373,6 +380,13 @@ export function Archives() {
     return Math.max(0.1, Math.min(2.0, Math.min(fitW, fitH)));
   };
 
+  /**
+   * Handles user-driven zoom scaling transitions.
+   * Calculates structural gap modifications and explicitly clamps focal coordinates
+   * securely against viewport dimensions before smoothly interpolating the GSAP matrix.
+   * 
+   * @param {string} mode - The requested zoom level string.
+   */
   const handleZoomChange = (mode: string) => {
     if (activeImageIndex !== null) {
        closeZoomMode();
@@ -468,7 +482,10 @@ export function Archives() {
     });
   };
 
-  // Click & Expand System
+  /**
+   * Smoothly unmounts the active zoomed image split-screen modal.
+   * Re-initializes physics Draggable limits securely upon exit completion.
+   */
   const closeZoomMode = () => {
     if (activeImageIndex === null || !sectionRef.current) return;
     audioSystem.current.play("close");

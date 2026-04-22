@@ -118,7 +118,7 @@ export function About() {
       Composite.add(engine.world, mouseConstraint);
 
       // Prevent holding: instantly drop objects when clicked, but give them a fun "pop" push!
-      Matter.Events.on(mouseConstraint, 'mousedown', (event) => {
+      Matter.Events.on(mouseConstraint, 'mousedown', (event: any) => {
         const clickedBody = Matter.Query.point(bodies, event.mouse.position)[0];
         if (clickedBody) {
           // Apply an upward "pop" force, angled slightly away from where you clicked
@@ -131,7 +131,7 @@ export function About() {
       // it drops the object properly when coming back.
       const handleGlobalPointerUp = () => {
         if (mouseConstraint.body) {
-          mouseConstraint.body = null;
+          mouseConstraint.body = null as unknown as Matter.Body;
         }
         mouse.button = -1; // Force Matter to drop left click internally
       };
@@ -143,7 +143,7 @@ export function About() {
         // Force drop if the cursor visually escapes the strict spatial boundaries of the About section
         if (e.clientY < rect.top || e.clientY > rect.bottom || e.clientX < rect.left || e.clientX > rect.right) {
            if (mouseConstraint.body) {
-              mouseConstraint.body = null;
+              mouseConstraint.body = null as unknown as Matter.Body;
            }
            // Critically: Reset Matter.js internal "mousedown" state so it stops ghost-grabbing!
            mouse.button = -1; 
@@ -155,8 +155,8 @@ export function About() {
       window.addEventListener('pointercancel', handleGlobalPointerUp);
 
       // Prevent matter.js from stealing scroll events when not interacting with bodies
-      mouse.element.removeEventListener("mousewheel", mouse.mousewheel);
-      mouse.element.removeEventListener("DOMMouseScroll", mouse.mousewheel);
+      mouse.element.removeEventListener("mousewheel", (mouse as any).mousewheel);
+      mouse.element.removeEventListener("DOMMouseScroll", (mouse as any).mousewheel);
 
       runner = Runner.create();
       Runner.run(runner, engine);
@@ -248,7 +248,7 @@ export function About() {
       if (containerRef.current) resizeObserver.observe(containerRef.current);
 
       // Store cleanup references in the engine plugin to clean up properly
-      engine.plugin.cleanup = () => {
+      (engine as any).plugin.cleanup = () => {
         window.removeEventListener("resize", handleResize);
         window.removeEventListener('pointermove', handleGlobalPointerMove);
         window.removeEventListener('pointerup', handleGlobalPointerUp);
@@ -261,8 +261,8 @@ export function About() {
     return () => {
       clearTimeout(initTimeout);
       if (runner) Runner.stop(runner);
-      if (engine.plugin.cleanup) {
-        engine.plugin.cleanup();
+      if ((engine as any).plugin.cleanup) {
+        (engine as any).plugin.cleanup();
       }
       World.clear(engine.world, false);
       Engine.clear(engine);
@@ -308,8 +308,16 @@ export function About() {
     return () => cancelAnimationFrame(rafId);
   }, []);
 
-  // Render text: spaces are plain text nodes (preserve line-wrapping),
-  // non-space characters are wrapped in a data-char span.
+  /**
+   * Helper function to render text with per-character spanning.
+   * Splits strings by spaces to preserve line-wrapping via plain text nodes,
+   * while individually wrapping non-space characters in `data-char` spans 
+   * for the scroll-driven opacity sweep animation.
+   * 
+   * @param {string} text - The raw string to animate.
+   * @param {string} [cls] - Optional CSS classes to apply to each character span.
+   * @returns {JSX.Element[]} Array of span elements representing the wrapped words.
+   */
   const animText = (text: string, cls?: string) => {
     const words = text.split(" ");
     return words.map((word, wi) => (
@@ -360,7 +368,7 @@ export function About() {
         {tags.map((tag, i) => (
           <div
             key={i}
-            ref={(el) => (tagRefs.current[i] = el)}
+            ref={(el) => { tagRefs.current[i] = el; }}
             data-cursor="drag"
             className="absolute top-0 left-0 bg-[#1735f4] flex items-center justify-center px-[46.7px] py-[8.4px] rounded-[49.8px] shadow-lg cursor-pointer hover:bg-[#152edb] transition-colors pointer-events-auto select-none"
             style={{ 

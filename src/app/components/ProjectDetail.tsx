@@ -1577,6 +1577,15 @@ function ProjectContent({ slug }: { slug: string }) {
   );
 }
 
+/**
+ * Main Project Detail View Wrapper.
+ * 
+ * Orchestrates routing data and lifecycle mounts for individual case studies.
+ * Synchronizes the global loading transition overlay explicitly upon mount to ensure
+ * smooth entry animations and prevents visual flashing during heavy DOM rendering.
+ * 
+ * @returns {JSX.Element} The full-page individual project case study view.
+ */
 export default function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
 

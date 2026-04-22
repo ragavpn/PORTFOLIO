@@ -315,7 +315,7 @@ export function Travel() {
                 }}
               >
                 <div
-                  ref={(el) => (polaroidRefs.current[i] = el)}
+                  ref={(el) => { polaroidRefs.current[i] = el; }}
                   className="absolute inset-0 bg-[#fcf6e6] rounded-[13.84px] shadow-[0px_5px_36.9px_18.45px_rgba(0,0,0,0.06)] flex justify-center items-center overflow-clip"
                   style={{ willChange: "transform" }}
                 >

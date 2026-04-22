@@ -65,7 +65,7 @@ function ShiftLetter({ ch, className }: { ch: string; className?: string }) {
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
     >
-      {/* Real letter â€” slides out left */}
+      {/* Real letter — slides out left */}
       <span
         className={className}
         style={{
@@ -77,7 +77,7 @@ function ShiftLetter({ ch, className }: { ch: string; className?: string }) {
       >
         {ch}
       </span>
-      {/* Clone â€” enters from right (finishes last due to 80ms delay) */}
+      {/* Clone — enters from right (finishes last due to 80ms delay) */}
       <span
         ref={cloneRef}
         className={className}
@@ -397,7 +397,7 @@ export function Songs() {
 
   const artistLines = getArtistLines();
 
-  // Artist text renderer â€” UPPERCASE with per-letter hover animation
+  // Artist text renderer — UPPERCASE with per-letter hover animation
   const LETTER_CLS = "font-['Space_Grotesk'] text-[160px] font-normal leading-[0.853] tracking-[-8px] text-black";
 
   const renderLine = (text: string) => (
@@ -543,7 +543,7 @@ export function Songs() {
             </svg>
           </div>
 
-          {/* Runtime display â€” bottom of vinyl arc */}
+          {/* Runtime display — bottom of vinyl arc */}
           <div className="absolute left-[818px] top-[923px] flex font-['JetBrains_Mono'] font-medium text-[19px] gap-[5px] z-20 tabular-nums">
             <span className="text-black">{elapsedFormatted}</span>
             <span className="text-black">/</span>
@@ -567,7 +567,7 @@ export function Songs() {
           </AnimatePresence>
         </div>
 
-        {/* GENRES â€” animated on song change */}
+        {/* GENRES — animated on song change */}
         <div
           className="absolute left-[740px] z-10 transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]"
           style={{ top: artistLines.length === 1 ? "296px" : "408px" }}

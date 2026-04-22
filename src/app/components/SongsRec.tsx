@@ -188,7 +188,7 @@ export function SongsRec() {
           
           {/* Text inside Tag */}
           <div className="absolute left-[176px] top-[154px] w-[81px] text-right text-white font-['Inter'] text-[19px] tracking-[-1.14px] leading-[1.04] -translate-x-full z-10 pointer-events-none">
-            <p className="mb-0">A Music Loverâ€™s Worst Nightmare</p>
+            <p className="mb-0">A Music Lover’s Worst Nightmare</p>
             <p className="mb-0">&nbsp;</p>
             <p>{` - Picking their Top Songs`}</p>
           </div>

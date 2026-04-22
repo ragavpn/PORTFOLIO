@@ -172,7 +172,7 @@ function Frame2() {
         </div>
       </div>
       <div className="-translate-x-full absolute font-['Inter_Display:Regular',sans-serif] h-[156px] leading-[0] left-[176px] not-italic text-[19px] text-right text-white top-[154px] tracking-[-1.14px] w-[81px] whitespace-pre-wrap">
-        <p className="leading-[1.04] mb-0">A Music Loverâ€™s Worst Nightmare</p>
+        <p className="leading-[1.04] mb-0">A Music Lover’s Worst Nightmare</p>
         <p className="leading-[1.04] mb-0">&nbsp;</p>
         <p className="leading-[1.04]">{` - Picking their Top Songs`}</p>
       </div>
@@ -353,7 +353,7 @@ function Frame26() {
   return (
     <div className="content-stretch flex flex-col font-['Inter_Display:Medium',sans-serif] items-start leading-[0.96] not-italic relative shrink-0 text-[19px] w-[223px]">
       <p className="relative shrink-0 text-black w-full">NOT OK</p>
-      <p className="relative shrink-0 text-[rgba(0,0,0,0.5)] w-full">EVERYONEâ€™S A STAR</p>
+      <p className="relative shrink-0 text-[rgba(0,0,0,0.5)] w-full">EVERYONE’S A STAR</p>
     </div>
   );
 }

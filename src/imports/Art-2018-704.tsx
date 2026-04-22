@@ -25,7 +25,7 @@ function Frame1() {
     <div className="h-[265px] mb-[-64px] relative shrink-0 w-[1202px]">
       <p className="absolute font-['Instrument_Serif:Regular',sans-serif] left-0 opacity-50 text-[186px] top-0 tracking-[-5.58px]">The</p>
       <p className="absolute font-['Sloop_Script:Regular',sans-serif] left-[250px] text-[197px] top-[17px]">Creativity</p>
-      <p className="absolute font-['Instrument_Serif:Regular',sans-serif] left-[826px] opacity-50 text-[186px] top-0 tracking-[-5.58px]">doesnâ€™t</p>
+      <p className="absolute font-['Instrument_Serif:Regular',sans-serif] left-[826px] opacity-50 text-[186px] top-0 tracking-[-5.58px]">doesn’t</p>
     </div>
   );
 }
@@ -320,7 +320,7 @@ function Frame28() {
 function Frame29() {
   return (
     <div className="content-stretch flex gap-[28px] items-center relative shrink-0">
-      <p className="font-['Inter_Display:Regular',sans-serif] leading-[1.02] not-italic relative shrink-0 text-[#fffcf3] text-[122.528px] tracking-[-2.4506px] whitespace-nowrap">{`LETâ€™S `}</p>
+      <p className="font-['Inter_Display:Regular',sans-serif] leading-[1.02] not-italic relative shrink-0 text-[#fffcf3] text-[122.528px] tracking-[-2.4506px] whitespace-nowrap">{`LET’S `}</p>
       <Frame30 />
       <Frame28 />
     </div>
