@@ -13,7 +13,9 @@ import {
 } from "motion/react";
 import { getProjectBySlug, getNextProject, type ProjectData } from "../data/projectsData";
 import Lenis from "@studio-freight/lenis";
-
+import flowDiagramImg from "../../assets/projects/hypothesis-interpolation/flow_diagram.png";
+import rlhfApproachImg from "../../assets/projects/hypothesis-interpolation/rlhf_approach.png";
+import intraPredictorImg from "../../assets/projects/hypothesis-interpolation/intra_predictor.png";
 // ─── IST Clock ──────────────────────────────────────────────────────────────
 function useISTTime() {
   const [time, setTime] = useState("");
@@ -493,7 +495,7 @@ function HypothesisInterpolationBlocks() {
               </span>
            </div>
            <div className="w-full aspect-[1001/427] rounded-[15.6px] bg-white/5 border border-white/10 overflow-hidden relative">
-             <img src="/src/assets/projects/hypothesis-interpolation/flow_diagram.png" alt="Hybrid Flow Diagram" className="w-full h-full object-contain absolute scale-[1.35]" />
+             <img src={flowDiagramImg} alt="Hybrid Flow Diagram" className="w-full h-full object-contain absolute scale-[1.35]" />
            </div>
         </motion.div>
 
@@ -516,7 +518,7 @@ function HypothesisInterpolationBlocks() {
                 </span>
              </div>
              <div className="w-full aspect-[768/432] rounded-[15.6px] bg-white/5 border border-white/10 overflow-hidden relative">
-                <img src="/src/assets/projects/hypothesis-interpolation/rlhf_approach.png" alt="RLHF Approach" className="w-full h-full object-cover absolute" />
+                <img src={rlhfApproachImg} alt="RLHF Approach" className="w-full h-full object-cover absolute" />
              </div>
            </motion.div>
 
@@ -537,7 +539,7 @@ function HypothesisInterpolationBlocks() {
                 </span>
              </div>
              <div className="w-full aspect-[768/432] rounded-[15.6px] bg-white/5 border border-white/10 overflow-hidden relative">
-                <img src="/src/assets/projects/hypothesis-interpolation/intra_predictor.png" alt="Intra Predictor Analysis" className="w-full h-full object-cover absolute" />
+                <img src={intraPredictorImg} alt="Intra Predictor Analysis" className="w-full h-full object-cover absolute" />
              </div>
            </motion.div>
         </div>
