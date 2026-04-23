@@ -30,7 +30,7 @@ function SlotColumn({ targetValue, max, duration, delay = 0 }: { targetValue: nu
           flexDirection: "column",
           // The CSS handles spinning automatically!
           transform: `translateY(-${targetValue * 82}px)`,
-          transition: `transform ${duration}ms cubic-bezier(0.65, 0, 0.35, 1) ${delay}ms`,
+          transition: `transform ${duration}ms cubic-bezier(0.45, 0, 0.55, 1) ${delay}ms`,
           willChange: "transform",
         }}
       >
@@ -66,7 +66,7 @@ export function LoadingScreen() {
   const hasRun = useRef(false);
 
   const isFirstVisit = !sessionStorage.getItem("portfolio_visited");
-  const counterDuration = isFirstVisit ? 5000 : 2500;
+  const counterDuration = isFirstVisit ? 4000 : 2500;
 
   useEffect(() => {
     if (hasRun.current) return;
@@ -232,11 +232,19 @@ export function LoadingScreen() {
             <SlotColumn 
               targetValue={count / 100} 
               max={1} 
-              duration={count > 0 ? counterDuration / 2 : 0} 
-              delay={count > 0 ? counterDuration / 2 : 0} 
+              duration={count > 0 ? counterDuration * (2 / 6) : 0} 
+              delay={count > 0 ? counterDuration * (4 / 6) : 0} 
             />
-            <SlotColumn targetValue={count / 10} max={10} duration={count > 0 ? counterDuration : 0} />
-            <SlotColumn targetValue={count} max={100} duration={count > 0 ? counterDuration : 0} />
+            <SlotColumn 
+              targetValue={count / 10} 
+              max={10} 
+              duration={count > 0 ? counterDuration : 0} 
+            />
+            <SlotColumn 
+              targetValue={count} 
+              max={100} 
+              duration={count > 0 ? counterDuration * (5 / 6) : 0} 
+            />
           </motion.div>
         )}
       </AnimatePresence>
