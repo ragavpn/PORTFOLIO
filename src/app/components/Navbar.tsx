@@ -306,7 +306,7 @@ export function Navbar() {
                     (Links)
                   </p>
                   <sup className="font-['Inter_Display',sans-serif] font-medium opacity-50 text-[12px] tracking-[-0.24px] mt-[4px]">
-                    05
+                    06
                   </sup>
                 </div>
 
