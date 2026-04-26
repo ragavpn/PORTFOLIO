@@ -7,7 +7,7 @@ A high-performance, interactive portfolio built with **React**, **Vite**, **GSAP
 - **Archives Section**: A custom GSAP-driven draggable gallery with inertia physics, multi-level zoom, and logic-based cropping expansion.
 - **Arts Section**: Dynamic 'Cards Expand' deck physics with scroll-driven fan-out animations.
 - **Projects Section**: Interactive project showcase with floating browser glassmorphism mockups and noise-textured backgrounds.
-- **Premium Interactivity**: Integrated spatial audio systems, custom cursor trails, and fine-tuned animation curves (Power4) for a luxury feel.
+- **Premium Interactivity**: Custom cursor trails, and fine-tuned animation curves (Power4).
 - **Responsive Engineering**: Scaled-origin layouts to maintain high-fidelity design across all screen resolutions.
 
 ## 🛠 Tech Stack
