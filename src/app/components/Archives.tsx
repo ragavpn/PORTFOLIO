@@ -110,10 +110,11 @@ export function Archives() {
       zoom: typeof Audio !== "undefined" ? new Audio("/whoosh-fx-001.mp3") : null,
       drag: typeof Audio !== "undefined" ? new Audio("/preloader-2s-001.mp3") : null,
     },
-    play: (soundName: "click" | "open" | "close" | "zoom" | "drag") => {
-      if (!audioSystem.current.enabled || !audioSystem.current.sounds[soundName]) return;
+    play: function(soundName: "click" | "open" | "close" | "zoom" | "drag") {
+      const self = audioSystem.current;
+      if (!self.enabled || !self.sounds[soundName]) return;
       try {
-        const audio = audioSystem.current.sounds[soundName];
+        const audio = self.sounds[soundName];
         if (audio) {
           audio.currentTime = 0;
           audio.volume = 0.3;
